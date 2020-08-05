@@ -5,18 +5,18 @@
         <v-container fluid class="full-height">
           <v-row class="fill-height">
             <v-col cols="12" sm="10" offset-sm="1" md="8" offset-md="2">
-              <v-row class="fill-height">
+              <v-row class="fill-heights">
                 <v-col cols="12">
-                  <v-row class="no-gutters">
+                  <v-row class="no-gutters pb-8">
                     <v-col cols="12" class="text-center">
                       <img
-                        v-bind:src="require('../assets/minedu.svg')"
+                        v-bind:src="require('../assets/minedu.png')"
                         alt="Logo MINEDU"
                         :width="size_width > 960 ? '250' : '280'"
                       />
                     </v-col>
                   </v-row>
-                  <v-row :class="size_width > 960 ? 'fill-height' : ''" align="end">
+                  <v-row :class="size_width > 960 ? 'fill-heights' : ''" align="end">
                     <v-col xs="6" md="4" order="2" order-md="1">
                       <v-card color="teal lighten-4" class="elevation-2">
                         <v-card-text class="layout column align-center ma-0">
@@ -78,8 +78,8 @@
               href="//minedu.gob.bo/"
               target="_blank"
             >
-              <strong>Ministerio de Educación</strong>
-            </a>, Universidades
+              <strong>Ministerio de Educación, Deportes y Culturas</strong>
+            </a>
           </span>
         </v-col>
       </v-footer>
