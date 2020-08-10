@@ -22,6 +22,19 @@ let paths = [
     name: "not-found",
     component: () => import(`@/views/NotFound.vue`),
   },
+  {
+    path: "/universidades",
+    meta: { public: false },
+    name: "universidades",
+    component: () => import(`@/views/universidades/UniversidadView.vue`),
+    children: [ 
+      { path: 'publico', component: () => import(`@/views/universidades/Publico.vue`) },
+      { path: 'dashboard', component: () => import(`@/views/universidades/Dashboard.vue`) },
+      { path: 'carreras', component: () => import(`@/views/universidades/Carreras.vue`) },
+      { path: 'universidades', component: () => import(`@/views/universidades/Universidades.vue`) },
+    ] 
+  },
+  
   /* {
     path: "/inicio",
     meta: { public: true },

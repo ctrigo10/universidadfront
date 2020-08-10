@@ -3,6 +3,7 @@ import App from "./App.vue";
 import vuetify from "./plugins/vuetify";
 import router from "./router";
 import store from "./store";
+// import "../node_modules/vuetify/dist/vuetify.min.css";
 
 Vue.config.productionTip = false;
 

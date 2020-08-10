@@ -1,5 +1,5 @@
 <template>
-  <div id="appRoot" data-app>
+  <div id="appRoot" app>
     <template v-if="loggedIn && !$route.meta.public">
       <v-app>
         <toolbar class="app--toolbar"></toolbar>
@@ -29,11 +29,13 @@
       </v-app>
     </template>
     <template v-else>
+      <v-app>
       <transition>
         <keep-alive transition="scale-transition">
           <router-view :key="$route.fullpath"></router-view>
         </keep-alive>
       </transition>
+      </v-app>
     </template>
   </div>
 </template>
