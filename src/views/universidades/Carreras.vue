@@ -1,106 +1,99 @@
 <template>
-<v-app>
-  <!-- <h1>Carreras</h1> -->
-  <!-- <v-container>
-    <v-row justify="end">
-        <v-btn color="primary" dark @click="showDialog()">Crear</v-btn>
-    </v-row>
-  </v-container> -->
-
-  <template>
-    <v-card>
-      <v-card-title>
-        Listado de carreras
-        <v-spacer></v-spacer>
-        <v-text-field
-          v-model="search"
-          append-icon="mdi-magnify"
-          label="Buscar"
-          single-line
-          hide-details
-        ></v-text-field>
-        <v-spacer></v-spacer>
-        <v-btn class="" color="purple" small outlined dark @click="showDialog()"><v-icon>mdi-plus-outline</v-icon></v-btn>
-      </v-card-title>
+  <v-card class="tarjeta">
+    <v-card-title>
+      Carreras
+      <v-spacer></v-spacer>
+      <v-text-field
+        v-model="search"
+        append-icon="mdi-magnify"
+        label="Buscar"
+        single-line
+        hide-details
+        color="purple accent-4"
+      ></v-text-field>
+      <v-spacer></v-spacer>
+      <v-btn color="purple accent-4" dark @click="showDialog()">Nueva carrera</v-btn>
+    </v-card-title>
+    <v-card-text>
       <v-data-table
         :headers="headers"
         :items="carreras"
         :search="search"
-        locale="ES"
+        locale="es"
       >
         <template v-slot:[`item.acciones`]="{ item }">
-          <v-btn class="mx-1" icon small color="default" @click="edit(item)">
-            <v-icon dark color="purple">mdi-square-edit-outline</v-icon>
+          <v-btn @click="edit(item)" class="btn-accion">
+            <v-icon>mdi-pencil-outline</v-icon>
           </v-btn>
-          <v-btn class="mx-1" icon small color="default" @click="deleted(item.id)">
-            <v-icon dark color="purple">mdi-close-box-outline</v-icon>
+          <v-btn class="btn-accion" @click="deleted(item.id)">
+            <v-icon>mdi-delete</v-icon>
           </v-btn>
         </template>
       </v-data-table>
-    </v-card>
-  </template>
+    </v-card-text>
 
-  <template>
-    <v-dialog
-      v-model="cDialog"
-      width="500"
-    >
-      <v-card>
-        <v-card-title>
-          {{mode}} Carrera
-        </v-card-title>
-
-        <v-card-text>
-          <template>
-            <v-form>
+    <template>
+      <v-dialog
+        v-model="cDialog"
+        width="500"
+      >
+        <v-card>
+          <v-card-title>
+            {{mode}} Carrera
+          </v-card-title>
+          <v-card-text>
+            <v-form
+              ref="form"
+              v-model="valid"
+            >
               <v-row>
-                <v-col cols="12" sm="12" md="12">
-                  <v-text-field
-                    type="text"
-                    color="success"
-                    outlined
-                    dense
-                    label="Nombre de la Carrera"
-                    v-model="carrera.nombre"
-                  ></v-text-field>
+                <v-col>
+                <v-text-field
+                  type="text"
+                  color="blue"
+                  filled
+                  label="Nombre de la Carrera"
+                  v-model="carrera.nombre"
+                  :rules="nameRules"
+                  required
+                ></v-text-field>
                 </v-col>
               </v-row>
             </v-form>
-          </template>
-        </v-card-text>
+          </v-card-text>
+          
+          <v-divider></v-divider>
+          <v-card-actions>
+            <v-spacer></v-spacer>
 
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            color="primary"
-            text
-            @click="cDialog = false"
-          >
-            Cancelar
-          </v-btn>
-
-          <v-btn
-            color="secondary"
-            text
-            @click="create"
-            v-show="mode == 'Crear'"
-          >
-            Registrar
-          </v-btn>
-          <v-btn
-            color="secondary"
-            text
-            @click="update"
-            v-show="mode == 'Editar'"
-          >
-            Actualizar
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </template>
-  
-</v-app>
+            <v-btn
+              color="purple accent-4"
+              text
+              @click="create"
+              v-show="mode == 'Crear'"
+            >
+              Registrar
+            </v-btn>
+            <v-btn
+              color="purple accent-4"
+              text
+              @click="update"
+              v-show="mode == 'Editar'"
+            >
+              Actualizar
+            </v-btn>
+            <v-btn
+              color="red"
+              text
+              @click="cDialog = false"
+            >
+              Cancelar
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </template>
+  </v-card>
 </template>
 <script>
   import axios from 'axios';
@@ -109,18 +102,22 @@
     name: 'Carreras',
     data: () => ({
       headers: [
-        { text: '#', sortable: false, value: 'id'},
+        // { text: '#', sortable: false, value: 'id'},
         { text: 'Nombre', value: 'nombre'},
-        { text: 'Acciones', value: 'acciones', sortable: false}
+        { text: 'Acciones', value: 'acciones', sortable: false, align: 'end'}
       ],
       carreras: [],
       search: '',
       cDialog: false,
       mode: '',
+      valid: true,
       carrera: {
         id: '',
         nombre: ''
-      }
+      },
+      nameRules: [
+        v => !!v || 'El nombre es requerido',
+      ],
     }),
     mounted(){
       this.getList();
@@ -130,6 +127,8 @@
         this.mode = 'Crear';
         this.carrera.nombre = '';
         this.cDialog = true;
+        this.$refs.form.reset();
+        // this.$refs.form.resetValidation();
       },
       getList(){
         axios.get('http://localhost:3000/carrera').then(response => {
@@ -138,8 +137,8 @@
         })
       },
       create(){
-        if(this.carrera.nombre == ''){
-          alert('complete el nombre')
+        this.$refs.form.validate();
+        if(!this.valid){
           return;
         }
 
@@ -162,6 +161,7 @@
           nombre: item.nombre
         };
         this.cDialog = true;
+        // this.$refs.form.resetValidation();
       },
       update(){
         if(this.carrera.nombre == ''){
@@ -182,18 +182,26 @@
         })
       },
       deleted(id){
-        alert('eliminando '+id);
-        axios.delete('http://localhost:3000/carrera/'+id).then(response => {
-          if (response.data.status == 'success') {
-            alert('Carrera eliminada');
-            this.getList();
-            this.cDialog = false;
+        this.$swal({
+          title: '¿Eliminar?',
+          text: "¡No podrás revertir esto!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Si, eliminar!',
+          cancelButtonText: 'Cancelar'
+        }).then((result) => {
+          if (result.value) {
+            axios.delete('http://localhost:3000/carrera/'+id).then(response => {
+              if (response.data.status == 'success') {
+                this.getList();
+              }
+            }).catch( () => {
+              
+            }).finally( () => {
+
+            })
           }
-        }).catch( () => {
-          
-        }).finally( () => {
-          this.cDialog = false;
-        })
+        });
       }
     }
   }
