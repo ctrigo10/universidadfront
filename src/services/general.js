@@ -9,6 +9,9 @@ export default {
   getBase() {
     return this.getServe() + "prefa/";
   },
+  setToken() {
+    return sessionStorage.setItem("token");
+  },
   getToken() {
     return "Bearer " + sessionStorage.getItem("token");
   },

@@ -1,45 +1,45 @@
 <template>
-  <v-toolbar color="blue darken-1" fixed dark app>
-    <v-toolbar-side-icon @click.stop="drawerToggle"></v-toolbar-side-icon>
-    <v-toolbar-title class="headline text-uppercase">
-      <span>&nbsp;</span>
-    </v-toolbar-title>
+  <v-app-bar color="teal" fixed dark app>
+    <v-app-bar-nav-icon @click.stop="drawerToggle"></v-app-bar-nav-icon>
+    <!-- <v-app-bar-nav-icon></v-app-bar-nav-icon> -->
+    <!-- <v-toolbar-title class="headline text-uppercase">
+      <span>&nbsp;</span>ddds
+    </v-toolbar-title>-->
+    <v-toolbar-title>Sistema de Universidades</v-toolbar-title>
     <v-spacer></v-spacer>
     <v-btn icon @click="fullScreen()">
       <v-icon>{{ icon_fs }}</v-icon>
     </v-btn>
-    <v-menu
-      offset-y
-      origin="center center"
-      :nudge-bottom="10"
-      transition="scale-transition"
-    >
-      <v-btn icon large flat slot="activator">
+    <v-btn color="teal" dark>
+      <v-icon>mdi-user</v-icon>Ingresar
+    </v-btn>
+    <!-- <v-menu offset-y origin="center center" :nudge-bottom="10" transition="scale-transition">
+      <v-btn icon large slot="activator">
         <v-avatar size="30px">
           <img v-bind:src="require('../assets/user.svg')" alt="User" />
         </v-avatar>
       </v-btn>
       <v-list class="pa-0">
-        <v-list-tile @click="perfil()" ripple="ripple" rel="noopener">
-          <v-list-tile-action>
+        <v-list-item @click="perfil()" ripple="ripple" rel="noopener">
+          <v-list-item-action>
             <v-icon>account_circle</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title>Perfil</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Perfil</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
         <v-divider></v-divider>
-        <v-list-tile @click="logout()" ripple="ripple" rel="noopener">
-          <v-list-tile-action>
+        <v-list-item @click="logout()" ripple="ripple" rel="noopener">
+          <v-list-item-action>
             <v-icon color="error">exit_to_app</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title>Salir</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Salir</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
-    </v-menu>
-  </v-toolbar>
+    </v-menu>-->
+  </v-app-bar>
 </template>
 <script>
 export default {
@@ -48,7 +48,7 @@ export default {
     //
   },
   data: () => ({
-    icon_fs: "fullscreen",
+    icon_fs: "mdi-fullscreen",
     cod: "",
   }),
   mounted() {},
@@ -78,18 +78,19 @@ export default {
         !doc.msFullscreenElement
       ) {
         requestFullScreen.call(docEl);
-        this.icon_fs = "fullscreen_exit";
+        this.icon_fs = "mdi-fullscreen-exit";
       } else {
         cancelFullScreen.call(doc);
-        this.icon_fs = "fullscreen";
+        this.icon_fs = "mdi-fullscreen";
       }
     },
 
     logout() {
       this.$store.dispatch("logout").then(() => {
-        this.$router.push("/inicio/buscar");
+        this.$router.push({ name: "prefacultad" });
       });
     },
+
     perfil() {
       this.$router.push("/perfil");
     },
