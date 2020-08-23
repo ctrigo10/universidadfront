@@ -23,19 +23,77 @@ let paths = [
     component: () => import(`@/views/NotFound.vue`),
   },
   {
+    path: "/prefacultad",
+    meta: { public: true },
+    // name: "prefacultads",
+    component: () => import(`@/views/prefacultad/Inicio.vue`),
+    children: [
+      {
+        path: "",
+        meta: { public: true },
+        name: "orientacion",
+        component: () => import(`@/views/prefacultad/Publico.vue`),
+      },
+      {
+        path: "orientacion/vocacional",
+        meta: { public: true },
+        name: "orientacion-vocacional1",
+        component: () =>
+          import(`@/views/prefacultad/OrientacionVocacional.vue`),
+      },
+      {
+        path: "universidades",
+        meta: { public: true },
+        name: "universidad",
+        component: () => import(`@/views/prefacultad/Universidad.vue`),
+      },
+      /* {
+        path: "universidades",
+        component: () => import(`@/views/universidades/Universidades.vue`),
+      }, */
+    ],
+  },
+  /* {
+    path: "/prefacultad/orientacion/vocacional",
+    meta: { public: false },
+    name: "orientacion-vocacional",
+    component: () => import(`@/views/prefacultad/Publico.vue`),
+  }, */
+  /* {
+    path: "/prefacultad/universidades",
+    meta: { public: false },
+    name: "universidades",
+    component: () => import(`@/views/prefacultad/Publico.vue`),
+  }, */
+  {
     path: "/universidades",
     meta: { public: false },
     name: "universidades",
     component: () => import(`@/views/universidades/UniversidadView.vue`),
-    children: [ 
-      { path: 'publico', component: () => import(`@/views/universidades/Publico.vue`) },
-      { path: 'dashboard', component: () => import(`@/views/universidades/Dashboard.vue`) },
-      { path: 'carreras', component: () => import(`@/views/universidades/Carreras.vue`) },
-      { path: 'universidades', component: () => import(`@/views/universidades/Universidades.vue`) },
-      { path: 'gestion/:sie', component: () => import(`@/views/universidades/UniversidadGestion.vue`) },
-    ] 
+    children: [
+      {
+        path: "publico",
+        component: () => import(`@/views/universidades/Publico.vue`),
+      },
+      {
+        path: "dashboard",
+        component: () => import(`@/views/universidades/Dashboard.vue`),
+      },
+      {
+        path: "carreras",
+        component: () => import(`@/views/universidades/Carreras.vue`),
+      },
+      {
+        path: "universidades",
+        component: () => import(`@/views/universidades/Universidades.vue`),
+      },
+      {
+        path: "gestion/:sie",
+        component: () => import(`@/views/universidades/UniversidadGestion.vue`),
+      },
+    ],
   },
-  
+
   /* {
     path: "/inicio",
     meta: { public: true },
