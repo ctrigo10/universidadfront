@@ -1,252 +1,328 @@
 <template>
-  <v-card class="tarjeta">
-    <v-card-title primary-title>
-      Universidades
-      <v-spacer></v-spacer>
-      <v-text-field
-        v-model="search"
-        append-icon="mdi-magnify"
-        label="Buscar"
-        single-line
-        hide-details
-        color="purple accent-4"
-      ></v-text-field>
-      <v-spacer></v-spacer>
-      <v-btn color="purple accent-4" dark @click="showDialog()">Nueva Universidad</v-btn>
-    </v-card-title>
-    <v-card-text>
-      <v-data-table
-        :headers="headers"
-        :items="universidades"
-        :search="search"
-      >
-        <template v-slot:[`item.dependencia`]="{ item }">
-          <v-chip
-            class="ma-2"
-            :color="getColor(item.dependencia_tipo.id)"
-            outlined
-          >
-            {{ item.dependencia_tipo.dependencia }}
-          </v-chip>
-        </template>
-        <template v-slot:[`item.acciones`]="{ item }">
-          <v-btn class="btn-accion" @click="edit(item)">
-            <v-icon>mdi-square-edit-outline</v-icon>
-          </v-btn>
-          <v-btn class="btn-accion" @click="deleted(item.id)">
-            <v-icon>mdi-delete</v-icon>
-          </v-btn>
-        </template>
-      </v-data-table>
-    </v-card-text>
+  <div>
+    <v-breadcrumbs :items="breadcrumbs">
+      <template v-slot:divider>
+        <v-icon>mdi-forward</v-icon>
+      </template>
+    </v-breadcrumbs>
+    <v-card class="tarjeta">
+      <v-card-title primary-title>
+        Universidades
+        <v-spacer></v-spacer>
+        <v-text-field
+          v-model="search"
+          append-icon="mdi-magnify"
+          label="Buscar"
+          single-line
+          hide-details
+          color="purple accent-4"
+        ></v-text-field>
+        <v-spacer></v-spacer>
+        <v-btn color="purple accent-4" dark @click="showDialog()">Nueva Universidad</v-btn>
+      </v-card-title>
+      <v-card-text>
+        <v-data-table
+          :headers="headers"
+          :items="universidades"
+          :search="search"
+        >
+          <template v-slot:[`item.dependencia`]="{ item }">
+            <v-chip
+              class="ma-2"
+              :color="getColor(item.dependencia)"
+              outlined
+            >
+              {{ item.dependencia }}
+            </v-chip>
+          </template>
+          <template v-slot:[`item.acciones`]="{ item }">
+            <v-btn class="btn-accion" @click="edit(item.id)">
+              <v-icon>mdi-square-edit-outline</v-icon>
+            </v-btn>
+            <v-btn class="btn-accion" @click="ver(item.id)">
+              <v-icon>mdi-eye</v-icon>
+            </v-btn>
+          </template>
+        </v-data-table>
+      </v-card-text>
 
-    <v-dialog
-      v-model="cDialog"
-      :width="paso == 1 ? 600 : 1000"
-      persistent
-    >
-      <v-form>
+      <v-dialog
+        v-model="cDialog"
+        :width="paso == 1 || paso == 3 ? 600 : 1000"
+        persistent
+      >
+        
         <v-card v-show="paso == 1">
-          <v-card-title>
-            Edificio Educativo
-          </v-card-title>
-          <v-card-text>
-            <v-row no-gutters>
-              <v-col class="d-flex" cols="12" sm="12">
-                <v-select
-                  v-model="universidad.departamento"
-                  :items="departamentos"
-                  item-text="lugar"
-                  item-value="id"
-                  label="Departamento"
-                  placeholder="Seleccionar..."
-                  filled
-                  @change="getProvincias()"
-                  dense
-                ></v-select>
-              </v-col>
-              <v-col class="d-flex" cols="12" sm="12">
-                <v-select
-                  v-model="universidad.provincia"
-                  :items="provincias"
-                  item-text="lugar"
-                  item-value="id"
-                  label="Provincia"
-                  placeholder="Selecccionar..."
-                  filled
-                  dense
-                  @change="getSecciones()"
-                ></v-select>
-              </v-col>
-              <v-col class="d-flex" cols="12" sm="12">
-                <v-select
-                  v-model="universidad.seccion"
-                  :items="secciones"
-                  item-text="lugar"
-                  item-value="id"
-                  label="Sección"
-                  placeholder="Seleccionar..."
-                  filled
-                  dense
-                ></v-select>
-              </v-col>
-              <v-col class="d-flex" cols="12" sm="12">
-                <v-text-field v-model="universidad.zona" label="Zona" placeholder="Ingrese la Zona" filled dense></v-text-field>
-              </v-col>
-              <v-col class="d-flex" cols="12" sm="12">
-                <v-text-field v-model="universidad.direccion" label="Dirección" placeholder="Ingrese la dirección" filled dense></v-text-field>
-              </v-col>
-              
-            </v-row>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="purple accent-4" text @click="paso++">
-              Siguiente
-            </v-btn>
-            <v-btn color="red" text @click="cDialog = false">
-              Cancelar
-            </v-btn>
-          </v-card-actions>
+          <v-form
+            ref="form1"
+            v-model="validForm1"
+          >
+            <v-card-title>
+              Edificio Educativo
+            </v-card-title>
+            <v-card-text>
+              <v-row no-gutters>
+                <v-col class="d-flex" cols="12" sm="12" v-if="mode == 'Crear'">
+                  <v-select
+                    v-model="universidad.idDepartamento"
+                    :items="departamentos"
+                    item-text="lugar"
+                    item-value="id"
+                    label="Departamento"
+                    placeholder="Seleccionar..."
+                    filled
+                    @change="listarProvinciasDistritos()"
+                    dense
+                    required
+                  ></v-select>
+                </v-col>
+                <v-col class="d-flex" cols="12" sm="12" v-if="mode == 'Crear'">
+                  <v-select
+                    v-model="universidad.idDistrito"
+                    :items="distritos"
+                    item-text="distrito"
+                    item-value="id"
+                    label="Distrito"
+                    placeholder="Seleccionar..."
+                    filled
+                    @change="getProvincias()"
+                    dense
+                    required
+                  ></v-select>
+                </v-col>
+                <v-col class="d-flex" cols="12" sm="12" v-if="mode == 'Crear'">
+                  <v-select
+                    v-model="universidad.idProvincia"
+                    :items="provincias"
+                    item-text="lugar"
+                    item-value="id"
+                    label="Provincia"
+                    placeholder="Selecccionar..."
+                    filled
+                    dense
+                    @change="getSecciones()"
+                    required
+                  ></v-select>
+                </v-col>
+                <v-col class="d-flex" cols="12" sm="12" v-if="mode == 'Crear'">
+                  <v-select
+                    v-model="universidad.idSeccion"
+                    :items="secciones"
+                    item-text="lugar"
+                    item-value="id"
+                    label="Sección"
+                    placeholder="Seleccionar..."
+                    filled
+                    dense
+                    required
+                  ></v-select>
+                </v-col>
+                <v-col class="d-flex" cols="12" sm="12">
+                  <v-text-field v-model="universidad.zona" label="Zona" placeholder="Ingrese la Zona" filled dense></v-text-field>
+                </v-col>
+                <v-col class="d-flex" cols="12" sm="12">
+                  <v-text-field v-model="universidad.direccion" label="Dirección" placeholder="Ingrese la dirección" filled dense></v-text-field>
+                </v-col>
+                
+              </v-row>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="purple accent-4" text @click="validarFormulario1">
+                Siguiente
+              </v-btn>
+              <v-btn color="red" text @click="cDialog = false">
+                Cancelar
+              </v-btn>
+            </v-card-actions>
+          </v-form>
         </v-card>
         <v-card v-show="paso == 2">
-          <v-card-title>
-            Datos de la Universidad
-          </v-card-title>
-          <v-card-text>
-            <v-row no-gutters>
-              <v-col class="d-flex" cols="12" sm="12">
-                <v-text-field v-model="universidad.institucioneducativa" label="Nombre" placeholder="Nombre de la Universidad" filled dense></v-text-field>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col cols="12" sm="6">
-                <h4>Contacto</h4>
-                <v-text-field v-model="universidad.telefono" label="Teléfono" placeholder="" filled dense prepend-icon="mdi-cellphone-android"></v-text-field>
-                <v-text-field v-model="universidad.fax" label="Fax" placeholder="" filled dense prepend-icon="mdi-fax"></v-text-field>
-                <v-text-field v-model="universidad.sitio_web" label="Sitio Web" placeholder="" filled dense prepend-icon="mdi-web"></v-text-field>
-                <v-text-field v-model="universidad.email" label="Email" placeholder="" filled dense prepend-icon="mdi-email"></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="6">
-                <v-select
-                  v-model="universidad.estado"
-                  :items="estados"
-                  item-text="estadoinstitucion"
-                  item-value="id"
-                  label="Estado"
-                  placeholder="Seleccionar..."
-                  filled
-                  dense
-                ></v-select>
-                <v-select
-                  v-model="universidad.dependencia"
-                  :items="dependencias"
-                  item-text="dependencia"
-                  item-value="id"
-                  label="Dependencia"
-                  placeholder="Seleccionar..."
-                  filled
-                  dense
-                ></v-select>
-                <v-select
-                  v-model="universidad.tipo"
-                  :items="tipos"
-                  item-text="descripcion"
-                  item-value="id"
-                  label="Tipo"
-                  placeholder="Seleccionar..."
-                  filled
-                  dense
-                ></v-select>
-                <v-select
-                  v-model="universidad.orgCurricular"
-                  :items="orgCurriculares"
-                  item-text="orgcurricula"
-                  item-value="id"
-                  label="Org. Curricular"
-                  placeholder="Seleccionar..."
-                  filled
-                  dense
-                ></v-select>
-                <v-select
-                  v-model="universidad.acreditacion"
-                  :items="acreditaciones"
-                  item-text="institucioneducativa_acreditacion"
-                  item-value="id"
-                  label="Acreditación"
-                  placeholder="Seleccionar..."
-                  filled
-                  dense
-                ></v-select>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col cols="12" sm="4">
-                <v-text-field v-model="universidad.decreto_supremo" label="Decreto Supremo" placeholder="Nro. del decreto" filled dense></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="4">
-                <v-menu
-                  v-model="menu1"
-                  :close-on-content-click="false"
-                  :nudge-right="40"
-                  transition="scale-transition"
-                  offset-y
-                  min-width="290px"
-                >
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-text-field
-                      v-model="universidad.fechaDecreto"
-                      label="Fecha Decreto Supremo"
-                      prepend-icon="mdi-calendar"
-                      placeholder="dd/mm/aaaa"
-                      readonly
-                      v-bind="attrs"
-                      v-on="on"
-                      filled
-                    ></v-text-field>
-                  </template>
-                  <v-date-picker v-model="universidad.fechaDecreto" @input="menu1 = false"></v-date-picker>
-                </v-menu>
-              </v-col>
-              <v-col cols="12" sm="4">
-                <v-menu
-                  v-model="menu2"
-                  :close-on-content-click="false"
-                  :nudge-right="40"
-                  transition="scale-transition"
-                  offset-y
-                  min-width="290px"
-                >
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-text-field
-                      v-model="universidad.fechaCreacion"
-                      label="Fecha de Creación"
-                      prepend-icon="mdi-calendar"
-                      placeholder="dd/mm/aaaa"
-                      readonly
-                      v-bind="attrs"
-                      v-on="on"
-                      filled
-                    ></v-text-field>
-                  </template>
-                  <v-date-picker v-model="universidad.fechaCreacion" @input="menu2 = false"></v-date-picker>
-                </v-menu>
-              </v-col>
-            </v-row>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="purple accent-4" text>
-              Registrar
-            </v-btn>
-            <v-btn color="red" text @click="cDialog = false">
-              Cancelar
-            </v-btn>
-          </v-card-actions>
+          <v-form
+            ref="form2"
+            v-model="validForm2"
+          >
+            <v-card-title>
+              Datos de la Universidad
+            </v-card-title>
+            <v-card-text>
+              <v-row no-gutters>
+                <v-col cols="12" sm="12">
+                  <v-radio-group v-model="universidad.tipoSede" :mandatory="false" row>
+                    <v-radio label="Sede" value="sede"></v-radio>
+                    <v-radio label="Sub Sede" value="subsede"></v-radio>
+                  </v-radio-group>
+                  <v-select
+                    v-model="universidad.iduniversidadSede"
+                    :items="sedes"
+                    item-text="institucioneducativa"
+                    item-value="institucioneducativa_id"
+                    label="Sede"
+                    placeholder="Seleccionar la sede a la que pertenece..."
+                    filled
+                    dense
+                    v-if="universidad.tipoSede == 'subsede'"
+                  ></v-select>
+                </v-col>
+                <v-col cols="12" sm="12">
+                  <v-text-field v-model="universidad.institucioneducativa" label="Nombre" placeholder="Nombre de la Universidad" filled dense></v-text-field>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12" sm="6">
+                  <h4>Contacto</h4>
+                  <v-text-field v-model="universidad.telefonos" label="Teléfono" placeholder="" filled dense prepend-icon="mdi-cellphone-android"></v-text-field>
+                  <v-text-field v-model="universidad.fax" label="Fax" placeholder="" filled dense prepend-icon="mdi-fax"></v-text-field>
+                  <v-text-field v-model="universidad.sitio_web" label="Sitio Web" placeholder="" filled dense prepend-icon="mdi-web"></v-text-field>
+                  <v-text-field v-model="universidad.email" label="Email" placeholder="" filled dense prepend-icon="mdi-email"></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <v-select
+                    v-model="universidad.estadoinstitucion_tipo_id"
+                    :items="estados"
+                    item-text="estadoinstitucion"
+                    item-value="id"
+                    label="Estado"
+                    placeholder="Seleccionar..."
+                    filled
+                    dense
+                  ></v-select>
+                  <v-select
+                    v-model="universidad.dependencia_tipo_id"
+                    :items="dependencias"
+                    item-text="dependencia"
+                    item-value="id"
+                    label="Dependencia"
+                    placeholder="Seleccionar..."
+                    filled
+                    dense
+                  ></v-select>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12" sm="4">
+                  <v-text-field v-model="universidad.decreto_supremo" label="Decreto Supremo" placeholder="Nro. del decreto" filled dense></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="4">
+                  <v-menu
+                    v-model="menu1"
+                    :close-on-content-click="false"
+                    :nudge-right="40"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="290px"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field
+                        v-model="universidad.fecha_decreto_supremo"
+                        label="Fecha Decreto Supremo"
+                        prepend-icon="mdi-calendar"
+                        placeholder="dd/mm/aaaa"
+                        readonly
+                        v-bind="attrs"
+                        v-on="on"
+                        filled
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker v-model="universidad.fecha_decreto_supremo" @input="menu1 = false"></v-date-picker>
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" sm="4">
+                  <v-menu
+                    v-model="menu2"
+                    :close-on-content-click="false"
+                    :nudge-right="40"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="290px"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field
+                        v-model="universidad.fecha_creacion"
+                        label="Fecha de Creación"
+                        prepend-icon="mdi-calendar"
+                        placeholder="dd/mm/aaaa"
+                        readonly
+                        v-bind="attrs"
+                        v-on="on"
+                        filled
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker v-model="universidad.fecha_creacion" @input="menu2 = false"></v-date-picker>
+                  </v-menu>
+                </v-col>
+              </v-row>
+            </v-card-text>
+            <v-card-actions>
+              <v-btn color="purple accent-4" text @click="paso--" v-if="mode == 'Crear'">
+                Atras
+              </v-btn>
+              <v-spacer></v-spacer>
+              <v-btn color="purple accent-4" text @click="create" v-if="mode == 'Crear'">
+                Registrar
+              </v-btn>
+              <v-btn color="purple accent-4" text @click="update" v-if="mode == 'Editar'">
+                Actualizar
+              </v-btn>
+              <v-btn color="red" text @click="cDialog = false">
+                Cancelar
+              </v-btn>
+            </v-card-actions>
+          </v-form>
         </v-card>
-      </v-form>
-    </v-dialog>
-  </v-card>
+          <v-card v-show="paso == 3">
+            <v-card-title>
+              Resolución Ministerial
+            </v-card-title>
+            <v-card-text>
+              <v-row>
+                <v-col cols="12" sm=6>
+                  <v-text-field
+                    label="Nro. de Resolución"
+                    placeholder="Ingrese el número de Resolución" 
+                    v-model="resolucion.nro_resolucion"
+                    filled>
+                  </v-text-field>
+                  <v-text-field
+                    label="Fecha de Resolución"
+                    placeholder="Ingrese el Fecha de Resolución" 
+                    v-model="resolucion.fecha_resolucion"
+                    filled>
+                  </v-text-field>
+                </v-col>
+                <v-col cols="12" sm=6>
+                  <v-textarea
+                    label="Descripción"
+                    placeholder="Ingrese descripción de la Resolución" 
+                    v-model="resolucion.descripcion"
+                    filled>
+                  </v-textarea>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12" sm=12>
+                  <v-file-input
+                    label="Archivo R.M."
+                    filled
+                    prepend-icon="mdi-file"
+                  ></v-file-input>
+                </v-col>
+              </v-row>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="purple accent-4" text @click="create">
+                Registrar
+              </v-btn>
+              <v-btn color="red" text @click="cDialog = false">
+                Omitir
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        
+      </v-dialog>
+    </v-card>
+  </div>
 </template>
 <script>
   import axios from 'axios';
@@ -254,13 +330,26 @@
   export default {
     name: 'Universidades',
     data: () => ({
+      breadcrumbs: [
+        {
+          text: 'Dashboard',
+          disabled: false,
+          href: '/universidades/dashboard',
+        },
+        {
+          text: 'Universidades',
+          disabled: true,
+          href: 'universidades',
+        },
+      ],
       headers: [
         { text: 'Sie', sortable: false, value: 'id'},
         { text: 'Universidad', value: 'institucioneducativa'},
         { text: 'Nro. resolución', value: 'nro_resolucion'},
         { text: 'Dependencia', value: 'dependencia'},
-        { text: 'Sitio web', value: 'sitioWeb'},
-        { text: 'Teléfono', value: 'telefono'},
+        // { text: 'Sitio web', value: 'sitioWeb'},
+        // { text: 'Teléfono', value: 'telefono'},
+        { text: 'Departamento', value: 'departamento'},
         { text: 'Acciones', value: 'acciones', sortable: false, align: 'end'}
       ],
       universidades: [],
@@ -268,24 +357,50 @@
       cDialog: false,
       mode: '',
       paso: 1,
+      validForm1: false,
+      validForm2: true,
+      validForm3: true,
       universidad: {
         id: '',
+        idDepartamento: '',
+        idProvincia: '',
+        idSeccion: '',
+        idDistrito: '',
+        zona: '',
+        direccion: '',
+
+        estadoinstitucion_tipo_id: '',
+        dependencia_tipo_id: '',
+        institucioneducativa_tipo_id: 1,
         institucioneducativa: '',
-        departamento: '',
-        provincia: '',
-        seccion: '',
-        // fechaDecreto: new Date().toISOString().substr(0, 10),
-        fechaDecreto: '',
-        fechaCreacion: '',
+        fecha_resolucion: '2020-05-02',
+        nro_resolucion: '123213',
+        fecha_creacion: '',
+
+        telefonos: '',
+        fax: '',
+        email: '',
+        sitio_web: '',
+        decreto_supremo: '',
+        fecha_decreto_supremo: '',
+        tipoSede: 'sede',
+        iduniversidadSede: ''
+      },
+      resolucion: {
+        id: '',
+        iduniversidad: '',
+        nro_resolucion: '',
+        fecha_resolucion: '',
+        descripcion: '',
+        file: ''
       },
       departamentos: [],
       provincias: [],
       secciones: [],
+      distritos: [],
       estados: [],
       dependencias: [],
-      tipos: [],
-      orgCurriculares: [],
-      acreditaciones: [],
+      sedes: [],
       menu1: false,
       menu2: false,
     }),
@@ -298,9 +413,9 @@
     methods: {
       getColor(id){
         switch(id){
-          case 1: return 'purple accent-4';
-          case 2: return 'teal accent-3'; 
-          case 3: return 'blue';
+          case 'Fiscal': return 'purple accent-4';
+          case 'Privada': return 'teal accent-3'; 
+          case 'Regimen Especial': return 'blue';
           default: return 'secondary';
         }
       },
@@ -311,9 +426,7 @@
         this.getDepartamentos();
         this.getEstados();
         this.getDependencias();
-        this.getTipos();
-        this.getOrgCurriculares();
-        this.getAcreditaciones();
+        this.getSedes();
         this.paso = 1;
       },
       getList(){
@@ -324,7 +437,7 @@
       },
       getDepartamentos(){
         if (this.departamentos.length == 0) {
-          axios.get('http://localhost:3000/universidad/departamentos').then(response => {
+          axios.get('http://localhost:3000/universidad/departamentos/list').then(response => {
             console.log(response);
             this.departamentos = response.data.data;
           }).catch(() => {
@@ -334,12 +447,25 @@
           });
         }
       },
+      listarProvinciasDistritos(){
+        this.getProvincias();
+        this.getDistritos();
+      },
+      getDistritos(){
+        if (this.universidad.departamento != '') {
+          axios.get(`http://localhost:3000/universidad/distritos/${this.universidad.idDepartamento}`).then(response => {
+            console.log(response);
+            this.distritos = response.data.data;
+          }).catch(() => {
+  
+          }).finally(() => {
+  
+          });
+        }
+      },
       getProvincias(){
         if (this.universidad.departamento != '') {
-          let params = {
-            iddepartamento: 3
-          }
-          axios.get(`http://localhost:3000/universidad/provincias`, { params }).then(response => {
+          axios.get(`http://localhost:3000/universidad/provincias/${this.universidad.idDepartamento}`).then(response => {
             console.log(response);
             this.provincias = response.data.data;
           }).catch(() => {
@@ -351,7 +477,7 @@
       },
       getSecciones(){
         if (this.universidad.provincia != '') {
-          axios.get('http://localhost:3000/universidad/secciones', {idprovincia: this.universidad.provincia}).then(response => {
+          axios.get(`http://localhost:3000/universidad/secciones/${this.universidad.idProvincia}`).then(response => {
             console.log(response);
             this.secciones = response.data.data;
           }).catch(() => {
@@ -362,7 +488,7 @@
         }
       },
       getEstados(){
-        axios.get('http://localhost:3000/universidad/estados').then(response => {
+        axios.get('http://localhost:3000/universidad/estados/list').then(response => {
           console.log(response);
           this.estados = response.data.data;
         }).catch(() => {
@@ -372,7 +498,7 @@
         });
       },
       getDependencias(){
-        axios.get('http://localhost:3000/universidad/dependencias').then(response => {
+        axios.get('http://localhost:3000/universidad/dependencias/list').then(response => {
           console.log(response);
           this.dependencias = response.data.data;
         }).catch(() => {
@@ -381,96 +507,129 @@
 
         });
       },
-      getTipos(){
-        axios.get('http://localhost:3000/universidad/universidadTipo').then(response => {
-          console.log(response);
-          this.tipos = response.data.data;
-        }).catch(() => {
-
-        }).finally(() => {
-
-        });
+      getSedes(){
+        axios.get('http://localhost:3000/universidad/sedes/list').then(response => {
+          this.sedes = response.data.data;
+        })
       },
-      getOrgCurriculares(){
-        axios.get('http://localhost:3000/universidad/universidaOrg').then(response => {
-          console.log(response);
-          this.orgCurriculares = response.data.data;
-        }).catch(() => {
-
-        }).finally(() => {
-
-        });
+      validarFormulario1(){
+        console.log('validando formulario 1');
+        this.$refs.form1.validate();
+        if(!this.validForm1){
+          return;
+        }
+        this.paso = 2;
+        console.log('todo ok')
       },
-      getAcreditaciones(){
-        axios.get('http://localhost:3000/universidad/universidaAcreditada').then(response => {
-          console.log(response);
-          this.acreditaciones = response.data.data;
-        }).catch(() => {
-
-        }).finally(() => {
-
-        });
-      },
-      
       create(){
-        // if(this.universidad.institucioneducativa == ''){
-        //   alert('complete el nombre')
-        //   return;
-        // }
+        console.log(this.universidad);
+        this.$refs.form2.validate();
+        if(this.validForm2){
+          axios.post('http://localhost:3000/universidad', this.universidad).then(response => {
+            if (response.data.status == 'success') {
+              this.getList();
 
-        // axios.post('http://localhost:3000/universidad', this.universidad).then(response => {
-        //   if (response.data.status == 'success') {
-        //     alert('Universidad registrada');
-        //     this.getList();
-        //     this.cDialog = false;
-        //   }
-        // }).catch( () => {
-          
-        // }).finally( () => {
-        //   this.cDialog = false;
-        // })
+              // this.paso = 3;
+              this.cDialog = false;
+
+              // this.$swal({
+              //   position: 'top-end',
+              //   icon: 'success',
+              //   title: 'La universidad fue registrada correctamente !',
+              //   showConfirmButton: false,
+              //   timer: 1500
+              // });
+              this.$vToastify.success("Registro realizado correctamente");
+            }
+          }).catch( () => {
+            
+          }).finally( () => {
+            
+          })
+        }
       },
-      edit(item){
+      async edit(id){
         this.mode = 'Editar';
-        this.universidad = {
-          id: item.id,
-          institucioneducativa: item.institucioneducativa,
-          nroResolucion: item.nro_resolucion,
-        };
-        this.cDialog = true;
+        this.getEstados();
+        this.getDependencias();
+        this.getSedes();
+        this.paso = 1;
+
+        await axios.get(`http://localhost:3000/universidad/${id}`).then(response => {
+          if (response.data.status == 'success') {
+            console.log('asdfasdfasdf')
+            
+            let univData = response.data.data;
+            let datos = response.data.datos;
+
+            // console.log(univData)
+            // console.log(datos)
+
+            this.universidad.id = univData.id;
+            this.universidad.idDepartamento = '';
+            this.universidad.idProvincia = '';
+            this.universidad.idSeccion = '';
+            this.universidad.idDistrito = '';
+            this.universidad.zona = univData.jurisdiccion_geografica.zona;
+            this.universidad.direccion = univData.jurisdiccion_geografica.direccion;
+
+            this.universidad.estadoinstitucion_tipo_id = univData.estadoinstitucion_tipo_id;
+            this.universidad.dependencia_tipo_id = univData.dependencia_tipo_id;
+            this.universidad.institucioneducativa = univData.institucioneducativa;
+            this.universidad.fecha_resolucion = '2020-05-02';
+            this.universidad.nro_resolucion = '123/2020';
+            this.universidad.fecha_creacion = univData.fecha_creacion;
+
+            this.universidad.telefonos = datos.telefonos;
+            this.universidad.fax = datos.fax;
+            this.universidad.email = datos.email;
+            this.universidad.sitio_web = datos.sitio_web;
+            this.universidad.decreto_supremo = datos.decreto_supremo;
+            this.universidad.fecha_decreto_supremo = datos.fecha_decreto_supremo;
+            this.universidad.tipoSede = 'sede';
+            this.universidad.iduniversidadSede = '';
+            
+
+            this.cDialog = true;
+          }
+          
+        }).catch( () => {
+          
+        }).finally( () => {
+          this.cDialog = true;
+        })
       },
       update(){
-        // if(this.universidad.institucioneducativa == ''){
-        //   alert('complete el nombre')
-        //   return;
-        // }
-
-        // axios.put('http://localhost:3000/universidad/'+this.universidad.id, this.universidad).then(response => {
-        //   if (response.data.status == 'success') {
-        //     alert('Universidad actualizada');
-        //     this.getList();
-        //     this.cDialog = false;
-        //   }
-        // }).catch( () => {
-          
-        // }).finally( () => {
-        //   this.cDialog = false;
-        // })
+        this.$refs.form2.validate();
+        if(this.validForm2){
+          axios.put(`http://localhost:3000/universidad/${this.universidad.id}`, this.universidad).then(response => {
+            if (response.data.status == 'success') {
+              this.getList();
+              this.cDialog = false;
+              // this.$swal({
+              //   position: 'top-end',
+              //   icon: 'success',
+              //   title: 'La universidad fue actualizada correctamente !',
+              //   showConfirmButton: false,
+              //   timer: 1500
+              // });
+              this.$vToastify.success("Registro actualizado correctamente");
+            }
+          }).catch( () => {
+            
+          }).finally( () => {
+            this.cDialog = false;
+          })
+        }
       },
-      deleted(id){
-        alert('eliminando '+id);
-        // axios.delete('http://localhost:3000/carrera/'+id).then(response => {
-        //   if (response.data.status == 'success') {
-        //     alert('Universidad eliminada');
-        //     this.getList();
-        //     this.cDialog = false;
-        //   }
-        // }).catch( () => {
-          
-        // }).finally( () => {
-        //   this.cDialog = false;
-        // })
+      // funcion para ir al detalle de la universidad
+      ver(sie){
+        this.$router.push(`/universidades/gestion/${sie}`);
+        // router.push({ path: `/user/${userId}` }) // -> /user/123
       }
     }
   }
 </script>
+
+alegra sans
+roboto

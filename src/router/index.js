@@ -32,6 +32,7 @@ let paths = [
       { path: 'dashboard', component: () => import(`@/views/universidades/Dashboard.vue`) },
       { path: 'carreras', component: () => import(`@/views/universidades/Carreras.vue`) },
       { path: 'universidades', component: () => import(`@/views/universidades/Universidades.vue`) },
+      { path: 'gestion/:sie', component: () => import(`@/views/universidades/UniversidadGestion.vue`) },
     ] 
   },
   

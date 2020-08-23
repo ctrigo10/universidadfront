@@ -1,40 +1,100 @@
 <template>
-<v-container>
-  <h1>Universidades</h1>
-  <br>
-  <v-row class="mb-6" no-gutters>
-    <v-col
-      v-for="n in 8"
-      :key="n"
-      cols="3"
-    >
-      <v-card width="95%" style="margin-bottom:20px">
-        <v-img
-          class="white--text align-end"
-          height="200px"
-          src="../../assets/universidad.jpg"
-        >
-          <!-- <v-card-title>Universidad {{n}}</v-card-title> -->
-        </v-img>
-
-        <v-card-subtitle class="pb-0">Universidad {{n}}</v-card-subtitle>
-
-        <!-- <v-card-text class="text--primary">
-          <div>Whitehaven Beach</div>
-
-          <div>Whitsunday Island, Whitsunday Islands</div>
-        </v-card-text> -->
-
-        <v-card-actions>
-          <v-btn
-            color="purple"
-            text
+  <div>
+    <v-card class="tarjeta" v-if="vista == 'lista'">
+      <v-card-title>
+        Universidades
+      </v-card-title>
+      <v-card-text>
+        <v-row>
+          <v-col
+            v-for="(universidad, key) in universidades"
+            :key="key"
+            cols="12"
+            sm="3"
+            sm6="4"
           >
-            Mas información ...
-          </v-btn>
-        </v-card-actions>
+            <v-card class="card-universidad" @click="seleccionar(universidad.id)">
+              <v-img
+                class="imagen-universidad"
+                height="150px"
+                src="c:/node/universidades/universidadback/public/universidades/imagen/img-1597758838687.png"
+                aspect-ratio="1"
+              ></v-img>
+              <v-card-title class="pb-0">{{universidad.institucioneducativa}}</v-card-title>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-card-text>
+    </v-card>
+    <div v-else>
+      <v-btn @click="vista = 'lista'" text> Universidades</v-btn>
+      <DatosUniversidad :idUniversidad="universidadSeleccionada"/>
+      <v-card class="tarjeta">
+        <v-card-title>
+          Carreras
+          <v-spacer></v-spacer>
+        </v-card-title>
+        <v-card-text>
+          <v-data-table
+            :headers="headers"
+            :items="carreras"
+            class="elevation-1"
+          >
+          </v-data-table>
+        </v-card-text>
       </v-card>
-    </v-col>
-  </v-row>
-</v-container>
+    </div>
+  </div>
 </template>
+<script>
+import axios from 'axios'
+import DatosUniversidad from '../../components/universidades/DatosUniversidad'
+export default {
+  name: 'publico',
+  components: {
+    DatosUniversidad
+  },
+  data: () => ({
+    vista: 'lista',
+    universidades: [],
+    universidadSeleccionada: '',
+    carreras: [],
+    headers: [
+      { text: 'Carrera o Especialidad Académica', sortable: false, value: 'ttec_carrera_tipo.nombre'},
+      // { text: 'Grado Académico', value: 'gradoAcademico'},
+      // { text: 'Duración', value: 'duracion'},
+      // { text: 'Nro. Resolución', value: 'nroResolucion'},
+      // { text: 'Fecha', value: 'fecha'},
+      { text: 'Acciones', value: 'acciones', sortable: false, align: 'end'}
+    ],
+  }),
+  mounted(){
+    this.getUniversidades();
+  },
+  methods: {
+    getUniversidades(){
+      axios.get('http://localhost:3000/universidad').then(response => {
+        console.log(response);
+        this.universidades = response.data.data;
+      })
+    },
+    seleccionar(id){
+      this.universidadSeleccionada = id;
+      this.vista = id;
+
+      axios.get(`http://localhost:3000/carreraUni/carreraUniversidad/${this.universidadSeleccionada}`).then(response => {
+        this.carreras = response.data.data;
+      })
+    }
+  }
+}
+</script>
+<style scope>
+  .imagen-universidad {
+    background-color: rgb(128, 0, 128, 0.05);
+  }
+  .card-universidad > .v-card__title{
+    color: purple;
+    font-size: 1em;
+  }
+</style>

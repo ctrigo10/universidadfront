@@ -29,6 +29,7 @@
       <div class="logo">
         <img src="../../assets/minedu.png" alt="" class="logo">
       </div>
+      <v-divider></v-divider>
       <template>
         <v-card
           class="mx-auto"
@@ -37,7 +38,7 @@
           elevation="0"
         >
           <v-list dense >
-            <v-list-item-group v-model="item" color="purple">
+            <v-list-item-group color="purple">
               <v-list-item
                 v-for="(item, i) in items"
                 :key="i"
@@ -154,6 +155,7 @@ main{
 
 .tarjeta{
   padding: 15px;
+  margin-bottom: 7px;
 }
 
 /* Tables */
@@ -199,4 +201,33 @@ thead > tr > th > span {
   color: white !important; */
 }
 
+/* Swet alert */
+.swal2-header .swal2-title{
+  font-family: sans-serif;
+  font-size: 1.5em !important;
+  color: #8E24AA !important;
+}
+.swal2-content {
+  font-family: sans-serif;
+  font-size: 1em;
+  color: rgba(0, 0, 0, 0.87);
+}
+.swal2-actions {
+  font-family: sans-serif;
+}
+/* .swal2-actions .swal2-confirm{ */
+.swal2-styled.swal2-confirm{
+  
+}
+
+/* Footer */
+.theme--light.v-footer{
+  color: purple;
+}
+
+.v-card__title{
+  font-weight: 300;
+  font-size: 1.5em;
+  color:rgb(128, 0, 128);
+}
 </style>
