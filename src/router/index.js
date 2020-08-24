@@ -72,7 +72,7 @@ let paths = [
     component: () => import(`@/views/universidades/UniversidadView.vue`),
     children: [
       {
-        path: "publico",
+        path: "",
         component: () => import(`@/views/universidades/Publico.vue`),
       },
       {

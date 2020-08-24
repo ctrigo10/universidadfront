@@ -2,7 +2,7 @@
   <div>
     <v-app-bar
       elevation="1"
-      color="purple lighten-1"
+      color="primary"
       :dark="true"
       app
     >
@@ -38,11 +38,11 @@
           elevation="0"
         >
           <v-list dense >
-            <v-list-item-group color="purple">
+            <v-list-item-group color="primary">
               <v-list-item
                 v-for="(item, i) in items"
                 :key="i"
-                @click="getPage(item.path)"
+                :to="item.path"
               >
                 <v-list-item-icon>
                   <v-icon v-text="item.icon"></v-icon>
@@ -56,46 +56,6 @@
         </v-card>
       </template>
     </v-navigation-drawer>
-
-    <!-- <v-navigation-drawer
-      app
-      class="drawerstyle"
-    >
-      <v-list
-          dense
-          nav
-          class="py-0"
-        >
-          <v-list-item two-line>
-            
-
-            <v-list-item-content>
-              <v-list-item-title>
-                <img src="../../assets/logo-minedu.png" class="logo"/>
-              </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-
-          <v-divider></v-divider>
-
-          <v-list-item
-            v-for="item in items"
-            :key="item.title"
-            link
-            @click="getPage(item.path)"
-          >
-            
-              <v-list-item-icon>
-                <v-icon>{{ item.icon }}</v-icon>
-              </v-list-item-icon>
-
-              <v-list-item-content>
-                <v-list-item-title>{{ item.title }}</v-list-item-title>
-              </v-list-item-content>
-            
-          </v-list-item>
-        </v-list>
-    </v-navigation-drawer> -->
   
     <v-main>
       <v-container fluid class="u-container">
@@ -119,17 +79,15 @@ export default {
   name: 'universidad-view',
   data: () => ({
     items: [
-      {icon: 'mdi-map', title: 'Público', path: '/universidades/publico'},
+      {icon: 'mdi-map', title: 'Público', path: '/universidades'},
       {icon: 'mdi-home', title: 'Dashboard', path: '/universidades/dashboard'},
       {icon: 'mdi-file', title: 'Carreras', path: '/universidades/carreras'},
-      {icon: 'mdi-pencil', title: 'Universidades', path: '/universidades/universidades'},
+      {icon: 'mdi-domain', title: 'Universidades', path: '/universidades/universidades'},
     ],
     menu: true
   }),
   methods: {
-    getPage(link) {
-      this.$router.push(link);
-    }
+
   }
 }
 </script>
@@ -159,15 +117,20 @@ main{
 }
 
 /* Tables */
-table > tr{
-  border-color: red !important;
-}
 
+thead > tr > th {
+  background-color: rgb(25, 118, 210, 0.1);
+}
 thead > tr > th > span {
   /* color: purple; */
   font-weight: 600;
   font-size: 0.9rem;
+  color: #1976d2;
 }
+table > tbody > tr{
+  border-color: red !important;
+}
+
 
 /* Botones acciones tabla*/
 
@@ -196,9 +159,8 @@ thead > tr > th > span {
 /* Dialog */
 
 .v-dialog .v-card .v-card__title{
-  color: #8E24AA !important;
-  /* background: #8E24AA !important;
-  color: white !important; */
+  /* color: #8E24AA !important; */
+  color: #1976d2 !important;
 }
 
 /* Swet alert */
@@ -228,6 +190,6 @@ thead > tr > th > span {
 .v-card__title{
   font-weight: 300;
   font-size: 1.5em;
-  color:rgb(128, 0, 128);
+  color: #1976d2;
 }
 </style>

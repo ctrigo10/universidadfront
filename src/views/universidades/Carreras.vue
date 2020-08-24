@@ -16,10 +16,10 @@
           label="Buscar"
           single-line
           hide-details
-          color="purple accent-4"
+          color="primary"
         ></v-text-field>
         <v-spacer></v-spacer>
-        <v-btn color="purple accent-4" dark @click="showDialog()">Nueva carrera</v-btn>
+        <v-btn color="primary" dark @click="showDialog()">Nueva carrera</v-btn>
       </v-card-title>
       <v-card-text>
         <v-data-table
@@ -57,12 +57,11 @@
                   <v-col>
                   <v-text-field
                     type="text"
-                    color="blue"
-                    filled
+                    color="primary"
                     label="Nombre de la Carrera"
                     v-model="carrera.nombre"
-                    :rules="nameRules"
-                    required
+                    :rules="[v => !!v || 'El nombre es requerido']"
+                    filled
                   ></v-text-field>
                   </v-col>
                 </v-row>
@@ -72,27 +71,24 @@
                 <v-spacer></v-spacer>
 
                 <v-btn
-                  color="purple accent-4"
-                  text
+                  color="secondary"
+                  @click="cDialog = false"
+                >
+                  Cancelar
+                </v-btn>
+                <v-btn
+                  color="primary"
                   @click="create"
                   v-show="mode == 'Crear'"
                 >
                   Registrar
                 </v-btn>
                 <v-btn
-                  color="purple accent-4"
-                  text
+                  color="primary"
                   @click="update"
                   v-show="mode == 'Editar'"
                 >
                   Actualizar
-                </v-btn>
-                <v-btn
-                  color="red"
-                  text
-                  @click="cDialog = false"
-                >
-                  Cancelar
                 </v-btn>
               </v-card-actions>
             </v-card>
@@ -110,6 +106,10 @@
       :timeout="2500"
       :vertical="snack.mode === 'vertical'"
     >
+      <v-icon v-if="snack.color == 'success'">mdi-check</v-icon>
+      <v-icon v-if="snack.color == 'info'">mdi-information-outline</v-icon>
+      <v-icon v-if="snack.color == 'warning'">mdi-alert-outline</v-icon>
+      <v-icon v-if="snack.color == 'error'">mdi-information-outline</v-icon>
       {{ snack.text }}
     </v-snackbar>
   </div>
@@ -154,14 +154,11 @@
         id: '',
         nombre: ''
       },
-      nameRules: [
-        v => !!v || 'El nombre es requerido',
-      ],
       snack: {
         state: false,
         color: "success",
         mode: "",
-        timeout: 2500,
+        timeout: 3000,
         text: ""
       }
     }),
@@ -171,12 +168,14 @@
     methods: {
       showDialog(){
         this.mode = 'Crear';
+
         this.carrera = {
           id: '',
           nombre: ''
-        };
-        // this.$refs.form.reset();
+        }
         this.cDialog = true;
+        this.$refs.form.reset()
+        // this.$refs.form.reset();
         // this.$refs.form.resetValidation();
       },
       getList(){
@@ -195,7 +194,7 @@
               this.toast("success", "Registro realizado correctamente");
             }
           }).catch( () => {
-            this.toast("error", "Ocurrio un error al realizar el registro");   
+            this.toast("error", "Ocurrio un error al realizar el registro"); 
           }).finally( () => {
             this.cDialog = false;
           })  
@@ -211,50 +210,19 @@
         // this.$refs.form.resetValidation();
       },
       update(){
-        if(this.carrera.nombre == ''){
-          this.$vToastify.warning("Complete el nombre");
-          return;
-        }
-
-        // const Toast = this.$swal.({
-        //   toast: true,
-        //   position: 'top-end',
-        //   showConfirmButton: false,
-        //   timer: 3000,
-        //   timerProgressBar: true,
-        //   onOpen: (toast) => {
-        //     toast.addEventListener('mouseenter', toast.stopTimer)
-        //     toast.addEventListener('mouseleave', toast.resumeTimer)
-        //   }
-        // })
-
-        axios.put('http://localhost:3000/carrera/'+this.carrera.id, this.carrera).then(response => {
-          if (response.data.status == 'success') {
-            this.getList();
+        if (this.$refs.form.validate()) {
+          axios.put('http://localhost:3000/carrera/'+this.carrera.id, this.carrera).then(response => {
+            if (response.data.status == 'success') {
+              this.getList();
+              this.cDialog = false;
+              this.toast("success", "Registro actualizado correctamente");
+            }
+          }).catch( () => {
+            this.toast("error", "Ocurrio un error al actualizar el registro");
+          }).finally( () => {
             this.cDialog = false;
-            this.$vToastify.success("Registro actualizado correctamente");
-            // this.$vToastify.clientError("this will overwrite the body", "this will add a title");
-            // this.$vToastify.info("Easy as that");
-            // this.$vToastify.success("Registro realizado exitosamente","sdafsadf", { withBackdrop: true, backdrop: 'rgb(128, 0, 128)' });
-            // this.$dialog.component('error', 'adsfasdf')
-            // this.$vToastify.error("Registro realizado exitosamente","sdafsadf"); 
-            // this.$vToastify.info("Registro realizado exitosamente"); 
-            // this.$vToastify.warning("Registro realizado exitosamente","sdafsadf");
-            // this.$swal({
-            //   toast: true,
-            //   position: 'top-end',
-            //   icon: 'success',
-            //   text: 'Registrado correctamente',
-            //   showConfirmButton: false,
-            //   timer: 2000,
-            //   background: '#b6f0b4'
-            // })
-          }
-        }).catch( () => {
-          
-        }).finally( () => {
-          this.cDialog = false;
-        })
+          })
+        }
       },
       deleted(id){
         this.$swal({
@@ -269,12 +237,14 @@
             axios.delete('http://localhost:3000/carrera/'+id).then(response => {
               if (response.data.status == 'success') {
                 this.getList();
-                this.$vToastify.success("Registro eliminado correctamente");
+                this.toast("success", "Registro eliminado correctamente");
               }
-            }).catch( () => {
-              
-            }).finally( () => {
-
+            }).catch( (e) => {
+              if (e.response.status === 500) {
+                this.toast("error", "Ocurrio un error al eliminar el registro");
+              }else{
+                this.toast("error", e.response.data.msg);
+              }
             })
           }
         });
@@ -288,5 +258,4 @@
   }
 </script>
 <style scope>
-  /* @import '@node_modules/vuetify/src/styles/main.sass'; */
 </style>

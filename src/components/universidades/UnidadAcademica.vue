@@ -37,18 +37,16 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
-            color="purple accent-4"
-            text
-            @click="create"
-          >
-            Registrar
-          </v-btn>
-          <v-btn
-            color="red"
-            text
+            color="secondary"
             @click="newDialog = false"
           >
             Cancelar
+          </v-btn>
+          <v-btn
+            color="primary"
+            @click="create"
+          >
+            Registrar
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -72,18 +70,16 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
-            color="purple accent-4"
-            text
-            @click="update"
-          >
-            Actualizar
-          </v-btn>
-          <v-btn
-            color="red"
-            text
+            color="secondary"
             @click="editDialog = false"
           >
             Cancelar
+          </v-btn>
+          <v-btn
+            color="primary"
+            @click="update"
+          >
+            Actualizar
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -99,7 +95,7 @@
         <v-card-text>
           <v-row>
             <v-spacer></v-spacer>
-            <v-btn color="purple accent-4" outlined @click="openNewDialog">Agregar</v-btn>
+            <v-btn color="primary" @click="openNewDialog">Agregar</v-btn>
           </v-row>
           <v-data-table
             :headers="headers"
@@ -118,6 +114,24 @@
         </v-card-text>
       </v-card>
     </v-dialog>
+
+
+    <v-snackbar
+      v-model="snack.state"
+      :top="'top'"
+      :right="'right'"
+      :color="snack.color"
+      :multi-line="snack.mode === 'multi-line'"
+      :timeout="2500"
+      :vertical="snack.mode === 'vertical'"
+    >
+      <v-icon v-if="snack.color == 'success'">mdi-check</v-icon>
+      <v-icon v-if="snack.color == 'info'">mdi-information-outline</v-icon>
+      <v-icon v-if="snack.color == 'warning'">mdi-alert-outline</v-icon>
+      <v-icon v-if="snack.color == 'error'">mdi-information-outline</v-icon>
+      {{ snack.text }}
+    </v-snackbar>
+
   </div>
 </template>
 <script>
@@ -140,7 +154,14 @@ export default {
       institucioneducativa_id: '',
       unidad_academica: ''
     },
-    unidadSeleccionada: ''
+    unidadSeleccionada: '',
+    snack: {
+      state: false,
+      color: "success",
+      mode: "",
+      timeout: 3000,
+      text: ""
+    }
   }),
   mounted(){
     this.getUnidadesAcademicas();
@@ -164,9 +185,10 @@ export default {
         if (response.data.status == 'success') {
           this.getUnidadesAcademicas();
           this.newDialog = false;
+          this.toast("success", "Registro realizado correctamente");
         }
       }).catch(() => {
-        console.log('Error al registrar')
+        this.toast("error", "Ocurrio un error al realizar el registro");
       })
     },
     edit(item){
@@ -180,9 +202,10 @@ export default {
         if (response.data.status == 'success') {
           this.getUnidadesAcademicas();
           this.editDialog = false;
+          this.toast("success", "Registro actualizado correctamente");
         }
       }).catch(() => {
-        console.log('Error al actualizar')
+        this.toast("error", "Ocurrio un error al realizar la actualización");
       })
     },
     deleted(id){
@@ -197,16 +220,24 @@ export default {
         if (result.value) {
           axios.delete(`http://localhost:3000/carreraUni/unidad/${id}`).then(response => {
             if (response.data.status == 'success') {
-              console.log('Eliminado')
               this.getUnidadesAcademicas();
+              this.toast("success", "Registro eliminado correctamente");
             }
+          }).catch(() => {
+            this.toast("error", "Ocurrio un error al eliminar el registro");
           });
         }
       });
     },
     seleccionarUA(){
       this.$emit('seleccionarUA', this.unidadSeleccionada);
-    }
+    },
+
+    toast(mcolor, mtext) {
+      this.snack.color = mcolor;
+      this.snack.text = mtext;
+      this.snack.state = true;
+    },
   }
 }
 </script>

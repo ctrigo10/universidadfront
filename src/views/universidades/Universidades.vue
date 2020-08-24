@@ -15,10 +15,10 @@
           label="Buscar"
           single-line
           hide-details
-          color="purple accent-4"
+          color="primary"
         ></v-text-field>
         <v-spacer></v-spacer>
-        <v-btn color="purple accent-4" dark @click="showDialog()">Nueva Universidad</v-btn>
+        <v-btn color="primary" dark @click="showDialog()">Nueva Universidad</v-btn>
       </v-card-title>
       <v-card-text>
         <v-data-table
@@ -73,7 +73,7 @@
                     filled
                     @change="listarProvinciasDistritos()"
                     dense
-                    required
+                    :rules="[v => !!v || 'El departamento es requerido']"
                   ></v-select>
                 </v-col>
                 <v-col class="d-flex" cols="12" sm="12" v-if="mode == 'Crear'">
@@ -87,7 +87,7 @@
                     filled
                     @change="getProvincias()"
                     dense
-                    required
+                    :rules="[v => !!v || 'El distrito es requerido']"
                   ></v-select>
                 </v-col>
                 <v-col class="d-flex" cols="12" sm="12" v-if="mode == 'Crear'">
@@ -101,7 +101,7 @@
                     filled
                     dense
                     @change="getSecciones()"
-                    required
+                    :rules="[v => !!v || 'La provincia es requerida']"
                   ></v-select>
                 </v-col>
                 <v-col class="d-flex" cols="12" sm="12" v-if="mode == 'Crear'">
@@ -114,7 +114,7 @@
                     placeholder="Seleccionar..."
                     filled
                     dense
-                    required
+                    :rules="[v => !!v || 'La sección es requerida']"
                   ></v-select>
                 </v-col>
                 <v-col class="d-flex" cols="12" sm="12">
@@ -128,11 +128,11 @@
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="purple accent-4" text @click="validarFormulario1">
-                Siguiente
-              </v-btn>
-              <v-btn color="red" text @click="cDialog = false">
+              <v-btn color="secondary" @click="cDialog = false">
                 Cancelar
+              </v-btn>
+              <v-btn color="primary" @click="validarFormulario1">
+                Siguiente
               </v-btn>
             </v-card-actions>
           </v-form>
@@ -148,7 +148,12 @@
             <v-card-text>
               <v-row no-gutters>
                 <v-col cols="12" sm="12">
-                  <v-radio-group v-model="universidad.tipoSede" :mandatory="false" row>
+                  <v-radio-group
+                    v-model="universidad.tipoSede" 
+                    :mandatory="false" 
+                    row
+                    :rules="[v => !!v || 'El tipo es requerido']"
+                  >
                     <v-radio label="Sede" value="sede"></v-radio>
                     <v-radio label="Sub Sede" value="subsede"></v-radio>
                   </v-radio-group>
@@ -165,7 +170,14 @@
                   ></v-select>
                 </v-col>
                 <v-col cols="12" sm="12">
-                  <v-text-field v-model="universidad.institucioneducativa" label="Nombre" placeholder="Nombre de la Universidad" filled dense></v-text-field>
+                  <v-text-field
+                    v-model="universidad.institucioneducativa" 
+                    label="Nombre" 
+                    placeholder="Nombre de la Universidad" 
+                    filled 
+                    dense
+                    :rules="[v => !!v || 'El nombre es requerido']"
+                  ></v-text-field>
                 </v-col>
               </v-row>
               <v-row>
@@ -177,6 +189,7 @@
                   <v-text-field v-model="universidad.email" label="Email" placeholder="" filled dense prepend-icon="mdi-email"></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6">
+                  <br>
                   <v-select
                     v-model="universidad.estadoinstitucion_tipo_id"
                     :items="estados"
@@ -186,6 +199,7 @@
                     placeholder="Seleccionar..."
                     filled
                     dense
+                    :rules="[v => !!v || 'El estado es requerido']"
                   ></v-select>
                   <v-select
                     v-model="universidad.dependencia_tipo_id"
@@ -196,6 +210,7 @@
                     placeholder="Seleccionar..."
                     filled
                     dense
+                    :rules="[v => !!v || 'La dependencia es requerida']"
                   ></v-select>
                 </v-col>
               </v-row>
@@ -246,6 +261,7 @@
                         v-bind="attrs"
                         v-on="on"
                         filled
+                        :rules="[v => !!v || 'La fecha de creación es requerida']"
                       ></v-text-field>
                     </template>
                     <v-date-picker v-model="universidad.fecha_creacion" @input="menu2 = false"></v-date-picker>
@@ -254,18 +270,18 @@
               </v-row>
             </v-card-text>
             <v-card-actions>
-              <v-btn color="purple accent-4" text @click="paso--" v-if="mode == 'Crear'">
+              <v-btn color="primary" @click="paso--">
                 Atras
               </v-btn>
               <v-spacer></v-spacer>
-              <v-btn color="purple accent-4" text @click="create" v-if="mode == 'Crear'">
+              <v-btn color="secondary" @click="cDialog = false">
+                Cancelar
+              </v-btn>
+              <v-btn color="primary" @click="create" v-if="mode == 'Crear'">
                 Registrar
               </v-btn>
-              <v-btn color="purple accent-4" text @click="update" v-if="mode == 'Editar'">
+              <v-btn color="primary" @click="update" v-if="mode == 'Editar'">
                 Actualizar
-              </v-btn>
-              <v-btn color="red" text @click="cDialog = false">
-                Cancelar
               </v-btn>
             </v-card-actions>
           </v-form>
@@ -311,7 +327,7 @@
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="purple accent-4" text @click="create">
+              <v-btn color="primary" text @click="create">
                 Registrar
               </v-btn>
               <v-btn color="red" text @click="cDialog = false">
@@ -322,6 +338,22 @@
         
       </v-dialog>
     </v-card>
+
+    <v-snackbar
+      v-model="snack.state"
+      :top="'top'"
+      :right="'right'"
+      :color="snack.color"
+      :multi-line="snack.mode === 'multi-line'"
+      :timeout="2500"
+      :vertical="snack.mode === 'vertical'"
+    >
+      <v-icon v-if="snack.color == 'success'">mdi-check</v-icon>
+      <v-icon v-if="snack.color == 'info'">mdi-information-outline</v-icon>
+      <v-icon v-if="snack.color == 'warning'">mdi-alert-outline</v-icon>
+      <v-icon v-if="snack.color == 'error'">mdi-information-outline</v-icon>
+      {{ snack.text }}
+    </v-snackbar>
   </div>
 </template>
 <script>
@@ -357,7 +389,7 @@
       cDialog: false,
       mode: '',
       paso: 1,
-      validForm1: false,
+      validForm1: true,
       validForm2: true,
       validForm3: true,
       universidad: {
@@ -403,6 +435,13 @@
       sedes: [],
       menu1: false,
       menu2: false,
+      snack: {
+        state: false,
+        color: "success",
+        mode: "",
+        timeout: 3000,
+        text: ""
+      }
     }),
     mounted(){
       this.getList();
@@ -413,21 +452,45 @@
     methods: {
       getColor(id){
         switch(id){
-          case 'Fiscal': return 'purple accent-4';
-          case 'Privada': return 'teal accent-3'; 
+          case 'Indigena': return '#9fb441';
+          case 'Privada': return 'purple'; 
           case 'Regimen Especial': return 'blue';
           default: return 'secondary';
         }
       },
       showDialog(){
-        this.mode = 'Crear';
-        this.universidad.institucioneducativa = '';
         this.cDialog = true;
+        this.mode = 'Crear';
+        this.universidad = {
+          id: '',
+          idDepartamento: '',
+          idProvincia: '',
+          idSeccion: '',
+          idDistrito: '',
+          zona: '',
+          direccion: '',
+
+          estadoinstitucion_tipo_id: '',
+          dependencia_tipo_id: '',
+          institucioneducativa: '',
+          fecha_creacion: '',
+
+          telefonos: '',
+          fax: '',
+          email: '',
+          sitio_web: '',
+          decreto_supremo: '',
+          fecha_decreto_supremo: '',
+          tipoSede: 'sede',
+          iduniversidadSede: ''
+        }
+      
         this.getDepartamentos();
         this.getEstados();
         this.getDependencias();
         this.getSedes();
         this.paso = 1;
+        this.$refs.form1.reset()
       },
       getList(){
         axios.get('http://localhost:3000/universidad').then(response => {
@@ -513,32 +576,16 @@
         })
       },
       validarFormulario1(){
-        console.log('validando formulario 1');
-        this.$refs.form1.validate();
-        if(!this.validForm1){
-          return;
+        if(this.$refs.form1.validate()){
+          this.paso = 2;
         }
-        this.paso = 2;
-        console.log('todo ok')
       },
       create(){
-        console.log(this.universidad);
-        this.$refs.form2.validate();
-        if(this.validForm2){
+        if(this.$refs.form2.validate()){
           axios.post('http://localhost:3000/universidad', this.universidad).then(response => {
             if (response.data.status == 'success') {
               this.getList();
-
-              // this.paso = 3;
               this.cDialog = false;
-
-              // this.$swal({
-              //   position: 'top-end',
-              //   icon: 'success',
-              //   title: 'La universidad fue registrada correctamente !',
-              //   showConfirmButton: false,
-              //   timer: 1500
-              // });
               this.$vToastify.success("Registro realizado correctamente");
             }
           }).catch( () => {
@@ -557,8 +604,7 @@
 
         await axios.get(`http://localhost:3000/universidad/${id}`).then(response => {
           if (response.data.status == 'success') {
-            console.log('asdfasdfasdf')
-            
+
             let univData = response.data.data;
             let datos = response.data.datos;
 
@@ -600,33 +646,29 @@
         })
       },
       update(){
-        this.$refs.form2.validate();
-        if(this.validForm2){
+        if(this.$refs.form2.validate()){
+          
           axios.put(`http://localhost:3000/universidad/${this.universidad.id}`, this.universidad).then(response => {
             if (response.data.status == 'success') {
               this.getList();
               this.cDialog = false;
-              // this.$swal({
-              //   position: 'top-end',
-              //   icon: 'success',
-              //   title: 'La universidad fue actualizada correctamente !',
-              //   showConfirmButton: false,
-              //   timer: 1500
-              // });
-              this.$vToastify.success("Registro actualizado correctamente");
+              this.toast("success", "Registro actualizado correctamente");
             }
           }).catch( () => {
-            
-          }).finally( () => {
-            this.cDialog = false;
-          })
+            this.toast("error", "Ocurrio un error al realizar la actualización");
+          });
         }
       },
       // funcion para ir al detalle de la universidad
       ver(sie){
         this.$router.push(`/universidades/gestion/${sie}`);
         // router.push({ path: `/user/${userId}` }) // -> /user/123
-      }
+      },
+      toast(mcolor, mtext) {
+        this.snack.color = mcolor;
+        this.snack.text = mtext;
+        this.snack.state = true;
+      },
     }
   }
 </script>

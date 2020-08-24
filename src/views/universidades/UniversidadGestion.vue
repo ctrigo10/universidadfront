@@ -57,7 +57,7 @@
       <v-card-title>
         Carreras
         <v-spacer></v-spacer>
-        <v-btn outlined color="purple accent-4" dark @click="openDialogCarrera">Nueva carrera</v-btn>
+        <v-btn color="primary" dark @click="openDialogCarrera">Nueva carrera</v-btn>
       </v-card-title>
       <v-card-text>
         <v-data-table
@@ -65,11 +65,24 @@
           :items="carrerasUniversidad"
           :search="search"
           class="elevation-1"
+          v-if="universidad.dependencia_tipo_id != 7"
         >
           <template v-slot:[`item.acciones`]="{ item }">
-            <!-- <v-btn @click="edit(item)" class="btn-accion">
-              <v-icon>mdi-pencil-outline</v-icon>
-            </v-btn> -->
+            <RMCarrera :idUniversidadCarrera="item.id" :universidad="item.nombre"/>
+            <v-btn class="btn-accion" @click="deletedCarrera(item.id)">
+              <v-icon>mdi-delete</v-icon>
+            </v-btn>
+          </template>
+        </v-data-table>
+        
+        <v-data-table
+          :headers="headers2"
+          :items="carrerasUniversidad"
+          :search="search"
+          class="elevation-1"
+          v-if="universidad.dependencia_tipo_id == 7"
+        >
+          <template v-slot:[`item.acciones`]="{ item }">
             <RMCarrera :idUniversidadCarrera="item.id" :universidad="item.nombre"/>
             <v-btn class="btn-accion" @click="deletedCarrera(item.id)">
               <v-icon>mdi-delete</v-icon>
@@ -112,31 +125,45 @@
         <v-card-actions>
           <v-spacer></v-spacer>
             <v-btn
-              color="purple accent-4"
-              text
+              color="secondary"
+              @click="dialogCarrera = false"
+            >
+              Cancelar
+            </v-btn>
+            <v-btn
+              color="primary"
               @click="addCarrera"
               v-show="mode == 'Crear'"
             >
               Registrar
             </v-btn>
             <v-btn
-              color="purple accent-4"
-              text
+              color="primary"
               @click="updateCarrera"
               v-show="mode == 'Editar'"
             >
               Registrar
             </v-btn>
-            <v-btn
-              color="red"
-              text
-              @click="dialogCarrera = false"
-            >
-              Cancelar
-            </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <v-snackbar
+      v-model="snack.state"
+      :top="'top'"
+      :right="'right'"
+      :color="snack.color"
+      :multi-line="snack.mode === 'multi-line'"
+      :timeout="2500"
+      :vertical="snack.mode === 'vertical'"
+    >
+      <v-icon v-if="snack.color == 'success'">mdi-check</v-icon>
+      <v-icon v-if="snack.color == 'info'">mdi-information-outline</v-icon>
+      <v-icon v-if="snack.color == 'warning'">mdi-alert-outline</v-icon>
+      <v-icon v-if="snack.color == 'error'">mdi-information-outline</v-icon>
+      {{ snack.text }}
+    </v-snackbar>
+
   </div>
 </template>
 <script>
@@ -214,6 +241,15 @@ export default {
       // { text: 'Fecha', value: 'fecha'},
       { text: 'Acciones', value: 'acciones', sortable: false, align: 'end'}
     ],
+    headers2: [
+      { text: 'Unidad Académica', sortable: false, value: 'unidad_academica'},
+      { text: 'Carrera o Especialidad Académica', sortable: false, value: 'nombre'},
+      // { text: 'Grado Académico', value: 'gradoAcademico'},
+      // { text: 'Duración', value: 'duracion'},
+      // { text: 'Nro. Resolución', value: 'nroResolucion'},
+      // { text: 'Fecha', value: 'fecha'},
+      { text: 'Acciones', value: 'acciones', sortable: false, align: 'end'}
+    ],
 
     carrera: {
       institucioneducativa_id: '',
@@ -223,7 +259,15 @@ export default {
 
     mode: '',
 
-    dialogCarrera: false
+    dialogCarrera: false,
+
+    snack: {
+      state: false,
+      color: "success",
+      mode: "",
+      timeout: 3000,
+      text: ""
+    }
   }),
   mounted(){
     this.idUniversidad = this.$route.params.sie;
@@ -293,9 +337,13 @@ export default {
         this.getCarrerasUniversidad();
         this.dialogCarrera = false;
         console.log(response)
-        this.$vToastify.success("Carrera agregada correctamente");
-      }).catch(() => {
-        this.$vToastify.warning("La carrera ya esta asignada");
+        this.toast("success", "Registro realizado correctamente");
+      }).catch((e) => {
+        if (e.response.status === 500) {
+          this.toast("error", "Ocurrio un error al eliminar el registro");
+        }else{
+          this.toast("error", e.response.data.msg);
+        }
       })
     },
     deletedCarrera(id){
@@ -309,11 +357,16 @@ export default {
       }).then((result) => {
         if (result.value) {
           axios.delete('http://localhost:3000/carreraUni/'+id).then(response => {
-            console.log(response);
-            this.getCarrerasUniversidad();
-            this.$vToastify.success("La carrera fue eliminada correctamente");
-          }).catch(() => {
-            this.$vToastify.warning("No se pudo eliminar la carrera");
+            if (response.data.status == 'success') {
+              this.getCarrerasUniversidad();
+              this.toast("success", "Registro eliminado correctamente");
+            }
+          }).catch((e) => {
+            if (e.response.status === 500) {
+              this.toast("error", "Ocurrio un error al eliminar el registro");
+            }else{
+              this.toast("error", e.response.data.msg);
+            }
           })
         }
       });
@@ -323,17 +376,23 @@ export default {
     },
     seleccionarUA(unidadAcademicaId){
       this.carrera.unidad_academica_id = unidadAcademicaId;
-    }
+    },
+    toast(mcolor, mtext) {
+      this.snack.color = mcolor;
+      this.snack.text = mtext;
+      this.snack.state = true;
+    },
   }
 }
 </script>
 <style scope>
   .titulo {
     /* font-size: 1.2em; */
+    color: rgba(9, 1, 46, 0.481);
   }
   h5 {
     font-size: 1.1em;
     min-height: 30px;
-    color: purple;
+    color: rgba(9, 1, 46, 0.781);
   }
 </style>

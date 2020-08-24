@@ -17,8 +17,9 @@
               <v-img
                 class="imagen-universidad"
                 height="150px"
-                src="c:/node/universidades/universidadback/public/universidades/imagen/img-1597758838687.png"
+                :src="universidad.imagen"
                 aspect-ratio="1"
+                contain
               ></v-img>
               <v-card-title class="pb-0">{{universidad.institucioneducativa}}</v-card-title>
             </v-card>
@@ -60,12 +61,12 @@ export default {
     universidadSeleccionada: '',
     carreras: [],
     headers: [
-      { text: 'Carrera o Especialidad Académica', sortable: false, value: 'ttec_carrera_tipo.nombre'},
+      { text: 'Carrera o Especialidad Académica', sortable: false, value: 'nombre'},
       // { text: 'Grado Académico', value: 'gradoAcademico'},
       // { text: 'Duración', value: 'duracion'},
       // { text: 'Nro. Resolución', value: 'nroResolucion'},
       // { text: 'Fecha', value: 'fecha'},
-      { text: 'Acciones', value: 'acciones', sortable: false, align: 'end'}
+      // { text: 'Acciones', value: 'acciones', sortable: false, align: 'end'}
     ],
   }),
   mounted(){
@@ -91,7 +92,9 @@ export default {
 </script>
 <style scope>
   .imagen-universidad {
-    background-color: rgb(128, 0, 128, 0.05);
+    /* background-color: rgb(128, 0, 128, 0.05); */
+    width: auto !important;
+
   }
   .card-universidad > .v-card__title{
     color: purple;
