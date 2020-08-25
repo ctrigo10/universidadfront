@@ -64,7 +64,7 @@
               <v-row no-gutters>
                 <v-col class="d-flex" cols="12" sm="12" v-if="mode == 'Crear'">
                   <v-select
-                    v-model="universidad.idDepartamento"
+                    v-model="universidad.iddepartamento"
                     :items="departamentos"
                     item-text="lugar"
                     item-value="id"
@@ -78,7 +78,7 @@
                 </v-col>
                 <v-col class="d-flex" cols="12" sm="12" v-if="mode == 'Crear'">
                   <v-select
-                    v-model="universidad.idDistrito"
+                    v-model="universidad.iddistrito"
                     :items="distritos"
                     item-text="distrito"
                     item-value="id"
@@ -92,7 +92,7 @@
                 </v-col>
                 <v-col class="d-flex" cols="12" sm="12" v-if="mode == 'Crear'">
                   <v-select
-                    v-model="universidad.idProvincia"
+                    v-model="universidad.idprovincia"
                     :items="provincias"
                     item-text="lugar"
                     item-value="id"
@@ -106,7 +106,7 @@
                 </v-col>
                 <v-col class="d-flex" cols="12" sm="12" v-if="mode == 'Crear'">
                   <v-select
-                    v-model="universidad.idSeccion"
+                    v-model="universidad.idseccion"
                     :items="secciones"
                     item-text="lugar"
                     item-value="id"
@@ -357,6 +357,7 @@
   </div>
 </template>
 <script>
+  import Servicio from '../../services/general'
   import axios from 'axios';
 
   export default {
@@ -394,10 +395,10 @@
       validForm3: true,
       universidad: {
         id: '',
-        idDepartamento: '',
-        idProvincia: '',
-        idSeccion: '',
-        idDistrito: '',
+        iddepartamento: '',
+        idprovincia: '',
+        idseccion: '',
+        iddistrito: '',
         zona: '',
         direccion: '',
 
@@ -405,8 +406,8 @@
         dependencia_tipo_id: '',
         institucioneducativa_tipo_id: 1,
         institucioneducativa: '',
-        fecha_resolucion: '2020-05-02',
-        nro_resolucion: '123213',
+        // fecha_resolucion: '2020-05-02',
+        // nro_resolucion: '004/2020',
         fecha_creacion: '',
 
         telefonos: '',
@@ -416,7 +417,8 @@
         decreto_supremo: '',
         fecha_decreto_supremo: '',
         tipoSede: 'sede',
-        iduniversidadSede: ''
+        iduniversidadSede: '',
+        observacion: ''
       },
       resolucion: {
         id: '',
@@ -463,10 +465,10 @@
         this.mode = 'Crear';
         this.universidad = {
           id: '',
-          idDepartamento: '',
-          idProvincia: '',
-          idSeccion: '',
-          idDistrito: '',
+          iddepartamento: '',
+          idprovincia: '',
+          idseccion: '',
+          iddistrito: '',
           zona: '',
           direccion: '',
 
@@ -493,14 +495,14 @@
         this.$refs.form1.reset()
       },
       getList(){
-        axios.get('http://localhost:3000/universidad').then(response => {
+        axios.get(Servicio.getServe() + 'universidad').then(response => {
           console.log(response);
           this.universidades = response.data.data;
         })
       },
       getDepartamentos(){
         if (this.departamentos.length == 0) {
-          axios.get('http://localhost:3000/universidad/departamentos/list').then(response => {
+          axios.get(Servicio.getServe() + 'universidad/departamentos/list').then(response => {
             console.log(response);
             this.departamentos = response.data.data;
           }).catch(() => {
@@ -516,7 +518,7 @@
       },
       getDistritos(){
         if (this.universidad.departamento != '') {
-          axios.get(`http://localhost:3000/universidad/distritos/${this.universidad.idDepartamento}`).then(response => {
+          axios.get(Servicio.getServe() + `universidad/distritos/${this.universidad.iddepartamento}`).then(response => {
             console.log(response);
             this.distritos = response.data.data;
           }).catch(() => {
@@ -528,7 +530,7 @@
       },
       getProvincias(){
         if (this.universidad.departamento != '') {
-          axios.get(`http://localhost:3000/universidad/provincias/${this.universidad.idDepartamento}`).then(response => {
+          axios.get(Servicio.getServe() + `universidad/provincias/${this.universidad.iddepartamento}`).then(response => {
             console.log(response);
             this.provincias = response.data.data;
           }).catch(() => {
@@ -540,7 +542,7 @@
       },
       getSecciones(){
         if (this.universidad.provincia != '') {
-          axios.get(`http://localhost:3000/universidad/secciones/${this.universidad.idProvincia}`).then(response => {
+          axios.get(Servicio.getServe() + `universidad/secciones/${this.universidad.idprovincia}`).then(response => {
             console.log(response);
             this.secciones = response.data.data;
           }).catch(() => {
@@ -551,7 +553,7 @@
         }
       },
       getEstados(){
-        axios.get('http://localhost:3000/universidad/estados/list').then(response => {
+        axios.get(Servicio.getServe() + 'universidad/estados/list').then(response => {
           console.log(response);
           this.estados = response.data.data;
         }).catch(() => {
@@ -561,7 +563,7 @@
         });
       },
       getDependencias(){
-        axios.get('http://localhost:3000/universidad/dependencias/list').then(response => {
+        axios.get(Servicio.getServe() + 'universidad/dependencias/list').then(response => {
           console.log(response);
           this.dependencias = response.data.data;
         }).catch(() => {
@@ -571,7 +573,7 @@
         });
       },
       getSedes(){
-        axios.get('http://localhost:3000/universidad/sedes/list').then(response => {
+        axios.get(Servicio.getServe() + 'universidad/sedes/list').then(response => {
           this.sedes = response.data.data;
         })
       },
@@ -582,14 +584,14 @@
       },
       create(){
         if(this.$refs.form2.validate()){
-          axios.post('http://localhost:3000/universidad', this.universidad).then(response => {
+          axios.post(Servicio.getServe() + 'universidad', this.universidad).then(response => {
             if (response.data.status == 'success') {
               this.getList();
               this.cDialog = false;
-              this.$vToastify.success("Registro realizado correctamente");
+              this.toast("success", "Registro realizado correctamente");
             }
           }).catch( () => {
-            
+            this.toast("error", "Ocurrio un error al realizar el registro");
           }).finally( () => {
             
           })
@@ -602,7 +604,7 @@
         this.getSedes();
         this.paso = 1;
 
-        await axios.get(`http://localhost:3000/universidad/${id}`).then(response => {
+        await axios.get(Servicio.getServe() + `universidad/${id}`).then(response => {
           if (response.data.status == 'success') {
 
             let univData = response.data.data;
@@ -612,10 +614,10 @@
             // console.log(datos)
 
             this.universidad.id = univData.id;
-            this.universidad.idDepartamento = '';
-            this.universidad.idProvincia = '';
-            this.universidad.idSeccion = '';
-            this.universidad.idDistrito = '';
+            this.universidad.iddepartamento = '';
+            this.universidad.idprovincia = '';
+            this.universidad.idseccion = '';
+            this.universidad.iddistrito = '';
             this.universidad.zona = univData.jurisdiccion_geografica.zona;
             this.universidad.direccion = univData.jurisdiccion_geografica.direccion;
 
@@ -648,7 +650,7 @@
       update(){
         if(this.$refs.form2.validate()){
           
-          axios.put(`http://localhost:3000/universidad/${this.universidad.id}`, this.universidad).then(response => {
+          axios.put(Servicio.getServe() + `universidad/${this.universidad.id}`, this.universidad).then(response => {
             if (response.data.status == 'success') {
               this.getList();
               this.cDialog = false;
@@ -672,6 +674,3 @@
     }
   }
 </script>
-
-alegra sans
-roboto

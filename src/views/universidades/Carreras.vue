@@ -62,6 +62,7 @@
                     v-model="carrera.nombre"
                     :rules="[v => !!v || 'El nombre es requerido']"
                     filled
+                    @keyup.enter="(event) => event.preventDefault()"
                   ></v-text-field>
                   </v-col>
                 </v-row>
@@ -115,6 +116,7 @@
   </div>
 </template>
 <script>
+  import Servicio from '../../services/general'
   import axios from 'axios';
   import Alerta from '../../components/universidades/Alerta'
 
@@ -179,14 +181,14 @@
         // this.$refs.form.resetValidation();
       },
       getList(){
-        axios.get('http://localhost:3000/carrera').then(response => {
+        axios.get(Servicio.getServe() + 'carrera').then(response => {
           console.log(response);
           this.carreras = response.data.data;
         })
       },
       create(){
         if (this.$refs.form.validate()) {
-          axios.post('http://localhost:3000/carrera', this.carrera).then(response => {
+          axios.post(Servicio.getServe() + 'carrera', this.carrera).then(response => {
             if (response.data.status == 'success') {
               // this.$vToastify.success("Registro realizado correctamente");
               this.getList();
@@ -211,7 +213,7 @@
       },
       update(){
         if (this.$refs.form.validate()) {
-          axios.put('http://localhost:3000/carrera/'+this.carrera.id, this.carrera).then(response => {
+          axios.put(Servicio.getServe() + 'carrera/'+this.carrera.id, this.carrera).then(response => {
             if (response.data.status == 'success') {
               this.getList();
               this.cDialog = false;
@@ -234,7 +236,7 @@
           cancelButtonText: 'Cancelar'
         }).then((result) => {
           if (result.value) {
-            axios.delete('http://localhost:3000/carrera/'+id).then(response => {
+            axios.delete(Servicio.getServe() + 'carrera/'+id).then(response => {
               if (response.data.status == 'success') {
                 this.getList();
                 this.toast("success", "Registro eliminado correctamente");

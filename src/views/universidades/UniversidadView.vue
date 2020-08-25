@@ -108,7 +108,7 @@ main{
 }
 
 .u-container{
-  padding: 25px;
+  padding: 0 25px;
 }
 
 .tarjeta{
@@ -148,7 +148,7 @@ table > tbody > tr{
 }
 
 .btn-accion:hover{
-  background: #AA00FF !important;
+  background: #1976d2 !important;
   color: white !important;
 }
 

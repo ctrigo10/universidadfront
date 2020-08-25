@@ -167,6 +167,7 @@
   </div>
 </template>
 <script>
+import Servicio from '../../services/general'
 import axios from 'axios';
 import RMUniversidad from '../../components/universidades/RMUniversidad';
 import RMCarrera from '../../components/universidades/RMCarrera';
@@ -283,7 +284,7 @@ export default {
     },
     getDatosUniversidad(){
       let idUniversidad = this.$route.params.sie;
-      axios.get(`http://localhost:3000/universidad/${idUniversidad}`).then(response => {
+      axios.get(Servicio.getServe() + `universidad/${idUniversidad}`).then(response => {
         if (response.data.status == 'success') {
           let univData = response.data.data;
           let datos = response.data.datos;
@@ -322,18 +323,18 @@ export default {
       });
     },
     getCarrerasUniversidad(){
-      axios.get(`http://localhost:3000/carreraUni/carreraUniversidad/${this.idUniversidad}`).then(response => {
+      axios.get(Servicio.getServe() + `carreraUni/carreraUniversidad/${this.idUniversidad}`).then(response => {
         this.carrerasUniversidad = response.data.data;
       })
     },
     getCarreras(){
-      axios.get(`http://localhost:3000/carrera`).then(response => {
+      axios.get(Servicio.getServe() + `carrera`).then(response => {
         console.log(response.data)
         this.carreras = response.data.data;
       })
     },
     addCarrera(){
-      axios.post(`http://localhost:3000/carreraUni`, this.carrera).then(response => {
+      axios.post(Servicio.getServe() + `carreraUni`, this.carrera).then(response => {
         this.getCarrerasUniversidad();
         this.dialogCarrera = false;
         console.log(response)
@@ -356,7 +357,7 @@ export default {
         cancelButtonText: 'Cancelar'
       }).then((result) => {
         if (result.value) {
-          axios.delete('http://localhost:3000/carreraUni/'+id).then(response => {
+          axios.delete(Servicio.getServe() + 'carreraUni/'+id).then(response => {
             if (response.data.status == 'success') {
               this.getCarrerasUniversidad();
               this.toast("success", "Registro eliminado correctamente");

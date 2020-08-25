@@ -37,9 +37,11 @@
                 <!-- <router-link
                   to="http://localhost:3000/{{item.path}}"
                 > -->
-                  <v-btn class="btn-accion">
+                  {{host + item.path}}
+                  <a :href="host + item.path" target="_blank" ><v-icon>mdi-file</v-icon></a>
+                  <!-- <v-btn class="btn-accion" :to="item.path">
                     <v-icon>mdi-file</v-icon>
-                  </v-btn>
+                  </v-btn> -->
                 <v-btn @click="edit(item)" class="btn-accion">
                   <v-icon>mdi-pencil-outline</v-icon>
                 </v-btn>
@@ -86,7 +88,7 @@
                       <template v-slot:activator="{ on, attrs }">
                         <v-text-field
                           v-model="resolucion.fecha"
-                          label="Fecha Decreto Supremo"
+                          label="Fecha R.M."
                           prepend-icon="mdi-calendar"
                           placeholder="aaa/mm/dd"
                           readonly
@@ -169,6 +171,7 @@
   </span>
 </template>
 <script>
+import Servicio from '../../services/general'
 import axios from 'axios'
 export default {
   name: 'rm-carrera',
@@ -202,9 +205,11 @@ export default {
     },
     resoluciones: [],
     regimenesEstudio: [],
-    labelTiempoEstudio: 'Tiempo de estudio'
+    labelTiempoEstudio: 'Tiempo de estudio',
+    host: ''
   }),
   mounted(){
+    this.host = Servicio.getServe();
     this.modo = 'lista';
     this.resolucion.ttec_institucioneducativa_carrera_autorizada_id = this.idUniversidadCarrera;
     this.getResoluciones();
@@ -215,13 +220,13 @@ export default {
       this.rmdialog = false;
     },
     getResoluciones(){
-      axios.get(`http://localhost:3000/carreraUni/resolucionCarrera/${this.idUniversidadCarrera}`).then(response => {
+      axios.get(Servicio.getServe() + `carreraUni/resolucionCarrera/${this.idUniversidadCarrera}`).then(response => {
         this.resoluciones = response.data.data;
         console.log(this.resoluciones)
       });
     },
     getRegimenesEstudio(){
-      axios.get(`http://localhost:3000/carreraUni/regimenEstudio/list`).then(response => {
+      axios.get(Servicio.getServe() + `carreraUni/regimenEstudio/list`).then(response => {
         this.regimenesEstudio = response.data.data;
       });
     },
@@ -245,7 +250,7 @@ export default {
         data.append('carga_horaria', 0);
         data.append('file', this.resolucion.file);
   
-        axios.post(`http://localhost:3000/carreraUni/resolucionCarrera`, data).then(response => {
+        axios.post(Servicio.getServe() + `carreraUni/resolucionCarrera`, data).then(response => {
           if (response.data.status == 'success') {
             console.log('Registrado')
             this.getResoluciones();
@@ -256,8 +261,8 @@ export default {
     },
     edit(item){
       this.resolucion.id = item.id;
-      this.resolucion.ttec_institucioneducativa_carrera_autorizada_id = item.ttec_institucioneducativa_carrera_autorizada_id;
-      this.resolucion.ttec_regimen_estudio_tipo_id = item.ttec_regimen_estudio_tipo_id;
+      // this.resolucion.ttec_institucioneducativa_carrera_autorizada_id = item.ttec_institucioneducativa_carrera_autorizada_id;
+      this.resolucion.ttec_regimen_estudio_tipo_id = item.regimen_estudio_id;
       this.resolucion.descripcion = item.descripcion;
       this.resolucion.numero = item.numero;
       this.resolucion.fecha = item.fecha;
@@ -279,7 +284,7 @@ export default {
         data.append('carga_horaria', this.resolucion.carga_horaria);
         data.append('file', this.resolucion.file);
 
-        axios.put(`http://localhost:3000/carreraUni/resolucionCarrera/${this.resolucion.id}`, data).then(response => {
+        axios.put(Servicio.getServe() + `carreraUni/resolucionCarrera/${this.resolucion.id}`, data).then(response => {
           if (response.data.status == 'success') {
             console.log('Registrado')
             this.getResoluciones();
@@ -299,7 +304,7 @@ export default {
         cancelButtonText: 'Cancelar'
       }).then((result) => {
         if (result.value) {
-          axios.delete(`http://localhost:3000/carreraUni/resolucionCarrera/${id}`).then(response => {
+          axios.delete(Servicio.getServe() + `carreraUni/resolucionCarrera/${id}`).then(response => {
             if (response.data.status == 'success') {
               console.log('Eliminado')
               this.getResoluciones();
