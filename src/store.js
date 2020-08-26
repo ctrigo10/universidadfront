@@ -1,5 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import Convocatorias from '@/store/becas/Convocatorias'
+import BecasUtils from '@/store/becas/BecasUtils'
 // import axios from "axios";
 // import Service from "./services/general";
 
@@ -51,4 +53,9 @@ export default new Vuex.Store({
     isAuthenticated: (state) => !!state.token,
     authStatus: (state) => state.status,
   },
+
+  modules:{
+    Convocatorias,
+    BecasUtils,
+  }
 });
