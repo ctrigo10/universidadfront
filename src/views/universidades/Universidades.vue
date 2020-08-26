@@ -36,6 +36,9 @@
             </v-chip>
           </template>
           <template v-slot:[`item.acciones`]="{ item }">
+            <v-btn class="btn-accion">
+              <v-icon>mdi-file</v-icon>
+            </v-btn>
             <v-btn class="btn-accion" @click="edit(item.id)">
               <v-icon>mdi-square-edit-outline</v-icon>
             </v-btn>
@@ -153,6 +156,7 @@
                     :mandatory="false" 
                     row
                     :rules="[v => !!v || 'El tipo es requerido']"
+                    @change="cambiarTipoSede"
                   >
                     <v-radio label="Sede" value="sede"></v-radio>
                     <v-radio label="Sub Sede" value="subsede"></v-radio>
@@ -206,16 +210,56 @@
                     :items="dependencias"
                     item-text="dependencia"
                     item-value="id"
-                    label="Dependencia"
+                    label="Tipo"
                     placeholder="Seleccionar..."
                     filled
                     dense
                     :rules="[v => !!v || 'La dependencia es requerida']"
                   ></v-select>
+
+                  <v-text-field
+                    v-model="universidad.rector"
+                    label="Rector"
+                    placeholder="Nombre completo"
+                    filled
+                    v-if="universidad.tipoSede == 'sede'"
+                  ></v-text-field>
+                  <v-text-field
+                    v-model="universidad.vicerector"
+                    label="Vice Rector"
+                    placeholder="Nombre completo"
+                    filled
+                  ></v-text-field>
+
+
+                  <v-menu
+                    v-model="menu2"
+                    :close-on-content-click="false"
+                    :nudge-right="40"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="290px"
+                    v-if="universidad.tipoSede == 'subsede'"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field
+                        v-model="universidad.fecha_creacion"
+                        label="Fecha de Creación"
+                        prepend-icon="mdi-calendar"
+                        placeholder="dd/mm/aaaa"
+                        readonly
+                        v-bind="attrs"
+                        v-on="on"
+                        filled
+                        :rules="[v => !!v || 'La fecha de creación es requerida']"
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker v-model="universidad.fecha_creacion" @input="menu2 = false"></v-date-picker>
+                  </v-menu>
                 </v-col>
               </v-row>
-              <v-row>
-                <v-col cols="12" sm="4">
+              <v-row v-if="universidad.tipoSede == 'sede'">
+                <v-col cols="12" sm="4" >
                   <v-text-field v-model="universidad.decreto_supremo" label="Decreto Supremo" placeholder="Nro. del decreto" filled dense></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="4">
@@ -418,7 +462,9 @@
         fecha_decreto_supremo: '',
         tipoSede: 'sede',
         iduniversidadSede: '',
-        observacion: ''
+        observacion: '',
+        rector: '',
+        vicerector: ''
       },
       resolucion: {
         id: '',
@@ -484,7 +530,10 @@
           decreto_supremo: '',
           fecha_decreto_supremo: '',
           tipoSede: 'sede',
-          iduniversidadSede: ''
+          iduniversidadSede: '',
+          observacion: '',
+          rector: '',
+          vicerector: ''
         }
       
         this.getDepartamentos();
@@ -577,6 +626,15 @@
           this.sedes = response.data.data;
         })
       },
+      cambiarTipoSede(){
+        if (this.universidad.tipoSede == 'sede') {
+          // this.universidad.vicerector = '';
+        }else{
+          this.universidad.rector = '';
+          this.universidad.decreto_supremo = '';
+          this.universidad.fecha_decreto_supremo = '';
+        }
+      },
       validarFormulario1(){
         if(this.$refs.form1.validate()){
           this.paso = 2;
@@ -634,9 +692,18 @@
             this.universidad.sitio_web = datos.sitio_web;
             this.universidad.decreto_supremo = datos.decreto_supremo;
             this.universidad.fecha_decreto_supremo = datos.fecha_decreto_supremo;
-            this.universidad.tipoSede = 'sede';
-            this.universidad.iduniversidadSede = '';
+
+            // if (univData.id == univData.sede) {
+              this.universidad.tipoSede = 'sede';
+              this.universidad.iduniversidadSede = '';
+            // }else{
+            //   this.universidad.tipoSede = 'subsede';
+            //   this.universidad.iduniversidadSede = univData.sede;
+            // }
+
             
+            this.universidad.rector = datos.rector;
+            this.universidad.vicerector = datos.vicerector;
 
             this.cDialog = true;
           }

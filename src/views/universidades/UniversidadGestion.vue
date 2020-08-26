@@ -7,10 +7,11 @@
     </v-breadcrumbs>
     <v-card class="tarjeta">
       <v-card-title>
+        <Logo :idUniversidad="universidad.id" :nombreLogo="universidad.logo"/>
         {{universidad.id}} - {{universidad.institucioneducativa}}
         <v-spacer></v-spacer>
         <div>
-          <Logo :idUniversidad="universidad.id" :nombreLogo="universidad.logo"/>
+          
           <!-- <v-btn small @click="universidad.logo = 'img-1597644930474.png'">Cambiar logo</v-btn> -->
           
         </div>
