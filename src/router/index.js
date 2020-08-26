@@ -94,6 +94,37 @@ let paths = [
     ],
   },
 
+  //Becas
+  {
+    path: "/becas",
+    meta: { public: false },
+    name: "becasLayout",
+    redirect: 'becas/universidades',
+    component: () => import(`@/views/becas/layout/BecasLayout.vue`),
+    children: [
+      {
+        path: 'escritorio',
+        name: "becas-escritorio",
+        component: () => import(`@/views/becas/Escritorio.vue`),
+      },
+      {
+        path: 'universidades',
+        name: "becas-universidades",
+        component: () => import(`@/views/becas/Universidades.vue`),
+      },
+      {
+        path: 'seguimiento',
+        name: "becas-seguimiento",
+        component: () => import(`@/views/becas/Seguimiento.vue`),
+      },
+      {
+        path: 'convocatoria',
+        name: "becas-convocatorias",
+        component: () => import(`@/views/becas/Convocatoria.vue`),
+      },
+    ]
+  },
+
   /* {
     path: "/inicio",
     meta: { public: true },

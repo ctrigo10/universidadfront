@@ -1,0 +1,34 @@
+[
+    {
+      "href": "becas-escritorio",
+      "title": "Escritorio",
+      "icon": "mdi-home",
+      "params": {}
+    },
+    {
+      "href": "becas-universidades",
+      "title": "Universidades",
+      "icon": "mdi-handshake",
+      "params": {}
+    }, {
+      "href": "becas-seguimiento",
+      "title": "Seguimiento Beca",
+      "icon": "mdi-layers-search",
+      "permission": "show-affiliate",
+      "params": {}
+    }, {
+      "href": "Ajustes",
+      "title": "Ajustes",
+      "icon": "mdi-cog",
+      "permission": "show-loan",
+      "group": [
+        {
+          "href": "becas-convocatorias",
+          "title": "Conv. y Fechas",
+          "icon": "mdi-calendar-multiple-check ",
+          "permission": "show-loan",
+          "params": {}
+        }
+      ]
+    }
+  ]
