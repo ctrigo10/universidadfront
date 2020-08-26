@@ -36,9 +36,7 @@
             </v-chip>
           </template>
           <template v-slot:[`item.acciones`]="{ item }">
-            <v-btn class="btn-accion">
-              <v-icon>mdi-file</v-icon>
-            </v-btn>
+            <RMUniversidad :idUniversidad="item.id" :universidad="item.institucioneducativa"/>
             <v-btn class="btn-accion" @click="edit(item.id)">
               <v-icon>mdi-square-edit-outline</v-icon>
             </v-btn>
@@ -402,10 +400,14 @@
 </template>
 <script>
   import Servicio from '../../services/general'
+  import RMUniversidad from '../../components/universidades/RMUniversidad'
   import axios from 'axios';
 
   export default {
     name: 'Universidades',
+    components: {
+      RMUniversidad
+    },
     data: () => ({
       breadcrumbs: [
         {

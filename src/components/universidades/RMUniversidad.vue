@@ -14,46 +14,23 @@
           R.M. - {{universidad}}
         </v-card-title>
         <v-card-text>
-          <v-tabs
-            color="purple"
-          >
-            <v-tab @click="modo = 'lista'">Resoluciones registradas</v-tab>
-            <v-tab @click="modo = 'crear'"> Agregar R.M. </v-tab>
-          </v-tabs>
+          <v-btn color="primary" v-if="resoluciones.length == 0 && modo == 'lista'" @click="modo = 'crear'">Agregar</v-btn>
           <div v-show="modo == 'lista'">
-            <v-data-table
-              :headers="headers"
-              :items="resoluciones"
-              :search="search"
-            >
-              <template v-slot:[`item.acciones`]="{ item }">
-                <!-- <a href="{{item.path}}" class="btn-accion" target="_blank">
-                  <v-icon>mdi-file</v-icon>
-                </a> -->
-                <!-- <router-link
-                  to="http://localhost:3000/{{item.path}}"
-                > -->
-                  <v-btn class="btn-accion">
-                    <v-icon>mdi-file</v-icon>
-                  </v-btn>
-                <v-btn @click="edit(item)" class="btn-accion">
-                  <v-icon>mdi-pencil-outline</v-icon>
+            <v-row v-for="(item, index) in resoluciones" :key="index">
+              <v-col cols="12" sm="5">
+                Archivo PDF
+              </v-col>
+              <v-col cols="12" sm="5">
+                <h5>Número</h5>
+                <h5>Fecha</h5>
+                <h5>Descripción</h5>
+                <v-btn
+                  color="primary"
+                >
+                  Editar
                 </v-btn>
-                <v-btn class="btn-accion" @click="deleted(item.id)">
-                  <v-icon>mdi-delete</v-icon>
-                </v-btn>
-              </template>
-            </v-data-table>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn
-                color="red"
-                text
-                @click="closeDialog"
-              >
-                Cerrar
-              </v-btn>
-            </v-card-actions>
+              </v-col>
+            </v-row>
           </div>
           <div v-if="modo == 'crear' || modo == 'editar'">
             <v-form
@@ -94,17 +71,9 @@
                       </template>
                       <v-date-picker v-model="resolucion.fecha_resolucion" @input="menu1 = false"></v-date-picker>
                     </v-menu>
-                    <!-- <v-text-field 
-                      v-model="resolucion.fecha_resolucion" 
-                      label="Fecha" 
-                      placeholder="" 
-                      filled
-                      :rules="[v => !!v || 'La fecha es requerida']"
-                    ></v-text-field> -->
                   </v-col>
                 </v-row>
                 <v-text-field v-model="resolucion.descripcion" label="Descripción" placeholder="" filled></v-text-field>
-                <!-- <v-file-input accept="image/*" label="Archivo de la R.M." v-model="resolucion.file" filled></v-file-input> -->
                 <v-file-input
                   label="Archivo de la R.M." 
                   v-model="resolucion.file" 
@@ -195,14 +164,15 @@ export default {
         data.append('descripcion', this.resolucion.descripcion);
         data.append('nro_resolucion', this.resolucion.nro_resolucion);
         data.append('fecha_resolucion', this.resolucion.fecha_resolucion);
-        data.append('iduniversidad', this.idUniversidad);
+        // data.append('iduniversidad', this.idUniversidad);
         data.append('file', this.resolucion.file);
   
-        axios.post(`http://localhost:3000/universidad/archivoNuevoRM`, data).then(response => {
+        // axios.post(`http://localhost:3000/universidad/archivoNuevoRM`, data).then(response => {
+        axios.put(`http://localhost:3000/universidad/archivoRM/${this.idUniversidad}`, data).then(response => {
           if (response.data.status == 'success') {
             console.log('Registrado')
             this.getResoluciones();
-            this.$vToastify.success("Registro realizado correctamente");
+            this.modo = 'lista';
           }
         });
       }
