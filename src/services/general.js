@@ -9,11 +9,34 @@ export default {
   getBase() {
     return this.getServe() + "prefa/";
   },
-  setToken() {
-    return sessionStorage.setItem("token");
+  setToken(token) {
+    return sessionStorage.setItem("token", token);
   },
   getToken() {
     return "Bearer " + sessionStorage.getItem("token");
+  },
+  removeToken() {
+    return sessionStorage.removeItem("token");
+  },
+  setUser(user) {
+    return sessionStorage.setItem(
+      "tyuia",
+      JSON.stringify({
+        uid: user.id,
+        nombre: user.nombre,
+        paterno: user.paterno,
+        materno: user.materno,
+        roles: user.roles,
+      })
+    );
+  },
+  getUser() {
+    return sessionStorage.getItem("tyuia")
+      ? JSON.parse(sessionStorage.getItem("tyuia"))
+      : null;
+  },
+  removeUser() {
+    return sessionStorage.removeItem("tyuia");
   },
   getHeader() {
     return {

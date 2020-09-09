@@ -8,7 +8,7 @@
     :dark="$vuetify.dark"
   >
     <v-toolbar>
-      <v-img src="../assets/logo-minedu.png" class="logo" />
+      <v-img src="../assets/logo-minedu.png" to="/" class="logo" />
     </v-toolbar>
     <v-list nav dense link>
       <v-subheader>
@@ -17,14 +17,25 @@
         <v-icon @click.stop="draweMini" color="teal">{{ icon_mini }}</v-icon>
       </v-subheader>
       <div v-for="(link, i) in menus" :key="i">
-        <v-list-item v-if="!link.submenu" :to="link.path" active-class="highlighted" exact>
+        <v-list-item
+          v-if="!link.submenu"
+          :to="link.path"
+          active-class="highlighted"
+          exact
+        >
           <v-list-item-icon>
             <v-icon>{{ link.icon }}</v-icon>
           </v-list-item-icon>
           <v-list-item-title v-text="link.text" />
         </v-list-item>
 
-        <v-list-group v-else :key="link.text" no-action :prepend-icon="link.icon" :value="false">
+        <v-list-group
+          v-else
+          :key="link.text"
+          no-action
+          :prepend-icon="link.icon"
+          :value="false"
+        >
           <template v-slot:activator>
             <v-list-item-title>{{ link.text }}</v-list-item-title>
           </template>

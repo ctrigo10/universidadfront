@@ -99,30 +99,30 @@ let paths = [
     path: "/becas",
     meta: { public: false },
     name: "becasLayout",
-    redirect: 'becas/universidades',
+    redirect: "becas/universidades",
     component: () => import(`@/views/becas/layout/BecasLayout.vue`),
     children: [
       {
-        path: 'escritorio',
+        path: "escritorio",
         name: "becas-escritorio",
         component: () => import(`@/views/becas/Escritorio.vue`),
       },
       {
-        path: 'universidades',
+        path: "universidades",
         name: "becas-universidades",
         component: () => import(`@/views/becas/Universidades.vue`),
       },
       {
-        path: 'seguimiento',
+        path: "seguimiento",
         name: "becas-seguimiento",
         component: () => import(`@/views/becas/Seguimiento.vue`),
       },
       {
-        path: 'convocatoria',
+        path: "convocatoria",
         name: "becas-convocatorias",
         component: () => import(`@/views/becas/Convocatoria.vue`),
       },
-    ]
+    ],
   },
 
   /* {
@@ -175,7 +175,10 @@ router.beforeEach((to, from, next) => {
       next();
       return;
     } */
-    next("/autenticacion");
+    /* if (ruta == "prefacultad") {
+      next("/prefacultad");
+    } */
+    next("/");
   } else {
     next();
   }
