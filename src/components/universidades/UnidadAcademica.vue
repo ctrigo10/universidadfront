@@ -138,7 +138,7 @@
 import axios from 'axios'
 export default {
   name: 'unidad-academica',
-  props: ['idUniversidad'],
+  props: ['idUniversidad', 'unidad_academica_id'],
   data: () => ({
     newDialog: false,
     editDialog: false,
@@ -166,6 +166,10 @@ export default {
   mounted(){
     this.getUnidadesAcademicas();
     this.unidadAcademica.institucioneducativa_id = this.idUniversidad;
+    this.unidadSeleccionada = this.unidad_academica_id;
+  },
+  updated(){
+    this.unidadSeleccionada = this.unidad_academica_id;
   },
   methods: {
     openNewDialog(){

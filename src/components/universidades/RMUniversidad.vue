@@ -1,34 +1,52 @@
 <template>
   <span>
-    <v-btn class="btn-accion" @click="rmdialog = true">
-      <v-icon>mdi-file</v-icon>
-    </v-btn>
+    <v-tooltip top>
+      <template v-slot:activator="{on, attrs}">    
+        <v-btn class="btn-accion" @click="rmdialog = true" v-bind="attrs" v-on="on">
+          <v-icon>mdi-file</v-icon>
+        </v-btn>
+      </template>
+      <span>Resolucion ministerial</span>
+    </v-tooltip>
 
     <v-dialog
       v-model="rmdialog"
-      max-width="700px"
+      max-width="600px"
       transition="dialog-transition"
+      :persistent="getPersistent"
     >
-      <v-card>
+      <v-card class="card-resolucion">
         <v-card-title>
-          R.M. - {{universidad}}
+          Resolución Ministerial - <small>{{universidad}}</small>
         </v-card-title>
         <v-card-text>
-          <v-btn color="primary" v-if="resoluciones.length == 0 && modo == 'lista'" @click="modo = 'crear'">Agregar</v-btn>
-          <div v-show="modo == 'lista'">
-            <v-row v-for="(item, index) in resoluciones" :key="index">
+          <v-btn class="btn-agregar" color="primary" v-if="resolucion.id == '' && modo == 'lista'" @click="modo = 'crear'">Agregar</v-btn>
+          <div v-if="resolucion.id != '' && modo == 'lista'">
+            <v-row>
               <v-col cols="12" sm="5">
-                Archivo PDF
+                <a :href="resolucion.archivo" target="_blank">
+                  <div class="archivoRM" :to="resolucion.archivo">
+                    <v-icon class="logo-pdf">mdi-file-pdf</v-icon>
+                  </div>
+                </a>
               </v-col>
               <v-col cols="12" sm="5">
-                <h5>Número</h5>
-                <h5>Fecha</h5>
-                <h5>Descripción</h5>
-                <v-btn
-                  color="primary"
-                >
-                  Editar
-                </v-btn>
+                <div class="texto">
+                  <h4>Número</h4>
+                  {{ resolucion.nro_resolucion }}
+                  <h4>Fecha</h4>
+                  {{resolucion.fecha_resolucion}}
+                  <h4>Descripción</h4>
+                  {{resolucion.descripcion }}
+                </div>
+                <div>
+                  <v-btn
+                    color="primary"
+                    @click="modo = 'editar'"
+                  >
+                    Editar
+                  </v-btn>
+                </div>
               </v-col>
             </v-row>
           </div>
@@ -61,7 +79,7 @@
                           v-model="resolucion.fecha_resolucion"
                           label="Fecha"
                           prepend-icon="mdi-calendar"
-                          placeholder="aaa/mm/dd"
+                          placeholder="aaaa/mm/dd"
                           readonly
                           v-bind="attrs"
                           v-on="on"
@@ -85,7 +103,7 @@
                 <v-spacer></v-spacer>
                 <v-btn
                   color="secondary"
-                  @click="closeDialog"
+                  @click="cancelar"
                 >
                   Cancelar
                 </v-btn>
@@ -115,6 +133,7 @@
   </span>
 </template>
 <script>
+import Servicio from '../../services/general'
 import axios from 'axios'
 export default {
   name: 'rm-universidad',
@@ -125,7 +144,7 @@ export default {
   data: () => ({
     rmdialog: false,
     modo: 'lista',
-    meni1: false,
+    menu1: false,
     search: '',
     headers: [
       { text: 'Número', value: 'numero'},
@@ -139,24 +158,47 @@ export default {
       descripcion: '',
       nro_resolucion: '',
       fecha_resolucion: '',
-      file: ''
+      file: '',
+      archivo: ''
     },
     resoluciones: [],
   }),
+  computed: {
+    getPersistent(){
+      if (this.modo == 'lista') {
+        return false;
+      }
+      return true;
+    }
+  },
   mounted(){
-    this.modo = 'lista';
+    // this.modo = 'lista';
     this.resolucion.idUniversidad = this.idUniversidad;
-    this.getResoluciones();
+    this.getResolucion();
   },
   methods: {
     closeDialog(){
       this.rmdialog = false;
     },
-    getResoluciones(){
-      // axios.get(`http://localhost:3000/carreraUni/resolucionCarrera/${this.idUniversidad}`).then(response => {
-      //   this.resoluciones = response.data.data;
-      //   console.log(this.resoluciones)
-      // });
+    getResolucion(){
+        axios.get(`http://localhost:3000/universidad/verArchivo/${this.idUniversidad}`).then(response => {
+          if (response.data.status == 'success') {
+            this.resolucion.id = response.data.data.id;
+            this.resolucion.idUniversidad = response.data.data.institucioneducativa_id;
+            this.resolucion.descripcion = response.data.data.descripcion;
+            this.resolucion.nro_resolucion = response.data.data.nro_resolucion;
+            this.resolucion.fecha_resolucion = response.data.data.fecha_resolucion;
+            this.resolucion.file = Servicio.getServe() + response.data.data.archivo;
+            this.resolucion.archivo = Servicio.getServe() + response.data.data.archivo;
+  
+            console.log(this.resolucion)
+          }
+        }).catch((e) => {
+          console.log(e)
+        });
+    },
+    cancelar(){
+      this.modo = 'lista';
     },
     create(){
       if (this.$refs.formRMU.validate()) {
@@ -164,14 +206,13 @@ export default {
         data.append('descripcion', this.resolucion.descripcion);
         data.append('nro_resolucion', this.resolucion.nro_resolucion);
         data.append('fecha_resolucion', this.resolucion.fecha_resolucion);
-        // data.append('iduniversidad', this.idUniversidad);
+        data.append('iduniversidad', this.idUniversidad);
         data.append('file', this.resolucion.file);
   
-        // axios.post(`http://localhost:3000/universidad/archivoNuevoRM`, data).then(response => {
-        axios.put(`http://localhost:3000/universidad/archivoRM/${this.idUniversidad}`, data).then(response => {
+        axios.post(`http://localhost:3000/universidad/archivoNuevoRM`, data).then(response => {
           if (response.data.status == 'success') {
             console.log('Registrado')
-            this.getResoluciones();
+            this.getResolucion();
             this.modo = 'lista';
           }
         });
@@ -192,13 +233,12 @@ export default {
         data.append('descripcion', this.resolucion.descripcion);
         data.append('nro_resolucion', this.resolucion.nro_resolucion);
         data.append('fecha_resolucion', this.resolucion.fecha_resolucion);
-        data.append('iduniversidad', this.idUniversidad);
         data.append('file', this.resolucion.file);
 
-        axios.put(`http://localhost:3000/carreraUni/archivoNuevoRM/${this.resolucion.id}`, data).then(response => {
+        axios.put(`http://localhost:3000/universidad/archivoRM/${this.idUniversidad}`, data).then(response => {
           if (response.data.status == 'success') {
             console.log('Registrado')
-            this.getResoluciones();
+            this.getResolucion();
             this.modo = 'lista';
             this.$vToastify.success("Registro actualizado correctamente");
           }
@@ -218,7 +258,7 @@ export default {
           axios.delete(`http://localhost:3000/carreraUni/archivoNuevoRM/${id}`).then(response => {
             if (response.data.status == 'success') {
               console.log('Eliminado')
-              this.getResoluciones();
+              this.getResolucion();
               this.modo = 'lista';
               this.$vToastify.success("Registro eliminado correctamente");
             }
@@ -229,3 +269,41 @@ export default {
   },
 }
 </script>
+<style scope>
+  small {
+    color: #CCCCCC;
+  }
+  .card-resolucion {
+    min-height: 300px;
+  }
+  .btn-agregar{
+    padding-top: 30px;
+  }
+  .archivoRM{
+    background: #EEEEEE;
+    min-height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+  .archivoRM:hover{
+    background: #DDDDDD;
+  }
+  a {
+    text-decoration: none;
+  }
+
+  .logo-pdf{
+    font-size: 70px !important;
+    color: rgb(248, 73, 73) !important;
+  }
+  .texto{
+    margin-bottom: 15px;
+    font-weight: bold;
+  }
+  h4{
+    font-weight: 300;
+    margin-top: 5px;
+  }
+</style>

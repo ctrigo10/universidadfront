@@ -1,74 +1,76 @@
 <template>
-  <div>
-    <!-- <v-img src="http://localhost:3000/universidades/imagen/img-1597759284112.png" class="logo-universidad" @click="logoDialog = false"></v-img> -->
-    <v-img :src="path" class="logo-universidad" @click="logoDialog = true"></v-img>
-    <!-- <v-btn color="success" @click="logo.name = 'img-1597759284112.png'">Cambiar desde logo</v-btn> -->
-    <!-- {{numero}} -->
-    <span style="display:none">{{nombreLogo}} {{logo.name}}</span>
-    <v-dialog
-      v-model="logoDialog"
-      max-width="400px"
-    >
-      <v-card>
-        <v-card-text>
-          <v-img class="logo-maximizado" src=""></v-img>
-          <v-file-input
-            hide-input="true"
-            prepend-icon="mdi-pencil"
-            class="btn-accion"
-            v-model="logo.file"
-          ></v-file-input>
-          <v-btn class="btn-accion" @click="update"> <v-icon>mdi-pencil</v-icon> </v-btn>
-          <v-btn class="btn-accion"> <v-icon>mdi-delete</v-icon> </v-btn>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
+  <div class="contenido-logo">
+    <v-img class="logo-maximizado" :src="pathLogo" ></v-img>
+    <!-- <v-img class="logo-maximizado" :src="path"></v-img> -->
+    <!-- <v-img v-if="path != ''" class="logo-maximizado" :src="path"></v-img> -->
+
+    <v-btn color="primary" block v-if="!actualizar" @click="actualizar = true"> <v-icon>mdi-pencil</v-icon> Cambiar logo </v-btn>
+    <div v-if="actualizar">
+      <v-form
+        ref="form1"
+        v-model="valid"
+      >  
+        <v-file-input
+          label="Seleccione una imagen"
+          prepend-icon="mdi-pencil"
+          v-model="file"
+          :rules="[v => !!v || 'El archivo es requerido']"
+          @change="preview($event)"
+        ></v-file-input>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="secondary" @click="cancelar">Cancelar</v-btn>
+          <v-btn color="primary" @click="update">Aceptar</v-btn>
+        </v-card-actions>
+      </v-form>
+    </div>
   </div>
 </template>
 <script>
 import axios from 'axios'
 export default {
   name: 'logo',
+  props: ['idUniversidad','logo'],
   data: () => ({
-    logoDialog: false,
     path: '',
-    numero: 0,
-    logo: {
-      name: '',
-      file: ''
-    }
+    actualizar: false,
+    valid: true,
+    file: ''
   }),
-  props: ['idUniversidad','nombreLogo'],
-  updated(){
-    this.logo.name = this.nombreLogo;
-    console.log('editando')
-    this.getLogo();
+  computed: {
+    pathLogo(){
+      if (this.path == '') {
+        if (this.logo == '') {
+          return null;
+        }
+        return this.logo;
+      }else{
+        return this.path;
+      }
+    }
+  },
+  mounted(){
+    this.actualizar = false;
   },
   methods : {
-    aumentar(){
-      this.numero = this.numero + 1;
-      console.log(this.numero)
+    preview(){
+      this.path = URL.createObjectURL(this.file);
     },
-    getLogo(){
-      // axios.get(`http://localhost:3000/universidad/verRutaImg/${this.idUniversidad}`).then(response => {
-      //   console.log(response)
-      // })
-      if (this.logo.name != null && this.logo.name != '') {
-        axios.get(`http://localhost:3000/universidad/imagen/${this.logo.name}`).then(response => {
-          this.path = response.data;
-          console.log(response)
-        })
-      }else{
-        console.log('Nombre vacio')
-      }
+    cancelar(){
+      this.path = '';
+      this.file = '';
+      this.actualizar = false;
     },
     update(){
-      if (this.logo.file != '') {
+      if (this.$refs.form1.validate()) {
         let data = new FormData();
-        data.append('file', this.logo.file)
+        data.append('file', this.file)
         axios.put(`http://localhost:3000/universidad/imagenLogo/${this.idUniversidad}`, data).then(response => {
-          console.log(response);
-          this.getLogo();
+          if (response.data.status == 'success') {
+            this.actualizar = false;
+            this.file = '';
+            this.$emit('recargarLogo', true);
+          }
         }).catch(() => {
           console.log('Error al actualizar el logo');
         })
@@ -81,12 +83,9 @@ export default {
 }
 </script>
 <style scope>
-  .logo-universidad {
-    width: 70px;
-    height: 70px;
-    background-color: #EEEEEE;
-    cursor: pointer;
-  }
+.contenido-logo{
+  padding-top: 20px;
+}
   .logo-maximizado {
     display: block;
     width: 100%;

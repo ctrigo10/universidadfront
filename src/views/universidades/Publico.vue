@@ -17,7 +17,7 @@
               <v-img
                 class="imagen-universidad"
                 height="150px"
-                :src="universidad.imagen"
+                :src="'http://localhost:3000/' + universidad.imagen"
                 aspect-ratio="1"
                 contain
               ></v-img>

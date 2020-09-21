@@ -16,9 +16,9 @@
       <v-btn icon>
         <v-icon>mdi-email</v-icon>
       </v-btn>
-      <v-btn icon>
-        <v-icon>mdi-account</v-icon>
-      </v-btn>
+
+      <Login/>
+
     </v-app-bar>
 
     <v-navigation-drawer
@@ -27,7 +27,7 @@
       class="drawerstyle"
     >
       <div class="logo">
-        <img src="../../assets/minedu.png" alt="" class="logo">
+        <img src="../../../assets/minedu.png" alt="" class="logo">
       </div>
       <v-divider></v-divider>
       <template>
@@ -38,7 +38,7 @@
           elevation="0"
         >
           <v-list dense >
-            <v-list-item-group color="primary">
+            <v-list-item-group color="primary" v-model="itemSeleccionado">
               <v-list-item
                 v-for="(item, i) in items"
                 :key="i"
@@ -75,16 +75,22 @@
 </template>
 
 <script>
+import Login from '../../../components/universidades/Login'
 export default {
   name: 'universidad-view',
+  components: {
+    Login
+  },
   data: () => ({
     items: [
       {icon: 'mdi-map', title: 'Público', path: '/universidades'},
       {icon: 'mdi-home', title: 'Dashboard', path: '/universidades/dashboard'},
       {icon: 'mdi-file', title: 'Carreras', path: '/universidades/carreras'},
       {icon: 'mdi-domain', title: 'Universidades', path: '/universidades/universidades'},
+      {icon: 'mdi-alpha-a-box', title: 'Académico', path: '/universidades/academico'},
     ],
-    menu: true
+    menu: true,
+    itemSeleccionado: ''
   }),
   methods: {
 
@@ -99,7 +105,7 @@ header {
 }
 
 main{
-  background: #F3F6F9 !important;
+  /* background: #F3F6F9 !important; */
 }
 
 .logo{

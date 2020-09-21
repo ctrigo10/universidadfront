@@ -36,13 +36,28 @@
             </v-chip>
           </template>
           <template v-slot:[`item.acciones`]="{ item }">
-            <RMUniversidad :idUniversidad="item.id" :universidad="item.institucioneducativa"/>
-            <v-btn class="btn-accion" @click="edit(item.id)">
-              <v-icon>mdi-square-edit-outline</v-icon>
-            </v-btn>
-            <v-btn class="btn-accion" @click="ver(item.id)">
-              <v-icon>mdi-eye</v-icon>
-            </v-btn>
+            
+            <RMUniversidad
+              :idUniversidad="item.id" 
+              :universidad="item.institucioneducativa"
+            />
+            
+            <v-tooltip top>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn class="btn-accion" @click="edit(item.id)" v-bind="attrs" v-on="on">
+                  <v-icon>mdi-square-edit-outline</v-icon>
+                </v-btn>
+              </template>
+              <span>Editar</span>
+            </v-tooltip>
+            <v-tooltip top>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn class="btn-accion" @click="ver(item.id)" v-bind="attrs" v-on="on">
+                  <v-icon>mdi-eye</v-icon>
+                </v-btn>
+              </template>
+              <span>Ver detalles</span>
+            </v-tooltip>
           </template>
         </v-data-table>
       </v-card-text>
@@ -669,6 +684,7 @@
 
             let univData = response.data.data;
             let datos = response.data.datos;
+            let sede = response.data.dataSede.sede;
 
             // console.log(univData)
             // console.log(datos)
@@ -695,15 +711,14 @@
             this.universidad.decreto_supremo = datos.decreto_supremo;
             this.universidad.fecha_decreto_supremo = datos.fecha_decreto_supremo;
 
-            // if (univData.id == univData.sede) {
-              this.universidad.tipoSede = 'sede';
+            if (sede == univData.id) {
+              this.universidad.tipoSede = 'sede'
               this.universidad.iduniversidadSede = '';
-            // }else{
-            //   this.universidad.tipoSede = 'subsede';
-            //   this.universidad.iduniversidadSede = univData.sede;
-            // }
+            }else{
+              this.universidad.tipoSede = 'subsede';
+              this.universidad.iduniversidadSede = sede;
+            }
 
-            
             this.universidad.rector = datos.rector;
             this.universidad.vicerector = datos.vicerector;
 

@@ -1,8 +1,13 @@
 <template>
   <span>
-    <v-btn class="btn-accion" @click="rmdialog = true">
-      <v-icon>mdi-file</v-icon>
-    </v-btn>
+    <v-tooltip top>
+      <template v-slot:activator="{attrs, on}">
+        <v-btn class="btn-accion" @click="rmdialog = true" v-bind="attrs" v-on="on">
+          <v-icon>mdi-file</v-icon>
+        </v-btn>
+      </template>
+      <span>Resoluciones Ministeriales</span>
+    </v-tooltip>
 
     <v-dialog
       v-model="rmdialog"
@@ -11,7 +16,7 @@
     >
       <v-card>
         <v-card-title>
-          R.M. - {{universidad}} - {{idUniversidadCarrera}}
+          R.M. - {{universidad}} - {{denominacion_titulo_id}}
         </v-card-title>
         <v-card-text>
           <!-- <v-row>
@@ -37,17 +42,32 @@
                 <!-- <router-link
                   to="http://localhost:3000/{{item.path}}"
                 > -->
-                  {{host + item.path}}
-                  <a :href="host + item.path" target="_blank" ><v-icon>mdi-file</v-icon></a>
+                  <!-- {{host + item.archivo}} -->
                   <!-- <v-btn class="btn-accion" :to="item.path">
                     <v-icon>mdi-file</v-icon>
                   </v-btn> -->
-                <v-btn @click="edit(item)" class="btn-accion">
-                  <v-icon>mdi-pencil-outline</v-icon>
-                </v-btn>
-                <v-btn class="btn-accion" @click="deleted(item.id)">
-                  <v-icon>mdi-delete</v-icon>
-                </v-btn>
+                <v-tooltip top>
+                  <template v-slot:activator="{attrs, on}">
+                    <a :href="host + item.archivo" target="_blank" v-bind="attrs" v-on="on"><v-icon>mdi-file</v-icon></a>
+                  </template>
+                  <span>Ver archivo</span>
+                </v-tooltip>
+                <v-tooltip top>
+                  <template v-slot:activator="{attrs, on}">
+                    <v-btn @click="edit(item)" class="btn-accion" v-bind="attrs" v-on="on">
+                      <v-icon>mdi-pencil-outline</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>Editar</span>
+                </v-tooltip>
+                <v-tooltip top>
+                  <template v-slot:activator="{attrs, on}">
+                    <v-btn class="btn-accion" @click="deleted(item.id)" v-bind="attrs" v-on="on">
+                      <v-icon>mdi-delete</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>Eliminar</span>
+                </v-tooltip>
               </template>
             </v-data-table>
             <v-card-actions>
@@ -70,7 +90,7 @@
                   <v-col cols="12" sm="6" ma-1>
                     <v-text-field
                       v-model="resolucion.numero" 
-                      label="Número" 
+                      label="Número de Resolución Ministerial" 
                       placeholder="" 
                       filled
                       :rules="[v => !!v || 'El número es requerido']"
@@ -103,38 +123,13 @@
                     <!-- <v-text-field v-model="resolucion.fecha" label="Fecha" placeholder="" filled></v-text-field> -->
                   </v-col>
                 </v-row>
-                <v-row>
-                  <v-col cols="12" sm="6">
-                    <v-select
-                      v-model="resolucion.ttec_regimen_estudio_tipo_id"
-                      :items="regimenesEstudio"
-                      item-text="regimen_estudio"
-                      item-value="id"
-                      label="Régimen de Estudio"
-                      placeholder="Seleccionar..."
-                      filled
-                      @change="cambiarLabel"
-                      :rules="[v => !!v || 'El régimen de estudio es requerido']"
-                    ></v-select>
-                  </v-col>
-                  <v-col cols="12" sm="6">
-                    <v-text-field
-                      v-model="resolucion.tiempo_estudio" 
-                      :label="labelTiempoEstudio" 
-                      placeholder="" 
-                      filled
-                      :rules="[v => !!v || 'El tiempo de estudio es requerido']"
-                    ></v-text-field>
-                    <!-- <v-text-field v-model="resolucion.carga_horaria" label="Carga Horaria" placeholder="" filled></v-text-field> -->
-                  </v-col>
-                </v-row>
                 <v-text-field v-model="resolucion.descripcion" label="Descripción" placeholder="" filled></v-text-field>
                 <!-- <v-file-input accept="image/*" label="Archivo de la R.M." v-model="resolucion.file" filled></v-file-input> -->
                 <v-file-input
                   label="Archivo de la R.M." 
-                  v-model="resolucion.file" 
+                  v-model="resolucion.archivo" 
                   filled
-                  :rules="[v => !!v || 'El archivo es requerido']"
+                  :rules=" modo == crear ? [v => !!v || 'El archivo es requerido'] : []"
                 ></v-file-input>
               </v-card-text>
               <v-card-actions>
@@ -168,6 +163,22 @@
 
     </v-dialog>
 
+    <v-snackbar
+      v-model="snack.state"
+      :top="'top'"
+      :right="'right'"
+      :color="snack.color"
+      :multi-line="snack.mode === 'multi-line'"
+      :timeout="2500"
+      :vertical="snack.mode === 'vertical'"
+    >
+      <v-icon v-if="snack.color == 'success'">mdi-check</v-icon>
+      <v-icon v-if="snack.color == 'info'">mdi-information-outline</v-icon>
+      <v-icon v-if="snack.color == 'warning'">mdi-alert-outline</v-icon>
+      <v-icon v-if="snack.color == 'error'">mdi-information-outline</v-icon>
+      {{ snack.text }}
+    </v-snackbar>
+
   </span>
 </template>
 <script>
@@ -176,7 +187,7 @@ import axios from 'axios'
 export default {
   name: 'rm-carrera',
   props: [
-    'idUniversidadCarrera',
+    'denominacion_titulo_id',
     'universidad'
   ],
   data: () => ({
@@ -187,110 +198,91 @@ export default {
     headers: [
       { text: 'Número', value: 'numero'},
       { text: 'Fecha', value: 'fecha'},
-      { text: 'Régimen de Estudio', value: 'regimen_estudio'},
-      { text: 'Tiempo de estudio', value: 'tiempo_estudio'},
-      // { text: 'Carga Horaria', value: 'carga_horaria'},
+      { text: 'Descripción', value: 'descripcion'},
       { text: 'Acciones', value: 'acciones', sortable: false, align: 'end'}
     ],
     resolucion: {
       id: '',
-      ttec_institucioneducativa_carrera_autorizada_id: '',
-      ttec_regimen_estudio_tipo_id: '',
-      descripcion: '',
+      ttec_denominacion_titulo_profesional_tipo_id: '',
       numero: '',
       fecha: '',
-      tiempo_estudio: '',
-      carga_horaria: '',
-      file: ''
+      descripcion: '',
+      archivo: ''
     },
     resoluciones: [],
-    regimenesEstudio: [],
-    labelTiempoEstudio: 'Tiempo de estudio',
-    host: ''
+    host: '',
+    snack: {
+      state: false,
+      color: "success",
+      mode: "",
+      timeout: 3000,
+      text: ""
+    }
   }),
   mounted(){
     this.host = Servicio.getServe();
     this.modo = 'lista';
-    this.resolucion.ttec_institucioneducativa_carrera_autorizada_id = this.idUniversidadCarrera;
+    this.resolucion.ttec_denominacion_titulo_profesional_tipo_id = this.denominacion_titulo_id;
     this.getResoluciones();
-    this.getRegimenesEstudio();
   },
   methods: {
     closeDialog(){
       this.rmdialog = false;
     },
     getResoluciones(){
-      axios.get(Servicio.getServe() + `carreraUni/resolucionCarrera/${this.idUniversidadCarrera}`).then(response => {
+      axios.get(Servicio.getServe() + `carreraUni/resolucionCarrera/${this.denominacion_titulo_id}`).then(response => {
         this.resoluciones = response.data.data;
         console.log(this.resoluciones)
       });
     },
-    getRegimenesEstudio(){
-      axios.get(Servicio.getServe() + `carreraUni/regimenEstudio/list`).then(response => {
-        this.regimenesEstudio = response.data.data;
-      });
-    },
-    cambiarLabel(){
-      // si es anual
-      if (this.resolucion.ttec_regimen_estudio_tipo_id == 1) {
-        this.labelTiempoEstudio = 'Tiempo de estudio en años';
-      }else{
-        this.labelTiempoEstudio = 'Tiempo de estudio en semestres';
-      }
-    },
     create(){
       if (this.$refs.formRMC.validate()) {
         let data = new FormData();
-        data.append('ttec_institucioneducativa_carrera_autorizada_id', this.idUniversidadCarrera);
-        data.append('ttec_regimen_estudio_tipo_id', this.resolucion.ttec_regimen_estudio_tipo_id);
-        data.append('descripcion', this.resolucion.descripcion);
+        data.append('ttec_denominacion_titulo_profesional_tipo_id', this.resolucion.ttec_denominacion_titulo_profesional_tipo_id);
         data.append('numero', this.resolucion.numero);
         data.append('fecha', this.resolucion.fecha);
-        data.append('tiempo_estudio', this.resolucion.tiempo_estudio);
-        data.append('carga_horaria', 0);
-        data.append('file', this.resolucion.file);
+        data.append('descripcion', this.resolucion.descripcion);
+        data.append('file', this.resolucion.archivo);
   
         axios.post(Servicio.getServe() + `carreraUni/resolucionCarrera`, data).then(response => {
           if (response.data.status == 'success') {
             console.log('Registrado')
             this.getResoluciones();
-            this.$vToastify.success("Registro realizado correctamente");
+            this.modo = 'lista';
+            this.toast("success", "Registro realizado exitosamente");
           }
+        }).catch(() => {
+          this.toast("error", "Error al realizar el registro");
         });
       }
     },
     edit(item){
       this.resolucion.id = item.id;
-      // this.resolucion.ttec_institucioneducativa_carrera_autorizada_id = item.ttec_institucioneducativa_carrera_autorizada_id;
-      this.resolucion.ttec_regimen_estudio_tipo_id = item.regimen_estudio_id;
+      this.resolucion.ttec_denominacion_titulo_profesional_tipo_id = item.ttec_denominacion_titulo_profesional_tipo_id;
       this.resolucion.descripcion = item.descripcion;
       this.resolucion.numero = item.numero;
       this.resolucion.fecha = item.fecha;
-      this.resolucion.tiempo_estudio = item.tiempo_estudio;
-      this.resolucion.carga_horaria = item.carga_horaria;
-      this.resolucion.file = '';
-
+      this.resolucion.archivo = '';
       this.modo = 'editar';
     },
     update(){
       if (this.$refs.formRMC.validate()) {
         let data = new FormData();
-        data.append('ttec_institucioneducativa_carrera_autorizada_id', this.idUniversidadCarrera);
-        data.append('ttec_regimen_estudio_tipo_id', this.resolucion.ttec_regimen_estudio_tipo_id);
-        data.append('descripcion', this.resolucion.descripcion);
+        // data.append('ttec_institucioneducativa_carrera_autorizada_id', this.resolucion.id);
         data.append('numero', this.resolucion.numero);
         data.append('fecha', this.resolucion.fecha);
-        data.append('tiempo_estudio', this.resolucion.tiempo_estudio);
-        data.append('carga_horaria', this.resolucion.carga_horaria);
-        data.append('file', this.resolucion.file);
+        data.append('descripcion', this.resolucion.descripcion);
+        data.append('file', this.resolucion.archivo);
 
         axios.put(Servicio.getServe() + `carreraUni/resolucionCarrera/${this.resolucion.id}`, data).then(response => {
           if (response.data.status == 'success') {
             console.log('Registrado')
             this.getResoluciones();
             this.modo = 'lista';
-            this.$vToastify.success("Registro actualizado correctamente");
+            this.toast("success", "El registro fue actualizado correctamente");
           }
+        }).catch(() => {
+          this.toast("error", "Error al realizar la actualización");
         });
       }
     },
@@ -314,7 +306,12 @@ export default {
           });
         }
       });
-    }
+    },
+    toast(mcolor, mtext) {
+      this.snack.color = mcolor;
+      this.snack.text = mtext;
+      this.snack.state = true;
+    },
   },
 }
 </script>
