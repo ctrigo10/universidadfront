@@ -70,7 +70,7 @@ let paths = [
     path: "/universidades",
     meta: { public: false },
     name: "universidades",
-    component: () => import(`@/views/universidades/UniversidadView.vue`),
+    component: () => import(`@/views/universidades/layout/UniversidadLayout.vue`),
     children: [
       {
         path: "",
@@ -91,6 +91,9 @@ let paths = [
       {
         path: "gestion/:sie",
         component: () => import(`@/views/universidades/UniversidadGestion.vue`),
+      },{
+        path: "academico",
+        component: () => import(`@/views/universidades/Academico.vue`),
       },
     ],
   },
