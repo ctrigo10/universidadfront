@@ -55,28 +55,30 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex"
+//import GeneralService from "@/services/general"
 import menuItems from '@/becasMenu.json'
-
 export default {
   name: 'app-navbar',
   props: {
     expanded: {
       type: Boolean,
       default: false
-    }
+    },
+    permission:{},
   },
   data: () => ({
-    menuItems: menuItems
+    menuItems: menuItems,
   }),
+
+  computed:{
+    ...mapGetters(["this.isAuthenticated"])
+  },
+
   methods: {
     checkPermission(item) {
-      let hasPermission = true
-      //console.log(this.$store.getters.roles);
-      item.hasPermission
-      //if (item.hasOwnProperty('permission')) hasPermission &= (item.permission == null || this.$store.getters.permissions.includes(item.permission))
-      //if (item.hasOwnProperty('role')) hasPermission &= this.$store.getters.roles.includes(item.role)
-      return hasPermission
+      return this.permission.includes(item.permission);
     }
-  }
+  },
 }
 </script>

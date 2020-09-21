@@ -9,6 +9,9 @@ export default {
   getBase() {
     return this.getServe() + "prefa/";
   },
+  getLogin() {
+    return this.getServe() + "login/";
+  },
   setToken(token) {
     return sessionStorage.setItem("token", token);
   },
@@ -22,6 +25,7 @@ export default {
     return sessionStorage.setItem(
       "tyuia",
       JSON.stringify({
+        pid: user.persona_id,
         uid: user.id,
         nombre: user.nombre,
         paterno: user.paterno,

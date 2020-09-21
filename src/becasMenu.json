@@ -3,30 +3,39 @@
       "href": "becas-escritorio",
       "title": "Escritorio",
       "icon": "mdi-home",
-      "params": {}
+      "params": {},
+      "permission": "show-escritorio"
     },
     {
       "href": "becas-universidades",
       "title": "Universidades",
       "icon": "mdi-handshake",
-      "params": {}
+      "params": {},
+      "permission": "show-universidades"
     }, {
       "href": "becas-seguimiento",
       "title": "Seguimiento Beca",
       "icon": "mdi-layers-search",
-      "permission": "show-affiliate",
+      "permission": "show-seguimiento-beca",
       "params": {}
     }, {
       "href": "Ajustes",
       "title": "Ajustes",
       "icon": "mdi-cog",
-      "permission": "show-loan",
+      "permission": "show-ajustes",
       "group": [
         {
           "href": "becas-convocatorias",
           "title": "Conv. y Fechas",
-          "icon": "mdi-calendar-multiple-check ",
-          "permission": "show-loan",
+          "icon": "mdi-calendar-multiple-check",
+          "permission": "show-ajustes",
+          "params": {}
+        },
+        {
+          "href": "becas-usuarios",
+          "title": "Usuarios",
+          "icon": "mdi-account-multiple",
+          "permission": "show-ajustes",
           "params": {}
         }
       ]

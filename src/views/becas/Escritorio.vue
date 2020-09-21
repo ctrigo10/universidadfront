@@ -1,5 +1,9 @@
 <template>
-    <div>
-        Escritorio
-    </div>
+    <div>sdf</div>
 </template>
+
+<script>
+
+export default {
+}
+</script>

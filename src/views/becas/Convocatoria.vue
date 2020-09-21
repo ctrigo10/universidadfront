@@ -1,11 +1,9 @@
 <template>
 <v-container fluid cols="12">
     <v-card>
-        <Header titulo="Convocatorias y Fechas" subTitulo="Gestión" />
+        <Header titulo="Convocatorias y Fechas" subTituloUno="Becas" :subTituloDos="gestion" />
 
         <NuevoEditar v-show="getConvocatoriaLast.seleccionar_becados != false" :dialogF="dialogF" :edited_index_enviar="edited_index_enviar" :edited_item_enviar="edited_item_enviar" />
-
-        <br class="espacio" />
 
         <List v-if="!loading" :headers="headers" :items="getConvocatorias" :acciones="acciones" :sortby="sortby" v-on:deleteItem="deleteItem($event)" v-on:editItem="editItem($event)" />
         <Loading v-else />
@@ -64,28 +62,33 @@ export default {
         headers: [{
                 text: "Convocatoria",
                 value: "version",
-                align: "center"
+                align: "center",
+                class: "subtitle-2 deep-purple lighten-5"
             },
             {
                 text: "Fecha Registro de Becas",
                 value: "fecha_registro_convocatoria",
                 align: "center",
+                class: "subtitle-2 deep-purple lighten-5"
             },
             {
                 text: "Fecha Solicitud de Becas",
                 value: "fecha_solicitud_convocatoria",
                 align: "center",
+                class: "subtitle-2 deep-purple lighten-5"
             },
             {
                 text: "Finalizado",
                 value: "seleccionar_becados_text",
                 align: "center",
+                class: "subtitle-2 deep-purple lighten-5"
             },
             {
                 text: "Acciones",
                 value: "actions",
                 sortable: false,
-                align: "center"
+                align: "center",
+                class: "subtitle-2 deep-purple lighten-5"
             },
         ],
         acciones: {
@@ -100,6 +103,9 @@ export default {
             "getConvocatoriaLast",
             "getConvocatoriaIndex",
         ]),
+        gestion(){
+            return "Gestión: "+ new Date().getFullYear();
+        }
     },
 
     methods: {

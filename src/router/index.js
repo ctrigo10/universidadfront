@@ -2,7 +2,8 @@ import Vue from "vue";
 import Router from "vue-router";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
-// import store from "../store.js";
+import store from "../store.js";
+import general from '@/services/general'
 
 let paths = [
   {
@@ -99,18 +100,30 @@ let paths = [
     path: "/becas",
     meta: { public: false },
     name: "becasLayout",
-    redirect: "becas/universidades",
+    redirect: "becas/seguimiento",
     component: () => import(`@/views/becas/layout/BecasLayout.vue`),
     children: [
       {
         path: "escritorio",
         name: "becas-escritorio",
+        meta: { requiresAuth: true },
         component: () => import(`@/views/becas/Escritorio.vue`),
       },
       {
         path: "universidades",
         name: "becas-universidades",
         component: () => import(`@/views/becas/Universidades.vue`),
+      },
+      {
+        path: 'universidades/carreras',
+        name: "becas-carreras",
+        component: () =>import('@/views/becas/Carreras.vue'),
+      },
+      {
+        path: 'universidades/carreras/solicitudes',
+        name: "becas-solicitudes",
+        meta: { requiresAuth: true },
+        component: () =>import('@/views/becas/Solicitudes.vue'),
       },
       {
         path: "seguimiento",
@@ -120,7 +133,14 @@ let paths = [
       {
         path: "convocatoria",
         name: "becas-convocatorias",
+        meta: { requiresAuth: true , UniversidadTecnicoBecasNacional : true},
         component: () => import(`@/views/becas/Convocatoria.vue`),
+      },
+      {
+        path: "usuarios",
+        name: "becas-usuarios",
+        meta: { requiresAuth: true , UniversidadTecnicoBecasNacional : true},
+        component: () => import(`@/views/becas/Usuarios.vue`),
       },
     ],
   },
@@ -171,13 +191,21 @@ router.afterEach(() => {
 router.beforeEach((to, from, next) => {
   NProgress.start();
   if (to.matched.some((record) => record.meta.requiresAuth)) {
-    /* if (store.getters.isAuthenticated) {
+     if (store.getters.isAuthenticated) {
+       if(to.meta.UniversidadTecnicoBecasNacional){
+         let op = false;
+          for(let rol of general.getUser().roles){
+            if(rol.rol_tipo.rol == "Universidad Tecnico Becas Nacional")
+              op = true;
+          }
+          op == true ? next():next("/");
+       }
       next();
-      return;
-    } */
+      //return;
+    }else
     /* if (ruta == "prefacultad") {
       next("/prefacultad");
-    } */
+    }  */
     next("/");
   } else {
     next();
