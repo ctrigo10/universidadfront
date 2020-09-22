@@ -10,10 +10,12 @@
             v-for="(universidad, key) in universidades"
             :key="key"
             cols="12"
-            sm="3"
-            sm6="4"
+            lg="3"
+            md="4"
+            sm="6"
+            xs="6"
           >
-            <v-card class="card-universidad" @click="seleccionar(universidad.id)">
+            <v-card class="card-universidad" @click="seleccionar(universidad.id)" elevation="10">
               <v-img
                 class="imagen-universidad"
                 height="150px"

@@ -7,7 +7,8 @@
       app
     >
       <v-app-bar-nav-icon @click="menu = !menu"></v-app-bar-nav-icon>
-      <v-toolbar-title v-if="menu == false">
+      <v-toolbar-title>
+      <!-- <v-toolbar-title v-if="menu == false"> -->
         Sistema de Universidades
       </v-toolbar-title>
 
@@ -58,7 +59,7 @@
     </v-navigation-drawer>
   
     <v-main>
-      <v-container fluid class="u-container">
+      <v-container fluid>
         <router-view></router-view>
       </v-container>
     </v-main>
@@ -71,15 +72,20 @@
         {{ new Date().getFullYear() }} — <strong>Ministerio de Educación</strong>
       </v-col>
     </v-footer>
+
+    <Snackbar/>
+
   </div>
 </template>
 
 <script>
-import Login from '../../../components/universidades/Login'
+import Login from '../../../components/universidades/layout/Login'
+import Snackbar from '../../../components/universidades/utils/Snackbar'
 export default {
   name: 'universidad-view',
   components: {
-    Login
+    Login,
+    Snackbar
   },
   data: () => ({
     items: [
@@ -92,50 +98,37 @@ export default {
     menu: true,
     itemSeleccionado: ''
   }),
-  methods: {
-
-  }
 }
 </script>
 <style scope>
-
-header {
-  /* flex: none !important; */
-  /* padding-top: 15px; */
-}
-
-main{
-  /* background: #F3F6F9 !important; */
-}
 
 .logo{
   width: 100%;
   padding: 15px;
 }
 
-.u-container{
-  padding: 0 25px;
-}
+/* .u-container{
+  padding: 25px;
+} */
 
 .tarjeta{
-  padding: 15px;
-  margin-bottom: 7px;
+  /* padding: 15px; */
+  margin-bottom: 20px;
 }
 
 /* Tables */
 
-thead > tr > th {
-  background-color: rgb(25, 118, 210, 0.1);
+/* thead > tr > th {
+  background-color: rgba(245, 214, 253, 0.1);
 }
 thead > tr > th > span {
-  /* color: purple; */
   font-weight: 600;
   font-size: 0.9rem;
   color: #1976d2;
 }
 table > tbody > tr{
   border-color: red !important;
-}
+} */
 
 
 /* Botones acciones tabla*/
@@ -164,10 +157,9 @@ table > tbody > tr{
 
 /* Dialog */
 
-.v-dialog .v-card .v-card__title{
-  /* color: #8E24AA !important; */
+/* .v-dialog .v-card .v-card__title{
   color: #1976d2 !important;
-}
+} */
 
 /* Swet alert */
 .swal2-header .swal2-title{
@@ -189,13 +181,13 @@ table > tbody > tr{
 }
 
 /* Footer */
-.theme--light.v-footer{
+/* .theme--light.v-footer{
   color: purple;
-}
+} */
 
 .v-card__title{
-  font-weight: 300;
+  /* font-weight: 300;
   font-size: 1.5em;
-  color: #1976d2;
+  color: #1976d2; */
 }
 </style>

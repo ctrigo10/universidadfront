@@ -1,8 +1,8 @@
 <template>
   <div>
-    <v-card>
+    <v-card class="tarjeta" elevation="7">
       <v-card-title>
-        Universidad {{ idUniversidad }}
+        Universidad
       </v-card-title>
       <v-card-text>
         <v-row>
@@ -26,7 +26,7 @@
       </v-card-text>
     </v-card>
 
-    <v-card v-if="universidadSeleccionada != ''">
+    <v-card v-if="universidadSeleccionada != ''" elevation="7">
       <v-card-text>
         <v-btn-toggle
           v-model="text"
@@ -55,7 +55,7 @@
 <script>
 import Servicio from '../../services/general'
 import axios from 'axios'
-import { mapGetters} from 'vuex'
+// import { mapGetters} from 'vuex'
 import Carreras from '@/components/universidades/academico/Carreras'
 import Docentes from '@/components/universidades/academico/Docentes'
 import Estudiantes from '@/components/universidades/academico/Estudiantes'
@@ -76,7 +76,7 @@ export default {
     this.getUniversidades();
   },
   computed: {
-    ...mapGetters(['idUniversidad'])
+    // ...mapGetters(['idUniversidad'])
   },
   methods: {
     // ...mapMutations(['seleccionarUniversidad']),

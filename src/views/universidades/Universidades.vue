@@ -5,7 +5,7 @@
         <v-icon>mdi-forward</v-icon>
       </template>
     </v-breadcrumbs>
-    <v-card class="tarjeta">
+    <v-card class="tarjeta" elevation="7">
       <v-card-title primary-title>
         Universidades
         <v-spacer></v-spacer>

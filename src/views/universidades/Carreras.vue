@@ -1,6 +1,5 @@
 <template>
   <div>
-    <Alerta :type="alerta.type" :text="alerta.text"/>
     <v-breadcrumbs :items="breadcrumbs">
       <template v-slot:divider>
         <v-icon>mdi-forward</v-icon>
@@ -97,34 +96,15 @@
         </v-dialog>
       </template>
     </v-card>
-
-    <v-snackbar
-      v-model="snack.state"
-      :top="'top'"
-      :right="'right'"
-      :color="snack.color"
-      :multi-line="snack.mode === 'multi-line'"
-      :timeout="2500"
-      :vertical="snack.mode === 'vertical'"
-    >
-      <v-icon v-if="snack.color == 'success'">mdi-check</v-icon>
-      <v-icon v-if="snack.color == 'info'">mdi-information-outline</v-icon>
-      <v-icon v-if="snack.color == 'warning'">mdi-alert-outline</v-icon>
-      <v-icon v-if="snack.color == 'error'">mdi-information-outline</v-icon>
-      {{ snack.text }}
-    </v-snackbar>
   </div>
 </template>
 <script>
   import Servicio from '../../services/general'
   import axios from 'axios';
-  import Alerta from '../../components/universidades/Alerta'
+  import { mapMutations } from 'vuex';
 
   export default {
     name: 'Carreras',
-    components: {
-      Alerta
-    },
     data: () => ({
       alerta: {
         type: '',
@@ -168,6 +148,7 @@
       this.getList();
     },
     methods: {
+      ...mapMutations(['uniAlert']),
       showDialog(){
         this.mode = 'Crear';
 
@@ -193,10 +174,17 @@
               // this.$vToastify.success("Registro realizado correctamente");
               this.getList();
               this.cDialog = false;
-              this.toast("success", "Registro realizado correctamente");
+              // this.toast("success", "Registro realizado correctamente");
+              this.uniAlert({
+                color: 'success',
+                text: 'Registro realizado correctamente'
+              })
             }
           }).catch( () => {
-            this.toast("error", "Ocurrio un error al realizar el registro"); 
+            this.uniAlert({
+              color: "error",
+              text: "Ocurrio un error al realizar el registro"
+            });
           }).finally( () => {
             this.cDialog = false;
           })  
@@ -217,10 +205,16 @@
             if (response.data.status == 'success') {
               this.getList();
               this.cDialog = false;
-              this.toast("success", "Registro actualizado correctamente");
+              this.uniAlert({
+                color: "success",
+                text: "Registro actualizado correctamente"
+              });
             }
           }).catch( () => {
-            this.toast("error", "Ocurrio un error al actualizar el registro");
+            this.uniAlert({
+              color: "error",
+              text: "Ocurrio un error al actualizar el registro"
+            });
           }).finally( () => {
             this.cDialog = false;
           })
@@ -239,22 +233,26 @@
             axios.delete(Servicio.getServe() + 'carrera/'+id).then(response => {
               if (response.data.status == 'success') {
                 this.getList();
-                this.toast("success", "Registro eliminado correctamente");
+                this.uniAlert({
+                  color: "success",
+                  text: "Registro eliminado correctamente"
+                });
               }
             }).catch( (e) => {
               if (e.response.status === 500) {
-                this.toast("error", "Ocurrio un error al eliminar el registro");
+                this.uniAlert({
+                  color: "error",
+                  text: "Ocurrio un error al eliminar el registro"
+                });
               }else{
-                this.toast("error", e.response.data.msg);
+                this.uniAlert({
+                  color: "error",
+                  text: e.response.data.msg
+                });
               }
             })
           }
         });
-      },
-      toast(mcolor, mtext) {
-        this.snack.color = mcolor;
-        this.snack.text = mtext;
-        this.snack.state = true;
       },
     }
   }

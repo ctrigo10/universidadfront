@@ -6,6 +6,9 @@ import Carreras from '@/store/becas/Carreras'
 import BecasUtils from "@/store/becas/BecasUtils";
 import Usuarios from "@/store/becas/Usuarios";
 import Solicitudes from "@/store/becas/Solicitudes";
+
+import UniUtils from '@/store/universidades/UniUtils.js';
+
 import axios from "axios";
 import Service from "./services/general";
 
@@ -74,5 +77,6 @@ export default new Vuex.Store({
     Universidades,
     Usuarios,
     Solicitudes,
+    UniUtils
   },
 });

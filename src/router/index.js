@@ -74,25 +74,36 @@ let paths = [
     children: [
       {
         path: "",
+        name: 'universidades-publico',
         component: () => import(`@/views/universidades/Publico.vue`),
       },
       {
         path: "dashboard",
+        name: 'universidades-dashboard',
+        // meta: { requiresAuth: true },
         component: () => import(`@/views/universidades/Dashboard.vue`),
       },
       {
         path: "carreras",
+        name: 'universidades-carreras',
+        meta: { requiresAuth: true },
         component: () => import(`@/views/universidades/Carreras.vue`),
       },
       {
         path: "universidades",
+        name: 'universidades-universidades',
+        meta: { requiresAuth: true },
         component: () => import(`@/views/universidades/Universidades.vue`),
       },
       {
         path: "gestion/:sie",
+        name: 'universidades-universidades-gestion',
+        meta: { requiresAuth: true },
         component: () => import(`@/views/universidades/UniversidadGestion.vue`),
       },{
         path: "academico",
+        name: 'universidades-academico',
+        meta: { requiresAuth: true },
         component: () => import(`@/views/universidades/Academico.vue`),
       },
     ],
@@ -194,22 +205,23 @@ router.afterEach(() => {
 router.beforeEach((to, from, next) => {
   NProgress.start();
   if (to.matched.some((record) => record.meta.requiresAuth)) {
-     if (store.getters.isAuthenticated) {
-       if(to.meta.UniversidadTecnicoBecasNacional){
-         let op = false;
-          for(let rol of general.getUser().roles){
-            if(rol.rol_tipo.rol == "Universidad Tecnico Becas Nacional")
-              op = true;
-          }
-          op == true ? next():next("/");
-       }
+    if (store.getters.isAuthenticated) {
+      if(to.meta.UniversidadTecnicoBecasNacional){
+        let op = false;
+        for(let rol of general.getUser().roles){
+          if(rol.rol_tipo.rol == "Universidad Tecnico Becas Nacional")
+            op = true;
+        }
+        op == true ? next():next("/");
+      }
       next();
       //return;
-    }else
-    /* if (ruta == "prefacultad") {
-      next("/prefacultad");
-    }  */
-    next("/");
+    }else{
+      /* if (ruta == "prefacultad") {
+        next("/prefacultad");
+      }  */
+      next("/");
+    }
   } else {
     next();
   }

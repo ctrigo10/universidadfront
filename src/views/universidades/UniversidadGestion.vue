@@ -5,7 +5,7 @@
         <v-icon>mdi-forward</v-icon>
       </template>
     </v-breadcrumbs>
-    <v-card class="tarjeta">
+    <v-card class="tarjeta" elevation="7">
       <v-card-title>
         <v-img :src="universidad.logo" :class="['logo-universidad', { 'fondo': universidad.logo == null}]" @click="openDialogLogo"></v-img>
         {{universidad.id}} - {{universidad.institucioneducativa}}
@@ -60,7 +60,7 @@
         </v-row>
       </v-card-text>
     </v-card>
-    <v-card class="tarjeta">
+    <v-card class="tarjeta" elevation="7">
       <v-card-title>
         Carreras
         <v-spacer></v-spacer>
