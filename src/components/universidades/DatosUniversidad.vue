@@ -1,40 +1,11 @@
 <template>
   <div>
     <v-card class="tarjeta">
-      <v-card-title>
-        {{universidad.id}} - {{universidad.institucioneducativa}}
-      </v-card-title>
       <v-card-text>
-        <v-row>
-          <v-col cols="12" sm="4">
-            <div class="titulo">Estado</div>
-            <h5>{{universidad.estadoText}}</h5>
-            <div class="titulo">Dependencia</div>
-            <h5>{{universidad.dependenciaText}}</h5>
-            <div class="titulo">Zona</div>
-            <h5>{{universidad.zona}}</h5>
-            <div class="titulo">Dirección</div>
-            <h5>{{universidad.direccion}}</h5>
-          </v-col>
-          <v-col cols="12" sm="4">
-            <div class="titulo">Teléfono</div>
-            <h5>{{universidad.telefonos}}</h5>
-            <div class="titulo">Fax</div>
-            <h5>{{universidad.fax}}</h5>
-            <div class="titulo">Sitio Web</div>
-            <h5>{{universidad.sitio_web}}</h5>
-            <div class="titulo">Email</div>
-            <h5>{{universidad.email}}</h5>
-          </v-col>
-          <v-col cols="12" sm="4">
-            <div class="titulo">Decreto Supremo</div>
-            <h5>{{universidad.decreto_supremo}}</h5>
-            <div class="titulo">Fecha Decreto Supremo</div>
-            <h5>{{universidad.fecha_decreto_supremo}}</h5>
-            <div class="titulo">Fecha de Creación</div>
-            <h5>{{universidad.fecha_creacion}}</h5>
-          </v-col>
-        </v-row>
+        <div class="text-center">
+          <h1 class="jupper">{{universidad.institucioneducativa}}</h1>
+          Código SIE: {{idUniversidad}}
+        </div>
       </v-card-text>
     </v-card>
   </div>
@@ -72,8 +43,9 @@ export default {
       iduniversidadSede: ''
     },
   }),
-  mounted(){
+  updated(){
     this.getDatosUniversidad();
+    console.log('idUniversidad')
   },
   methods: {
     getDatosUniversidad(){
@@ -118,12 +90,15 @@ export default {
 }
 </script>
 <style scope>
+.jupper{
+  text-transform: uppercase;
+}
   .titulo {
     /* font-size: 1.2em; */
   }
   h5 {
     font-size: 1.1em;
     min-height: 30px;
-    color: purple;
+    color: gray;
   }
 </style>

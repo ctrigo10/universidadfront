@@ -75,12 +75,15 @@ let paths = [
       {
         path: "",
         name: 'universidades-publico',
-        component: () => import(`@/views/universidades/Publico.vue`),
-      },
-      {
+        component: () => import(`@/views/universidades/publico/Publico.vue`),
+      },{
+        path: "informacion/:sie",
+        name: 'universidades-publico-informacion',
+        component: () => import(`@/views/universidades/publico/Informacion.vue`),
+      },{
         path: "dashboard",
         name: 'universidades-dashboard',
-        // meta: { requiresAuth: true },
+        meta: { requiresAuth: true },
         component: () => import(`@/views/universidades/Dashboard.vue`),
       },
       {
@@ -96,6 +99,12 @@ let paths = [
         component: () => import(`@/views/universidades/Universidades.vue`),
       },
       {
+        path: "admin",
+        name: 'universidades-admin',
+        meta: { requiresAuth: true },
+        component: () => import(`@/views/universidades/UniversidadesAdmin.vue`),
+      },
+      {
         path: "gestion/:sie",
         name: 'universidades-universidades-gestion',
         meta: { requiresAuth: true },
@@ -105,6 +114,11 @@ let paths = [
         name: 'universidades-academico',
         meta: { requiresAuth: true },
         component: () => import(`@/views/universidades/Academico.vue`),
+      },{
+        path: "usuarios-permisos",
+        name: 'universidades-usuarios-permisos',
+        meta: { requiresAuth: true },
+        component: () => import(`@/views/universidades/UsuariosPermisos.vue`),
       },
     ],
   },

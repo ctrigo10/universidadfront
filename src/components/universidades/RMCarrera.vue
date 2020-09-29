@@ -129,7 +129,7 @@
                   label="Archivo de la R.M." 
                   v-model="resolucion.archivo" 
                   filled
-                  :rules=" modo == crear ? [v => !!v || 'El archivo es requerido'] : []"
+                  :rules=" modo == 'crear' ? [v => !!v || 'El archivo es requerido'] : []"
                 ></v-file-input>
               </v-card-text>
               <v-card-actions>
@@ -163,27 +163,12 @@
 
     </v-dialog>
 
-    <v-snackbar
-      v-model="snack.state"
-      :top="'top'"
-      :right="'right'"
-      :color="snack.color"
-      :multi-line="snack.mode === 'multi-line'"
-      :timeout="2500"
-      :vertical="snack.mode === 'vertical'"
-    >
-      <v-icon v-if="snack.color == 'success'">mdi-check</v-icon>
-      <v-icon v-if="snack.color == 'info'">mdi-information-outline</v-icon>
-      <v-icon v-if="snack.color == 'warning'">mdi-alert-outline</v-icon>
-      <v-icon v-if="snack.color == 'error'">mdi-information-outline</v-icon>
-      {{ snack.text }}
-    </v-snackbar>
-
   </span>
 </template>
 <script>
 import Servicio from '../../services/general'
 import axios from 'axios'
+import { mapMutations } from 'vuex';
 export default {
   name: 'rm-carrera',
   props: [
@@ -226,6 +211,7 @@ export default {
     this.getResoluciones();
   },
   methods: {
+    ...mapMutations(['uniAlert']),
     closeDialog(){
       this.rmdialog = false;
     },
@@ -249,10 +235,16 @@ export default {
             console.log('Registrado')
             this.getResoluciones();
             this.modo = 'lista';
-            this.toast("success", "Registro realizado exitosamente");
+            this.uniAlert({
+              color: 'success',
+              text: 'Registro realizado exitosamente'
+            });
           }
         }).catch(() => {
-          this.toast("error", "Error al realizar el registro");
+          this.uniAlert({
+            color: 'error',
+            text: 'Error al realizado exitosamente'
+          });
         });
       }
     },
@@ -279,10 +271,16 @@ export default {
             console.log('Registrado')
             this.getResoluciones();
             this.modo = 'lista';
-            this.toast("success", "El registro fue actualizado correctamente");
+            this.uniAlert({
+              color: 'success',
+              text: 'el registro fue actualizado correctamente'
+            });
           }
         }).catch(() => {
-          this.toast("error", "Error al realizar la actualización");
+          this.uniAlert({
+            color: 'error',
+            text: 'Error al realizar la actualización'
+          });
         });
       }
     },
@@ -301,16 +299,14 @@ export default {
               console.log('Eliminado')
               this.getResoluciones();
               this.modo = 'lista';
-              this.$vToastify.success("Registro eliminado correctamente");
+              this.uniAlert({
+                color: 'success',
+                text: 'Registro eliminado correctamente'
+              });
             }
           });
         }
       });
-    },
-    toast(mcolor, mtext) {
-      this.snack.color = mcolor;
-      this.snack.text = mtext;
-      this.snack.state = true;
     },
   },
 }

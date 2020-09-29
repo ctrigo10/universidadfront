@@ -171,10 +171,8 @@
         if (this.$refs.form.validate()) {
           axios.post(Servicio.getServe() + 'carrera', this.carrera).then(response => {
             if (response.data.status == 'success') {
-              // this.$vToastify.success("Registro realizado correctamente");
               this.getList();
               this.cDialog = false;
-              // this.toast("success", "Registro realizado correctamente");
               this.uniAlert({
                 color: 'success',
                 text: 'Registro realizado correctamente'
@@ -201,7 +199,7 @@
       },
       update(){
         if (this.$refs.form.validate()) {
-          axios.put(Servicio.getServe() + 'carrera/'+this.carrera.id, this.carrera).then(response => {
+          axios.put(Servicio.getServe() + 'carrera/'+this.carrera.id, this.carrera, Servicio.getHeader()).then(response => {
             if (response.data.status == 'success') {
               this.getList();
               this.cDialog = false;

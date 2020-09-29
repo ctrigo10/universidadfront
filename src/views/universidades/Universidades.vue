@@ -441,9 +441,7 @@
         { text: 'Universidad', value: 'institucioneducativa'},
         { text: 'Nro. resolución', value: 'nro_resolucion'},
         { text: 'Dependencia', value: 'dependencia'},
-        // { text: 'Sitio web', value: 'sitioWeb'},
-        // { text: 'Teléfono', value: 'telefono'},
-        { text: 'Departamento', value: 'departamento'},
+        { text: 'Departamento', value: 'departamento.depa'},
         { text: 'Acciones', value: 'acciones', sortable: false, align: 'end'}
       ],
       universidades: [],

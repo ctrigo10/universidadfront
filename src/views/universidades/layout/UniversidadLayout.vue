@@ -14,11 +14,11 @@
 
       <v-spacer></v-spacer>
 
-      <v-btn icon>
+      <!-- <v-btn icon>
         <v-icon>mdi-email</v-icon>
-      </v-btn>
+      </v-btn> -->
 
-      <Login/>
+      <Login @actualizarUsuario="actualizarUsuario"/>
 
     </v-app-bar>
 
@@ -26,35 +26,53 @@
       app
       v-model="menu"
       class="drawerstyle"
+      width="220"
     >
       <div class="logo">
         <img src="../../../assets/minedu.png" alt="" class="logo">
       </div>
       <v-divider></v-divider>
       <template>
-        <v-card
-          class="mx-auto"
-          max-width="300"
-          tile
-          elevation="0"
-        >
-          <v-list dense >
-            <v-list-item-group color="primary" v-model="itemSeleccionado">
-              <v-list-item
-                v-for="(item, i) in items"
-                :key="i"
-                :to="item.path"
-              >
-                <v-list-item-icon>
-                  <v-icon v-text="item.icon"></v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title v-text="item.title"></v-list-item-title>
-                </v-list-item-content>
+        <v-list dense>
+          <div v-for="(item, i) in items" :key="i">
+            <!-- item de menu -->
+            <v-list-item
+              color="primary"
+              :to="{ name: item.href }"
+              v-if="!item.submenus && tienePermiso(item)"
+            >
+              <v-list-item-icon class="ml-0 mr-2">
+                <v-icon>{{ item.icon }}</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>{{ item.title }}</v-list-item-title>
+            </v-list-item>
+
+            <!-- item de menu con submenus -->
+            <v-list-group
+              :prepend-icon="item.icon"
+              mandatory
+              color="primary"
+              v-if="item.submenus && tienePermiso(item)"
+            >
+              <v-list-item slot="activator">
+                <v-list-item-title style="margin-left: -31px;">{{ item.title }}</v-list-item-title>
               </v-list-item>
-            </v-list-item-group>
-          </v-list>
-        </v-card>
+              <template v-for="submenu in item.submenus">
+                <v-list-item
+                  class="pl-5"
+                  :to="{ name: submenu.href }"
+                  :key="submenu.title"
+                >
+                  <v-list-item-icon class="mr-2">
+                    <v-icon>{{ submenu.icon }}</v-icon>
+                  </v-list-item-icon>
+                  <v-list-item-title>{{ submenu.title }}</v-list-item-title>
+                </v-list-item>
+              </template>
+            </v-list-group>
+          </div>
+          <v-divider></v-divider>
+        </v-list>
       </template>
     </v-navigation-drawer>
   
@@ -79,6 +97,7 @@
 </template>
 
 <script>
+import Servicio from '@/services/general'
 import Login from '../../../components/universidades/layout/Login'
 import Snackbar from '../../../components/universidades/utils/Snackbar'
 export default {
@@ -88,23 +107,94 @@ export default {
     Snackbar
   },
   data: () => ({
+    usuarioLogueado: null,
     items: [
-      {icon: 'mdi-map', title: 'Público', path: '/universidades'},
-      {icon: 'mdi-home', title: 'Dashboard', path: '/universidades/dashboard'},
-      {icon: 'mdi-file', title: 'Carreras', path: '/universidades/carreras'},
-      {icon: 'mdi-domain', title: 'Universidades', path: '/universidades/universidades'},
-      {icon: 'mdi-alpha-a-box', title: 'Académico', path: '/universidades/academico'},
+      {
+        title: 'Público', 
+        href: 'universidades-publico', 
+        icon: 'mdi-map',
+      },{
+        title: 'Dashboard', 
+        href: 'universidades-dashboard', 
+        icon: 'mdi-home',
+        rols: [57,48]
+      },{
+        title: 'Carreras', 
+        href: 'universidades-carreras', 
+        icon: 'mdi-file',
+        rols: [48]
+      },{
+        title: 'Universidades', 
+        href: 'universidades-universidades', 
+        icon: 'mdi-domain',
+        rols: [48]
+      },{
+        title: 'Académico', 
+        href: 'universidades-academico', 
+        icon: 'mdi-alpha-a-box',
+        rols: [57,48]
+      },{
+        title: 'Configuración', 
+        icon: 'mdi-cog',
+        rols: [57,48],
+        submenus: [
+          {
+            title: 'Permisos', 
+            href: 'universidades-usuarios-permisos', 
+            icon: 'mdi-account-cog',
+          }
+        ]
+      },{
+        title: 'Administración', 
+        href: 'universidades-admin', 
+        icon: 'mdi-domain',
+        rols: [51]
+      }
     ],
     menu: true,
-    itemSeleccionado: ''
+    itemSeleccionado: '',
   }),
+  computed: {
+
+  },
+  mounted(){
+    this.usuarioLogueado = this.usuarioLogueado = Servicio.getUser();
+    console.log(this.usuarioLogueado)
+  },
+  methods: {
+    tienePermiso(menu){
+      if (!menu.rols) {
+        // si el menu es publico lo mostramos
+        return true;
+      }else{
+        // si el menu no es publico verificamos si el usuario esta logueado
+        let permiso = false;
+        if (this.usuarioLogueado !== null && this.usuarioLogueado !== '') {
+          this.usuarioLogueado.roles.forEach(usuarioRol => {
+            menu.rols.forEach(menuRol => {
+              if (usuarioRol.rol_tipo_id == menuRol) {
+                permiso = true;
+              }
+            });
+          });
+          return permiso;
+        }
+      }
+      return false;
+    },
+    actualizarUsuario(data){
+      console.log(data)
+      console.log('actualizandoUsuario')
+      this.usuarioLogueado = this.usuarioLogueado = Servicio.getUser();
+    }
+  }
 }
 </script>
 <style scope>
 
 .logo{
   width: 100%;
-  padding: 15px;
+  padding: 7px;
 }
 
 /* .u-container{

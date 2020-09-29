@@ -7,8 +7,13 @@
     </v-breadcrumbs>
     <v-card class="tarjeta" elevation="7">
       <v-card-title>
-        <v-img :src="universidad.logo" :class="['logo-universidad', { 'fondo': universidad.logo == null}]" @click="openDialogLogo"></v-img>
-        {{universidad.id}} - {{universidad.institucioneducativa}}
+        <div>
+          <v-img :src="universidad.logo" :class="['logo-universidad', { 'fondo': universidad.logo == null}]" @click="openDialogLogo"></v-img>
+        </div>
+        <div>
+          {{universidad.institucioneducativa}} <br>
+          <small>SIE: {{universidad.id}}</small>
+        </div>
         <v-spacer></v-spacer>
         <div class="tipoSede">
           <span v-if="universidad.tipoSede == 'sede'">Sede</span>
@@ -224,22 +229,6 @@
       </v-card>
     </v-dialog>
 
-    <v-snackbar
-      v-model="snack.state"
-      :top="'top'"
-      :right="'right'"
-      :color="snack.color"
-      :multi-line="snack.mode === 'multi-line'"
-      :timeout="2500"
-      :vertical="snack.mode === 'vertical'"
-    >
-      <v-icon v-if="snack.color == 'success'">mdi-check</v-icon>
-      <v-icon v-if="snack.color == 'info'">mdi-information-outline</v-icon>
-      <v-icon v-if="snack.color == 'warning'">mdi-alert-outline</v-icon>
-      <v-icon v-if="snack.color == 'error'">mdi-information-outline</v-icon>
-      {{ snack.text }}
-    </v-snackbar>
-
     <v-dialog
       v-model="dialogLogo"
       max-width="500px"
@@ -259,6 +248,7 @@ import axios from 'axios';
 import RMCarrera from '../../components/universidades/RMCarrera';
 import UnidadAcademica from '../../components/universidades/UnidadAcademica';
 import Logo from '../../components/universidades/Logo';
+import { mapMutations } from 'vuex';
 export default {
   name: 'universidadGestion',
   components: {
@@ -377,6 +367,7 @@ export default {
     this.getRegimenesEstudio();
   },
   methods: {
+    ...mapMutations(['uniAlert']),
     openDialogCarrera(){
       this.mode = 'Crear';
 
@@ -467,19 +458,16 @@ export default {
     },
     getCarreras(){
       axios.get(Servicio.getServe() + `carrera`).then(response => {
-        console.log(response.data)
         this.carreras = response.data.data;
       })
     },
     getNiveles(){
       axios.get(Servicio.getServe() + `carreraUni/nivelTipo/list`).then(response => {
-        console.log(response.data)
         this.niveles = response.data.data;
       })
     },
     getRegimenesEstudio(){
       axios.get(Servicio.getServe() + `carreraUni/regimenEstudio/list`).then(response => {
-        console.log(response.data)
         this.regimenesEstudio = response.data.data;
       })
     },
@@ -493,15 +481,24 @@ export default {
     addCarrera(){
       console.log(this.carrera);
       axios.post(Servicio.getServe() + `carreraUni`, this.carrera).then(response => {
+        console.log(response)
         this.getCarrerasUniversidad();
         this.dialogCarrera = false;
-        console.log(response)
-        this.toast("success", "Registro realizado correctamente");
+        this.uniAlert({
+          color: 'success',
+          text: 'Registro realizado correctamente'
+        })
       }).catch((e) => {
         if (e.response.status === 500) {
-          this.toast("error", "Ocurrio un error al realizar el registro");
+          this.uniAlert({
+            color: 'error',
+            text: 'Ocurrio un error al realizar el registro'
+          })
         }else{
-          this.toast("error", e.response.data.msg);
+          this.uniAlert({
+            color: 'error',
+            text: e.response.data.msg
+          })
         }
       })
     },
@@ -524,12 +521,21 @@ export default {
         this.getCarrerasUniversidad();
         this.dialogCarrera = false;
         console.log(response)
-        this.toast("success", "Registro actualizado correctamente");
+        this.uniAlert({
+          color: 'success',
+          text: 'Registro actualizado correctamente'
+        });
       }).catch((e) => {
         if (e.response.status === 500) {
-          this.toast("error", "Ocurrio un error al actualizar el registro");
+          this.uniAlert({
+            color: 'error',
+            text: 'Ocurrio un error al actualizar el registro'
+          });
         }else{
-          this.toast("error", e.response.data.msg);
+          this.uniAlert({
+            color: 'error',
+            text: e.response.data.msg
+          });
         }
       })
     },
@@ -546,13 +552,22 @@ export default {
           axios.delete(Servicio.getServe() + 'carreraUni/'+id).then(response => {
             if (response.data.status == 'success') {
               this.getCarrerasUniversidad();
-              this.toast("success", "Registro eliminado correctamente");
+              this.uniAlert({
+                color: 'success',
+                text: 'Registro eliminado correctamente'
+              });
             }
           }).catch((e) => {
             if (e.response.status === 500) {
-              this.toast("error", "Ocurrio un error al eliminar el registro");
+              this.uniAlert({
+                color: 'error',
+                text: 'Ocurrio un error al eliminar el registro'
+              });
             }else{
-              this.toast("error", e.response.data.msg);
+              this.uniAlert({
+                color: 'error',
+                text: e.response.data.msg
+              });
             }
           })
         }
@@ -560,11 +575,6 @@ export default {
     },
     seleccionarUA(unidadAcademicaId){
       this.carrera.unidad_academica_id = unidadAcademicaId;
-    },
-    toast(mcolor, mtext) {
-      this.snack.color = mcolor;
-      this.snack.text = mtext;
-      this.snack.state = true;
     },
   }
 }
@@ -577,13 +587,13 @@ export default {
   h5 {
     font-size: 1.1em;
     min-height: 30px;
-    color: rgba(9, 1, 46, 0.781);
+    /* color: rgba(9, 1, 46, 0.781); */
   }
   .logo-universidad{
-    min-width: 60px;
-    min-height: 60px;
-    max-width: 60px;
-    max-height: 60px;
+    min-width: 65px;
+    min-height: 65px;
+    max-width: 65px;
+    max-height: 65px;
     margin-right: 20px;
     cursor: pointer;
     background-repeat: no-repeat;
