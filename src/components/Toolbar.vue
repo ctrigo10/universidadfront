@@ -1,18 +1,12 @@
 <template>
-  <v-app-bar color="teal" fixed dark app>
+  <v-app-bar color="purple darken-1" fixed dark app>
     <v-app-bar-nav-icon @click.stop="drawerToggle"></v-app-bar-nav-icon>
-    <!-- <v-app-bar-nav-icon></v-app-bar-nav-icon> -->
-    <!-- <v-toolbar-title class="headline text-uppercase">
-      <span>&nbsp;</span>ddds
-    </v-toolbar-title>-->
-    <v-toolbar-title>Sistema de Universidades</v-toolbar-title>
+    <v-toolbar-title>PREUNIVERSITARIO</v-toolbar-title>
     <v-spacer></v-spacer>
     <v-btn icon @click="fullScreen()">
       <v-icon>{{ icon_fs }}</v-icon>
     </v-btn>
-    <v-btn color="teal" dark>
-      <v-icon>mdi-user</v-icon>Ingresar
-    </v-btn>
+    <v-btn color="purple" dark> <v-icon>mdi-user</v-icon>Ingresar </v-btn>
     <!-- <v-menu offset-y origin="center center" :nudge-bottom="10" transition="scale-transition">
       <v-btn icon large slot="activator">
         <v-avatar size="30px">
@@ -44,9 +38,6 @@
 <script>
 export default {
   name: "toolbar",
-  components: {
-    //
-  },
   data: () => ({
     icon_fs: "mdi-fullscreen",
     cod: "",
@@ -87,7 +78,7 @@ export default {
 
     logout() {
       this.$store.dispatch("logout").then(() => {
-        this.$router.push({ name: "prefacultad" });
+        this.$router.push({ name: "root" });
       });
     },
 

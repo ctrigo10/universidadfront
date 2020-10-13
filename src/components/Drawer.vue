@@ -7,8 +7,8 @@
     :mini-variant.sync="mini"
     :dark="$vuetify.dark"
   >
-    <v-toolbar>
-      <v-img src="../assets/logo-minedu.png" to="/" class="logo" />
+    <v-toolbar @click="redirectTo" style="cursor: pointer">
+      <v-img src="../assets/logo-minedu.png" class="logo" />
     </v-toolbar>
     <v-list nav dense link>
       <v-subheader>
@@ -67,18 +67,59 @@ export default {
     menus: [
       {
         text: "Inicio",
-        path: "/prefacultad",
+        path: "/preuniversitario",
         icon: "mdi-view-dashboard",
       },
       {
-        text: "Orientación Vocacional",
-        path: "/prefacultad/orientacion/vocacional",
-        icon: "mdi-account-check",
+        text: "Universidades",
+        path: "/preuniversitario/universidades",
+        icon: "mdi-bank",
       },
       {
-        text: "Universidades",
-        path: "/prefacultad/universidades",
-        icon: "mdi-bank",
+        text: "Inscripción",
+        path: "/preuniversitario/inscripcion",
+        icon: "mdi-file-account",
+      },
+      {
+        text: "Test Vocacional",
+        icon: "mdi-account-check",
+        submenu: [
+          {
+            text: "Aptitud numérica",
+            path: "/preuniversitario/aptitud/numerica",
+            icon: "mdi-check",
+          },
+          {
+            text: "Aptitud verbal",
+            path: "/preuniversitario/aptitud/verbal",
+            icon: "mdi-check",
+          },
+          {
+            text: "Aptitud mecánica",
+            path: "/preuniversitario/aptitud/mecanica",
+            icon: "mdi-check",
+          },
+          {
+            text: "Aptitud espacial",
+            path: "/preuniversitario/aptitud/espacial",
+            icon: "mdi-check",
+          },
+          {
+            text: "Aptitud abstracta",
+            path: "/preuniversitario/aptitud/abstracta",
+            icon: "mdi-check",
+          },
+          {
+            text: "Interes ocupacional",
+            path: "/preuniversitario/interes/ocupacional",
+            icon: "mdi-check",
+          },
+          {
+            text: "Resultado",
+            path: "/preuniversitario/resultado/prueba",
+            icon: "mdi-check",
+          },
+        ],
       },
       {
         icon: "mdi-folder",
@@ -86,7 +127,7 @@ export default {
         submenu: [
           {
             text: "Universidades",
-            path: "/prefacultad/universidades",
+            path: "/preuniversitario/universidades",
             icon: "mdi-view-list",
           },
           {
@@ -112,6 +153,9 @@ export default {
         this.icon_mini = "mdi-transfer-left";
       }
     },
+    redirectTo() {
+      this.$router.replace({ name: "root" });
+    },
   },
 };
 </script>
@@ -129,6 +173,6 @@ export default {
   .v-list-group--no-action
   > .v-list-group__items
   > .v-list-item {
-  padding: 0 8px;
+  padding: 2 4px;
 } */
 </style>
