@@ -96,7 +96,7 @@
                   label="Archivo de la R.M." 
                   v-model="resolucion.file" 
                   filled
-                  :rules="[v => !!v || 'El archivo es requerido']"
+                  :rules="modo == 'crear' ? [v => !!v || 'El archivo es requerido'] : []"
                 ></v-file-input>
               </v-card-text>
               <v-card-actions>

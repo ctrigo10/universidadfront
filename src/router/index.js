@@ -23,6 +23,8 @@ let paths = [
     name: "not-found",
     component: () => import(`@/views/NotFound.vue`),
   },
+
+  //Preuniversitario
   {
     path: "/preuniversitario",
     meta: { public: true },
@@ -92,18 +94,8 @@ let paths = [
       },
     ],
   },
-  /* {
-    path: "/preuniversitario/orientacion/vocacional",
-    meta: { public: false },
-    name: "orientacion-vocacional",
-    component: () => import(`@/views/preuniversitario/Publico.vue`),
-  }, */
-  /* {
-    path: "/preuniversitario/universidades",
-    meta: { public: false },
-    name: "universidades",
-    component: () => import(`@/views/preuniversitario/Publico.vue`),
-  }, */
+
+  //Universidades
   {
     path: "/universidades",
     meta: { public: false },
@@ -135,6 +127,12 @@ let paths = [
         component: () => import(`@/views/universidades/Universidades.vue`),
       },
       {
+        path: "admin",
+        name: "universidades-admin",
+        meta: { requiresAuth: true },
+        component: () => import(`@/views/universidades/UniversidadesAdmin.vue`),
+      },
+      {
         path: "gestion/:sie",
         name: "universidades-universidades-gestion",
         meta: { requiresAuth: true },
@@ -145,6 +143,12 @@ let paths = [
         name: "universidades-academico",
         meta: { requiresAuth: true },
         component: () => import(`@/views/universidades/Academico.vue`),
+      },
+      {
+        path: "usuarios-permisos",
+        name: "universidades-usuarios-permisos",
+        meta: { requiresAuth: true },
+        component: () => import(`@/views/universidades/UsuariosPermisos.vue`),
       },
     ],
   },
@@ -198,37 +202,6 @@ let paths = [
       },
     ],
   },
-
-  /* {
-    path: "/inicio",
-    meta: { public: true },
-    name: "inicio",
-    component: () => import(`@/views/Inicio.vue`),
-  },
-  {
-    path: "/autenticacion",
-    meta: { public: true },
-    name: "login",
-    component: () => import(`@/views/Login.vue`),
-  }, */
-  /* {
-    path: "/principal",
-    meta: { public: false, requiresAuth: true },
-    name: "principal",
-    component: () => import(`@/views/Principal.vue`),
-  }, */
-  /* {
-      path: '/usuarios',
-      meta: { public: false, requiresAuth: true },
-      name: 'usuarios',
-      component: () => import(`@/views/Usuarios.vue`)
-    },
-    {
-      path: '/roles',
-      meta: { public: false, requiresAuth: true },
-      name: 'roles',
-      component: () => import(`@/views/Roles.vue`)
-    }, */
 ];
 Vue.use(Router);
 const router = new Router({

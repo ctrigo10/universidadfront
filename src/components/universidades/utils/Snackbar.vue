@@ -25,12 +25,6 @@ export default {
   }),
   computed: {
     ...mapGetters({snack: 'getUniSnackbar'})
-    // snackbar() {
-
-    //   let snak = this.$store.getters.getUniSnackbar;
-    //   console.log(snak);
-    //   return 10
-    // },
   },
   methods: {
     ...mapMutations(["uniCloseAlert"]),
