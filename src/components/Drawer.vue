@@ -115,6 +115,11 @@ export default {
             icon: "mdi-check",
           },
           {
+            text: "Estilo aprendizaje",
+            path: "/preuniversitario/estilo/aprendizaje",
+            icon: "mdi-check",
+          },
+          {
             text: "Resultado",
             path: "/preuniversitario/resultado/prueba",
             icon: "mdi-check",

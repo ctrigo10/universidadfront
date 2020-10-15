@@ -7,7 +7,7 @@
           <v-card>
             <v-card-text>
               Ingrese código RUDE.
-              <v-form ref="iform">
+              <v-form ref="sform">
                 <v-row>
                   <v-col cols="12" sm="8" class="py-0">
                     <v-text-field
@@ -27,74 +27,59 @@
                   </v-col>
                 </v-row>
               </v-form>
-              <v-row>
-                <v-col cols="12" sm="6" md="4">
-                  <v-text-field
-                    v-model="estudiante.nombre"
-                    label="Nombres"
-                    filled
-                    disabled
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" sm="6" md="4">
-                  <v-text-field
-                    v-model="estudiante.paterno"
-                    label="Apellido paterno"
-                    filled
-                    disabled
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" sm="6" md="4">
-                  <v-text-field
-                    v-model="estudiante.materno"
-                    label="Apellido materno"
-                    filled
-                    disabled
-                  ></v-text-field>
-                </v-col>
-                <v-col
-                  v-if="estado == 'inscribirse'"
-                  cols="12"
-                  class="text-center"
-                >
-                  <v-btn large color="primary" @click="showConfirm">
-                    <v-icon small>mdi-send</v-icon>
-                    Inscribirse
-                  </v-btn>
-                </v-col>
-              </v-row>
-              <div v-if="estado == 'tabla'">
-                <h3 class="teal--text my-2">Resultado de la Prueba</h3>
-                <v-data-table
-                  :headers="headers"
-                  :items="respuestas"
-                  :loading="loading"
-                  calculate-widths
-                  no-data-text="No existen registros"
-                  no-results-text="Sin resultados"
-                  item-key="name"
-                  class="elevation-1"
-                  v-cloak
-                >
-                  <template v-slot:item.estado="{ item }">
-                    <td>
-                      <span
-                        v-if="
-                          item.estado == 1 ||
-                          item.estado == true ||
-                          item.estado == 'true'
-                        "
-                      >
-                        <v-chip small color="green lighten-4">activo</v-chip>
-                      </span>
-                      <span v-else>
-                        <v-chip small color="red lighten-4">inactivo</v-chip>
-                      </span>
-                    </td>
-                  </template>
-                </v-data-table>
-              </div>
-              <div v-else-if="data_loading" class="text-center">
+              <v-form ref="iform">
+                <v-row>
+                  <v-col cols="12" sm="6" md="4">
+                    <v-text-field
+                      v-model="estudiante.nombre"
+                      label="Nombres"
+                      filled
+                      disabled
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="4">
+                    <v-text-field
+                      v-model="estudiante.paterno"
+                      label="Apellido paterno"
+                      filled
+                      disabled
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="4">
+                    <v-text-field
+                      v-model="estudiante.materno"
+                      label="Apellido materno"
+                      filled
+                      disabled
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
+                <v-row v-if="estado == 'inscribirse'">
+                  <v-col cols="12" sm="6" md="4">
+                    <v-text-field
+                      v-model="estudiante.correo"
+                      label="Correo electrónico"
+                      filled
+                      :rules="[
+                        (v) => !!v || 'El campo es requerido',
+                        (v) => /.+@.+/.test(v) || 'Correo no valido',
+                      ]"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12" class="text-center">
+                    <v-btn large color="primary" @click="showConfirm">
+                      <v-icon small>mdi-send</v-icon>
+                      Inscribirse
+                    </v-btn>
+                  </v-col>
+                </v-row>
+                <v-row v-else-if="estado == 'inscrito'">
+                  <v-col cols="12" class="text-center">
+                    <h3 class="teal--text">El estudiante ya está inscrito</h3>
+                  </v-col>
+                </v-row>
+              </v-form>
+              <div v-if="data_loading" class="text-center">
                 <v-progress-circular indeterminate></v-progress-circular>
               </div>
             </v-card-text>
@@ -185,7 +170,7 @@ export default {
   computed: {},
   methods: {
     searchStudent() {
-      if (this.$refs.iform.validate()) {
+      if (this.$refs.sform.validate()) {
         this.btn_loading = true;
         this.estado = "";
         this.estudiante.preguntas = [];
@@ -227,8 +212,8 @@ export default {
           if (response.data.message == "not") {
             this.estado = "inscribirse";
           } else {
-            this.estado = "tabla";
-            this.inscripcion = response.data.result;
+            this.estado = "inscrito";
+            this.inscripcion = response.data.message;
           }
         })
         .catch((error) => {
@@ -238,12 +223,7 @@ export default {
     },
 
     async showConfirm() {
-      if (this.estudiante.nombre == "") {
-        this.toast(
-          "warning",
-          "Ingrese el codigo RUDE para buscar y verificar sus datos."
-        );
-      } else {
+      if (this.$refs.iform.validate()) {
         this.cdialog = true;
       }
     },
@@ -262,7 +242,6 @@ export default {
             this.cdialog = false;
             this.toast("success", response.data.message);
             this.estado = "";
-            this.checkResponse(this.estudiante.codigo_rude);
           } else if (response.status === 200) {
             this.toast("info", response.data.message);
           }

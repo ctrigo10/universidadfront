@@ -87,6 +87,13 @@ let paths = [
           import(`@/views/preuniversitario/InteresOcupacional.vue`),
       },
       {
+        path: "estilo/aprendizaje",
+        meta: { public: true },
+        name: "pre-estilo-aprendizaje",
+        component: () =>
+          import(`@/views/preuniversitario/EstiloAprendizaje.vue`),
+      },
+      {
         path: "resultado/prueba",
         meta: { public: true },
         name: "pre-resultado-prueba",
@@ -106,7 +113,7 @@ let paths = [
       {
         path: "",
         name: "universidades-publico",
-        component: () => import(`@/views/universidades/Publico.vue`),
+        component: () => import(`@/views/universidades/publico/Publico.vue`),
       },
       {
         path: "dashboard",

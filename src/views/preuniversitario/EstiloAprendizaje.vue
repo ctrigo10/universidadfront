@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-container grid-list-xl fluid>
-      <header-title title="Aptitud Abstracta"></header-title>
+      <header-title title="Estilos de Aprendizaje"></header-title>
       <v-row class="mb-6">
         <v-col cols="12" sm="12">
           <v-card>
@@ -58,76 +58,127 @@
               </v-row>
               <div v-if="estado == 'preguntas'">
                 <p>
-                  Esta prueba consta de 50 preguntas y tiene por finalidad
-                  analizar tu capacidad de pensar y razonar. Fíjate en los
-                  siguientes ejemplos para que aprendas como contestar:
-                  <v-btn small dark color="grey" @click="edialog = true"
-                    >Ejemplos</v-btn
+                  Los estilos de aprendizaje describe la manera en que usted
+                  aprende y maneja las ideas y las situaciones diarias en su
+                  vida. Cada oración lleva cuatro terminaciones. Evalúe las
+                  terminaciones de cada oración de acuerdo con lo que usted
+                  estima sería lo más apropiado en relación con la manera en la
+                  que usted actuaría al tener que aprender algo. Trate de
+                  recordar algunas situaciones recientes en las que tuvo que
+                  aprender algo nuevo.
+                </p>
+                <p>
+                  Evalúe con un “4” la terminación de la oración que describe la
+                  mejor manera en la que usted aprende, descendiendo hasta
+                  llegar a “1” para la terminación de la oración que estima que
+                  es la manera menos probable en que usted aprende algo.
+                </p>
+                <p>
+                  Asegúrense de evaluar las terminaciones de cada oración. Por
+                  favor no las combines.
+                </p>
+                <p>
+                  <b
+                    >EN UNA MISMA SECCIÓN NO PUEDEN REPETIRSE LOS NÚMEROS DE
+                    RESPUESTA</b
                   >
                 </p>
-                <h3 class="teal--text my-2">Preguntas (25 minutos)</h3>
-                <v-row>
-                  <v-col
-                    cols="12"
-                    md="6"
-                    v-for="(pregunta, idx) in estudiante.preguntas"
-                    :key="idx"
-                  >
-                    <div>
-                      <span>{{ pregunta.descripcion }}<br /></span>
-                      <img
-                        v-if="pregunta.imagen != ''"
-                        :src="`${server}images/preguntas/${pregunta.imagen}`"
-                      />
-                      <v-radio-group v-model="pregunta.respuesta" row>
-                        <v-radio
+                <h3 class="teal--text my-2">Cuestionario (20 minutos)</h3>
+                <v-form ref="iform">
+                  <v-row>
+                    <v-col
+                      cols="12"
+                      md="6"
+                      v-for="(pregunta, idx) in estudiante.preguntas"
+                      :key="idx"
+                    >
+                      <div>
+                        <span>{{ pregunta.descripcion }}<br /></span>
+                        <div
                           v-for="(oitem,
                           jdx) in pregunta.preuniversitario_opcions"
                           :key="jdx"
-                          :label="oitem.opcion"
-                          :value="jdx"
-                        ></v-radio>
-                      </v-radio-group>
-                    </div>
-                  </v-col>
-                  <v-col cols="12" class="text-center">
-                    <v-btn large color="primary" @click="showConfirm">
-                      <v-icon small>mdi-send</v-icon>
-                      Enviar
-                    </v-btn>
-                  </v-col>
-                </v-row>
+                        >
+                          <v-layout row wrap>
+                            <v-flex xs4 sm2>
+                              <v-select
+                                class="py-0"
+                                solo
+                                hide-details
+                                height="15"
+                                v-model="oitem.valor"
+                                :items="[1, 2, 3, 4]"
+                                :rules="[(v) => !!v]"
+                                required
+                              ></v-select>
+                            </v-flex>
+                            <v-flex xs8 xs10>
+                              <span>{{ oitem.opcion }}</span>
+                            </v-flex>
+                          </v-layout>
+                        </div>
+                        <div v-if="pregunta.respuesta != null">
+                          <p
+                            v-if="pregunta.respuesta == 'ok'"
+                            class="green--text"
+                          >
+                            Orden Correcto
+                          </p>
+                          <p v-else class="red--text">Orden Incorrecto</p>
+                        </div>
+                      </div>
+                    </v-col>
+                    <v-col cols="12" class="text-center">
+                      <v-btn
+                        :loading="check_loading"
+                        large
+                        color="primary"
+                        @click="showConfirm"
+                      >
+                        <v-icon small>mdi-send</v-icon>
+                        Enviar
+                      </v-btn>
+                    </v-col>
+                  </v-row>
+                </v-form>
               </div>
               <div v-else-if="estado == 'tabla'">
-                <h3 class="teal--text my-2">Resultado de la Prueba</h3>
-                <v-data-table
-                  :headers="headers"
-                  :items="respuestas"
-                  :loading="loading"
-                  calculate-widths
-                  no-data-text="No existen registros"
-                  no-results-text="Sin resultados"
-                  item-key="name"
-                  class="elevation-1"
-                  v-cloak
-                >
-                  <template v-slot:item.estado="{ item }">
-                    <td>
-                      <span
-                        v-if="
-                          item.estado == 1 ||
-                          item.estado == true ||
-                          item.estado == 'true'
-                        "
-                      >
-                        <v-chip small color="green lighten-4">activo</v-chip>
-                      </span>
-                      <span v-else>
-                        <v-chip small color="red lighten-4">inactivo</v-chip>
-                      </span>
-                    </td>
+                <h3 class="teal--text my-2">Resultado del Cuestionario</h3>
+                <v-simple-table>
+                  <template v-slot:default>
+                    <thead>
+                      <tr>
+                        <th class="text-left">Tendencias</th>
+                        <th class="text-center">Porcentaje (%)</th>
+                        <th class="text-left">Estado</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="(item, index) in respuestas" :key="index">
+                        <td>{{ item.respuesta }}</td>
+                        <td class="text-center">{{ item.porcentaje }}</td>
+                        <td>
+                          <span
+                            v-if="
+                              item.estado == 1 ||
+                              item.estado == true ||
+                              item.estado == 'true'
+                            "
+                          >
+                            <v-chip small color="green lighten-4"
+                              >activo</v-chip
+                            >
+                          </span>
+                          <span v-else>
+                            <v-chip small color="red lighten-4"
+                              >inactivo</v-chip
+                            >
+                          </span>
+                        </td>
+                      </tr>
+                    </tbody>
                   </template>
-                </v-data-table>
+                </v-simple-table>
               </div>
               <div v-else-if="data_loading" class="text-center">
                 <v-progress-circular indeterminate></v-progress-circular>
@@ -137,39 +188,13 @@
         </v-col>
       </v-row>
     </v-container>
-    <v-dialog v-model="edialog" scrollable width="500">
-      <v-card>
-        <v-card-text>
-          <p class="pt-4">
-            <b>Ejemplo 1.</b> La primera línea es vertical y las siguientes se
-            van inclinando cada vez más a la derecha. Siguiendo esta misma ley,
-            la próxima línea deberá ser horizontal. La casilla donde hay una
-            línea horizontal es la que está encima de la letra D.
-          </p>
-          <img :src="`${server}images/preguntas/imagen5e1.png`" width="100%" />
-          <p class="pt-4">
-            <b>Ejemplo 2.</b> Observe la posición del punto negro. Vea que va
-            moviéndose dentro del cuadro: esquina superior izquierda, esquina
-            superior derecha, esquina inferior derecha, esquina inferior
-            izquierda. ¿Cuál será su próxima posición? Volverá a la esquina
-            superior izquierda.
-          </p>
-          <img :src="`${server}images/preguntas/imagen5e2.png`" width="100%" />
-        </v-card-text>
-        <v-divider></v-divider>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="red" text @click="edialog = false"> Cerrar </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
     <v-dialog v-model="cdialog" width="300">
       <v-card>
         <v-card-title class="headline grey lighten-3" primary-title>
           <span class="headline">Alerta</span>
         </v-card-title>
         <v-card-text>
-          <p>¿Esta seguro(a) de enviar la prueba?</p>
+          <p>¿Esta seguro(a) de enviar el custionario?</p>
         </v-card-text>
         <v-divider></v-divider>
         <v-card-actions>
@@ -207,23 +232,13 @@ export default {
     HeaderTitle,
   },
   data: () => ({
-    edialog: false,
     cdialog: false,
     loading: false,
-    question_loading: false,
+    check_loading: false,
     data_loading: false,
     send_loading: false,
     btn_loading: false,
-    server: "",
     estado: "",
-    headers: [
-      { text: "Nombre ", value: "nombre" },
-      { text: "Paterno ", value: "paterno" },
-      { text: "Materno ", value: "materno" },
-      { text: "Aciertos (#) ", value: "acierto", align: "center" },
-      { text: "Porcentaje (%) ", value: "porcentaje", align: "center" },
-      { text: "Estado ", value: "estado" },
-    ],
     respuestas: [],
     estudiante: {
       id: "",
@@ -232,35 +247,20 @@ export default {
       paterno: "",
       materno: "",
       preguntas: [],
+      respuestas: [],
       acierto: 0,
       porcentaje: 0,
       categoria_id: "",
     },
-    cateory_id: 5,
+    cateory_id: 7,
     snack: {
       state: false,
       color: "success",
       text: "",
     },
   }),
-  mounted() {
-    this.server = Service.getServe();
-  },
-  computed: {
-    acierto() {
-      return this.estudiante.preguntas.reduce(
-        (sum, item) =>
-          sum +
-          (item.respuesta != null
-            ? item.preuniversitario_opcions[item.respuesta]
-                .respuesta_correcta === true
-              ? 1
-              : 0
-            : 0),
-        0
-      );
-    },
-  },
+  mounted() {},
+  computed: {},
   methods: {
     searchStudent() {
       if (this.$refs.sform.validate()) {
@@ -292,26 +292,11 @@ export default {
       }
     },
 
-    getQuestions(cateory_id) {
-      this.question_loading = true;
-      axios
-        .get(Service.getBasePre() + "lista/preguntas/" + cateory_id)
-        .then((response) => {
-          this.question_loading = false;
-          this.estudiante.preguntas = response.data;
-          // console.log(response.data);
-        })
-        .catch((error) => {
-          this.question_loading = false;
-          console.error("Error al cargar datos", error);
-        });
-    },
-
     checkResponse(codigo_rude, cateory_id) {
       this.data_loading = true;
       axios
         .post(
-          Service.getBasePre() + "check/respuesta",
+          Service.getBasePre() + "check/respuestaea",
           {
             codigo_rude: this.estudiante.codigo_rude,
             categoria_id: cateory_id,
@@ -335,20 +320,26 @@ export default {
     },
 
     async showConfirm() {
-      let responseExist = await this.estudiante.preguntas.find(
-        (item) => item.respuesta != null
-      );
-      if (responseExist) {
-        this.estudiante.acierto = this.acierto;
-        if (this.acierto > 0) {
-          let cantidadPreguntas = this.estudiante.preguntas.length;
-          this.estudiante.porcentaje = Math.round(
-            (this.acierto / cantidadPreguntas) * 100
-          );
+      if (this.$refs.iform.validate()) {
+        this.check_loading = true;
+        this.estudiante.respuestas = [0, 0, 0, 0];
+        for (const key in this.estudiante.preguntas) {
+          let sum_all = await this.estudiante.preguntas[
+            key
+          ].preuniversitario_opcions.reduce((sum, item, index) => {
+            this.estudiante.respuestas[index] += item.valor;
+            return sum + item.valor;
+          }, 0);
+          if (sum_all == 10) {
+            this.estudiante.preguntas[key].respuesta = "ok";
+          } else {
+            this.estudiante.preguntas[key].respuesta = "not";
+          }
         }
+        this.check_loading = false;
         this.cdialog = true;
       } else {
-        this.toast("warning", "Debe marcar las respuestas.");
+        this.toast("warning", "Responda todas las preguntas.");
       }
     },
 
@@ -357,7 +348,7 @@ export default {
       this.estudiante.categoria_id = this.cateory_id;
       axios
         .post(
-          Service.getBasePre() + "respuesta",
+          Service.getBasePre() + "respuesta/estilo/aprendizaje",
           this.estudiante,
           Service.getHeader()
         )
@@ -387,8 +378,3 @@ export default {
   },
 };
 </script>
-<style lang="css">
-.v-data-table .v-data-table-header {
-  background-color: #f5f5f5;
-}
-</style>

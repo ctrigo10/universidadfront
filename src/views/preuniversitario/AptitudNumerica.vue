@@ -6,12 +6,12 @@
         <v-col cols="12" sm="12">
           <v-card>
             <v-card-text>
-              Ingrese código RUDE o CI.
+              Ingrese código RUDE.
               <v-form ref="sform">
                 <v-row>
                   <v-col cols="12" sm="8" class="py-0">
                     <v-text-field
-                      label="Código RUDE/CI"
+                      label="Código RUDE"
                       v-model="estudiante.codigo_rude"
                       :rules="[(v) => !!v || 'Campo requerido']"
                     ></v-text-field>
@@ -34,6 +34,7 @@
                     label="Nombres"
                     filled
                     disabled
+                    hide-details
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
@@ -42,6 +43,7 @@
                     label="Apellido paterno"
                     filled
                     disabled
+                    hide-details
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
@@ -50,6 +52,7 @@
                     label="Apellido materno"
                     filled
                     disabled
+                    hide-details
                   ></v-text-field>
                 </v-col>
               </v-row>
@@ -92,34 +95,45 @@
               </div>
               <div v-else-if="estado == 'tabla'">
                 <h3 class="teal--text my-2">Resultado de la Prueba</h3>
-                <v-data-table
-                  :headers="headers"
-                  :items="respuestas"
-                  :loading="loading"
-                  calculate-widths
-                  no-data-text="No existen registros"
-                  no-results-text="Sin resultados"
-                  item-key="name"
-                  class="elevation-1"
-                  v-cloak
-                >
-                  <template v-slot:item.estado="{ item }">
-                    <td>
-                      <span
-                        v-if="
-                          item.estado == 1 ||
-                          item.estado == true ||
-                          item.estado == 'true'
-                        "
+                <v-simple-table>
+                  <template v-slot:default>
+                    <thead>
+                      <tr>
+                        <th class="text-left">Nombre</th>
+                        <th class="text-left">Paterno</th>
+                        <th class="text-left">Materno</th>
+                        <th class="text-center">Aciertos (#)</th>
+                        <th class="text-center">Porcentaje (%)</th>
+                        <th class="text-left">Estado</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr
+                        v-for="(item, index) in respuestas" :key="index"
                       >
-                        <v-chip small color="green lighten-4">activo</v-chip>
-                      </span>
-                      <span v-else>
-                        <v-chip small color="red lighten-4">inactivo</v-chip>
-                      </span>
-                    </td>
+                        <td>{{ item.nombre }}</td>
+                        <td>{{ item.paterno }}</td>
+                        <td>{{ item.materno }}</td>
+                        <td class="text-center">{{ item.acierto }}</td>
+                        <td class="text-center">{{ item.porcentaje }}</td>
+                        <td>
+                          <span
+                            v-if="
+                              item.estado == 1 ||
+                              item.estado == true ||
+                              item.estado == 'true'
+                            "
+                          >
+                            <v-chip small color="green lighten-4">activo</v-chip>
+                          </span>
+                          <span v-else>
+                            <v-chip small color="red lighten-4">inactivo</v-chip>
+                          </span>
+                        </td>
+                      </tr>
+                    </tbody>
                   </template>
-                </v-data-table>
+                </v-simple-table>
               </div>
               <div v-else-if="data_loading" class="text-center">
                 <v-progress-circular indeterminate></v-progress-circular>
@@ -245,14 +259,6 @@ export default {
     btn_loading: false,
     server: "",
     estado: "",
-    headers: [
-      { text: "Nombre ", value: "nombre" },
-      { text: "Paterno ", value: "paterno" },
-      { text: "Materno ", value: "materno" },
-      { text: "Aciertos (#) ", value: "acierto", align: "center" },
-      { text: "Porcentaje (%) ", value: "porcentaje", align: "center" },
-      { text: "Estado ", value: "estado" },
-    ],
     respuestas: [],
     estudiante: {
       id: "",

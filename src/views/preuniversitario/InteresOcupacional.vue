@@ -6,12 +6,12 @@
         <v-col cols="12" sm="12">
           <v-card>
             <v-card-text>
-              Ingrese código RUDE o CI.
+              Ingrese código RUDE.
               <v-form ref="sform">
                 <v-row>
                   <v-col cols="12" sm="8" class="py-0">
                     <v-text-field
-                      label="Código RUDE/CI"
+                      label="Código RUDE"
                       v-model="estudiante.codigo_rude"
                       :rules="[(v) => !!v || 'Campo requerido']"
                     ></v-text-field>
@@ -57,15 +57,21 @@
                 </v-col>
               </v-row>
               <div v-if="estado == 'preguntas'">
+                <p>El siguiente cuestionario tiene por objeto ayudarte a elegir la clase de estudios y ocupaciones que son más apropiados para ti.</p>
+                <p>Este cuestionario no es una prueba, sino una serie de preguntas sobre tus gustos o intereses. Si contestas a cada una de ellas, en forma franca y sincera, de manera cuidadosa, los resultados serán útiles para ti y ayudarte a planear tus estudios y tu carrera.</p>
+                <p>Fíjate en el siguiente ejemplo, para mostrarte la forma cómo debes contestar a cada una de las preguntas del cuestionario.</p>
                 <p>
-                  Esta prueba consta de 50 preguntas y tiene por finalidad
-                  analizar tu capacidad de pensar y razonar. Fíjate en los
-                  siguientes ejemplos para que aprendas como contestar:
-                  <v-btn small dark color="grey" @click="edialog = true"
-                    >Ejemplos</v-btn
-                  >
+                  <b>¿Cuánto te gustaría comer cuando tienes hambre?</b><br>
+                  La persona que escribió el 5, expresó que “le gusta mucho” comer cuando tiene hambre. En general, los números que escribirás son del 1 al 5 y significarán:
+                  <ul>
+                    <li>5 significa “me gusta mucho”</li>
+                    <li>4 significa “me gusta un poco”</li>
+                    <li>3 significa “me es indiferente, puesto que ni me gusta ni me disgusta”</li>
+                    <li>2 significa “me disgusta un poco”</li>
+                    <li>1 significa “me disgusta mucho”</li>
+                  </ul>
                 </p>
-                <h3 class="teal--text my-2">Preguntas (30 minutos)</h3>
+                <h3 class="teal--text my-2">Cuestionario (30 minutos)</h3>
                 <v-form ref="iform">
                   <v-row>
                     <v-col
@@ -98,42 +104,49 @@
                     <v-col cols="12" class="text-center">
                       <v-btn large color="primary" @click="showConfirm">
                         <v-icon small>mdi-send</v-icon>
-                        Inscribirse
+                        Enviar
                       </v-btn>
                     </v-col>
                   </v-row>
                 </v-form>
               </div>
               <div v-else-if="estado == 'tabla'">
-                <h3 class="teal--text my-2">Resultado de la Prueba</h3>
-                <v-data-table
-                  :headers="headers"
-                  :items="respuestas"
-                  :loading="loading"
-                  calculate-widths
-                  no-data-text="No existen registros"
-                  no-results-text="Sin resultados"
-                  item-key="name"
-                  class="elevation-1"
-                  v-cloak
-                >
-                  <template v-slot:item.estado="{ item }">
-                    <td>
-                      <span
-                        v-if="
-                          item.estado == 1 ||
-                          item.estado == true ||
-                          item.estado == 'true'
-                        "
+                <h3 class="teal--text my-2">Resultado del Cuestionario</h3>
+                <v-simple-table>
+                  <template v-slot:default>
+                    <thead>
+                      <tr>
+                        <th class="text-left">Carreras</th>
+                        <th class="text-center">Aciertos (#)</th>
+                        <th class="text-center">Porcentaje (%)</th>
+                        <th class="text-left">Estado</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr
+                        v-for="(item, index) in respuestas" :key="index"
                       >
-                        <v-chip small color="green lighten-4">activo</v-chip>
-                      </span>
-                      <span v-else>
-                        <v-chip small color="red lighten-4">inactivo</v-chip>
-                      </span>
-                    </td>
+                        <td>{{ item.respuesta }}</td>
+                        <td class="text-center">{{ item.acierto }}</td>
+                        <td class="text-center">{{ item.porcentaje }}</td>
+                        <td>
+                          <span
+                            v-if="
+                              item.estado == 1 ||
+                              item.estado == true ||
+                              item.estado == 'true'
+                            "
+                          >
+                            <v-chip small color="green lighten-4">activo</v-chip>
+                          </span>
+                          <span v-else>
+                            <v-chip small color="red lighten-4">inactivo</v-chip>
+                          </span>
+                        </td>
+                      </tr>
+                    </tbody>
                   </template>
-                </v-data-table>
+                </v-simple-table>
               </div>
               <div v-else-if="data_loading" class="text-center">
                 <v-progress-circular indeterminate></v-progress-circular>
@@ -143,45 +156,13 @@
         </v-col>
       </v-row>
     </v-container>
-    <v-dialog v-model="edialog" scrollable width="500">
-      <v-card>
-        <v-card-text>
-          <p class="pt-4">
-            <b>Ejemplo 1.</b> ¿Cuál de estas cinco palabras significa que es una
-            manzana?
-            <ul>
-              <li>Flor</li>
-              <li>Árbol</li>
-              <li>Legumbre</li>
-              <li><b>Fruto</b> (respuesta)</li>
-              <li>Animal</li>
-            </ul>
-          </p>
-          <p class="pt-4">
-            <b>Ejemplo 2.</b> ¿Cuál de estas cosas es esférica?
-            <ul>
-              <li>Libro</li>
-              <li>Ladrillo</li>
-              <li><b>Pelota</b> (respuestas)</li>
-              <li>Casas</li>
-              <li>Baúl</li>
-            </ul>
-          </p>
-        </v-card-text>
-        <v-divider></v-divider>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="red" text @click="edialog = false"> Cerrar </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
     <v-dialog v-model="cdialog" width="300">
       <v-card>
         <v-card-title class="headline grey lighten-3" primary-title>
           <span class="headline">Alerta</span>
         </v-card-title>
         <v-card-text>
-          <p>¿Esta seguro(a) de enviar la prueba?</p>
+          <p>¿Esta seguro(a) de enviar el custionario?</p>
         </v-card-text>
         <v-divider></v-divider>
         <v-card-actions>
@@ -219,7 +200,6 @@ export default {
     HeaderTitle,
   },
   data: () => ({
-    edialog: false,
     cdialog: false,
     loading: false,
     question_loading: false,
@@ -227,16 +207,10 @@ export default {
     send_loading: false,
     btn_loading: false,
     estado: "",
-    headers: [
-      { text: "Carreras ", value: "respuesta" },
-      { text: "Aciertos (#) ", value: "acierto", align: "center" },
-      { text: "Porcentaje (%) ", value: "porcentaje", align: "center" },
-      { text: "Estado ", value: "estado" },
-    ],
     respuestas: [],
     estudiante: {
       id: "",
-      codigo_rude: "819813412008154",
+      codigo_rude: "",
       nombre: "",
       paterno: "",
       materno: "",
