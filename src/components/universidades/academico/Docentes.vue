@@ -1,7 +1,8 @@
 <template>
   <div>
+    <h3>Docentes</h3>
     <v-row>
-      <v-col sm="6" xs="12">
+      <v-col cols="12" lg="6" md="6" sm="4" xs="4">
         <v-select
           :items="gestiones"
           item-text="gestion"
@@ -11,7 +12,7 @@
           @change="getDocentes()"
         ></v-select>
       </v-col>
-      <v-col sm="6" xs="12">
+      <v-col cols="12" lg="6" md="6" sm="8" xs="8">
         <v-select
           :items="periodos"
           item-text="periodo"

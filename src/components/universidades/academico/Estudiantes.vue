@@ -1,7 +1,8 @@
 <template>
   <div>
+    <h3>Estudiantes</h3>
     <v-row>
-      <v-col sm="4" xs="12">
+      <v-col cols="12" sm="4" xs="12">
         <v-select
           :items="gestiones"
           item-text="gestion"
@@ -11,7 +12,7 @@
           @change="getEstudiantes()"
         ></v-select>
       </v-col>
-      <v-col sm="4" xs="12">
+      <v-col cols="12" sm="4" xs="12">
         <v-select
           :items="periodos"
           item-text="periodo"
@@ -23,7 +24,7 @@
 
         </v-select>
       </v-col>
-       <v-col sm="4" xs="12">
+      <v-col cols="12" sm="4" xs="12">
         <v-select
           :items="carreras"
           item-text="carrera"
@@ -52,7 +53,7 @@
                   </v-list-item-avatar>
                   <v-list-item-content>
                     <v-list-item-title>{{item.nombre}} {{item.paterno}} {{item.materno}}</v-list-item-title>
-                    <v-list-item-subtitle>C.I.: {{item.carnet}} {{item.complemento}}</v-list-item-subtitle>
+                    <v-list-item-subtitle>C.I.: {{item.carnet_identidad}} {{item.complemento}}</v-list-item-subtitle>
                   </v-list-item-content>
                 </v-list-item>
               </v-list-item-group>

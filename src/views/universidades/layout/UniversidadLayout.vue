@@ -118,22 +118,30 @@ export default {
         href: 'universidades-dashboard', 
         icon: 'mdi-home',
         rols: [57,48]
-      },{
-        title: 'Carreras', 
-        href: 'universidades-carreras', 
-        icon: 'mdi-file',
-        rols: [48]
-      },{
-        title: 'Universidades', 
-        href: 'universidades-universidades', 
+      },
+      {
+        title: 'Administración', 
+        href: 'universidades-admin-home', 
         icon: 'mdi-domain',
-        rols: [48]
-      },{
-        title: 'Académico', 
-        href: 'universidades-academico', 
-        icon: 'mdi-alpha-a-box',
-        rols: [57,48]
-      },{
+        rols: [51,48]
+      },
+      // {
+      //   title: 'Carreras', 
+      //   href: 'universidades-carreras', 
+      //   icon: 'mdi-file',
+      //   rols: [48]
+      // },{
+      //   title: 'Universidades', 
+      //   href: 'universidades-universidades', 
+      //   icon: 'mdi-domain',
+      //   rols: [48]
+      // },{
+      //   title: 'Académico', 
+      //   href: 'universidades-academico', 
+      //   icon: 'mdi-alpha-a-box',
+      //   rols: [57,48]
+      // },
+      {
         title: 'Configuración', 
         icon: 'mdi-cog',
         rols: [57,48],
@@ -142,13 +150,12 @@ export default {
             title: 'Permisos', 
             href: 'universidades-usuarios-permisos', 
             icon: 'mdi-account-cog',
+          },{
+            title: 'Operativos', 
+            href: 'universidades-gestion-operativos', 
+            icon: 'mdi-content-save-cog-outline',
           }
         ]
-      },{
-        title: 'Administración', 
-        href: 'universidades-admin', 
-        icon: 'mdi-domain',
-        rols: [51]
       }
     ],
     menu: true,
@@ -165,7 +172,10 @@ export default {
     tienePermiso(menu){
       if (!menu.rols) {
         // si el menu es publico lo mostramos
-        return true;
+        if (this.usuarioLogueado == null) {
+          return true;
+        }
+        return false
       }else{
         // si el menu no es publico verificamos si el usuario esta logueado
         let permiso = false;

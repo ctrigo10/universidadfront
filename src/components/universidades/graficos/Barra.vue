@@ -1,98 +1,34 @@
-<template>
-  <div>
-    <v-row>
-      <v-col
-        cols="12"
-        lg="4"
-        md="4"
-        sm="6"
-        xs="6"
-        v-for="(item, index) in tipos" :key="index"
-      >
-        <v-card
-          :color="getColor(item)"
-          dark
-        >
-          <v-card-title class="headline">{{item.count}}</v-card-title>
-
-          <v-card-subtitle>{{item.dependencia}}</v-card-subtitle>
-        </v-card>
-      </v-col>
-    </v-row>
-    <br>
-    <h4>Estadísticas</h4>
-    <v-row>
-      <v-col cols="12" lg="4" md="4" sm="4" xs="12">
-        <Barra />
-      </v-col>
-      <v-col cols="12" lg="4" md="4" sm="4" xs="12">
-        <Torta />
-      </v-col>
-    </v-row>
-  </div>
-</template>
-
 <script>
-import UniversidadesService from '@/services/universidadesService'
-import Barra from '@/components/universidades/graficos/Barra'
-import Torta from '@/components/universidades/graficos/Torta'
+import { Bar } from 'vue-chartjs'
+
 export default {
-  name: 'dashboard',
-  components: {
-    Barra,
-    Torta
-  },
+  extends: Bar,
+  // props: ['chartdata', 'options'],
   data: () => ({
-    tipos: [],
     chartdata: '',
     options: ''
   }),
-  computed: {
-    
-  },
-  mounted(){
-    this.getTipos()
-    this.getCantidadUniversidadesPorDepartamento()
+  mounted () {
+    this.getDatos() 
   },
   methods: {
-    getColor(item){
-      let color = '#red';
-      if (item.dependencia == 'Privada') {
-        color = "#9d14af";
-      }else{
-        if (item.dependencia == 'Indigena') {
-          color = "#d4b609";
-        }else{
-          color = "#1a65ac";
-        }
-      }
-      return color;
-    },
-    async getTipos(){
-      try {
-        let response = await UniversidadesService.getTotalesTiposUniversidades();  
-        let data = await response.data;
-        this.tipos = data.data;
-      } catch (error) {
-        console.log(error)
-      }
-    },
-    getCantidadUniversidadesPorDepartamento(){
-      try {
-
-        let datos = [
+    getDatos(){
+       let datos = [
               {
                 departamento: 'La Paz',
                 universidades: [
                   {
+                    id: 1,
                     tipo: 'Público',
                     cantidad: 4
                   },
                   {
+                    id: 2,
                     tipo: 'Regimen especial',
                     cantidad: 6
                   },
                   {
+                    id: 3,
                     tipo: 'Indígena',
                     cantidad: 10
                   },
@@ -102,14 +38,17 @@ export default {
                 departamento: 'Oruro',
                 universidades: [
                   {
+                    id: 1,
                     tipo: 'Público',
                     cantidad: 9
                   },
                   {
+                    id: 2,
                     tipo: 'Regimen especial',
                     cantidad: 0
                   },
                   {
+                    id: 3,
                     tipo: 'Indígena',
                     cantidad: 15
                   },
@@ -118,14 +57,17 @@ export default {
                 departamento: 'cochabamba',
                 universidades: [
                   {
+                    id: 1,
                     tipo: 'Público',
                     cantidad: 4
                   },
                   {
+                    id: 2,
                     tipo: 'Regimen especial',
                     cantidad: 6
                   },
                   {
+                    id: 3,
                     tipo: 'Indígena',
                     cantidad: 10
                   },
@@ -135,14 +77,17 @@ export default {
                 departamento: 'Sucre',
                 universidades: [
                   {
+                    id: 1,
                     tipo: 'Público',
                     cantidad: 9
                   },
                   {
+                    id: 2,
                     tipo: 'Regimen especial',
                     cantidad: 0
                   },
                   {
+                    id: 3,
                     tipo: 'Indígena',
                     cantidad: 15
                   },
@@ -151,14 +96,17 @@ export default {
                 departamento: 'Tarija',
                 universidades: [
                   {
+                    id: 1,
                     tipo: 'Público',
                     cantidad: 4
                   },
                   {
+                    id: 2,
                     tipo: 'Regimen especial',
                     cantidad: 6
                   },
                   {
+                    id: 3,
                     tipo: 'Indígena',
                     cantidad: 10
                   },
@@ -168,14 +116,17 @@ export default {
                 departamento: 'Pando',
                 universidades: [
                   {
+                    id: 1,
                     tipo: 'Público',
                     cantidad: 9
                   },
                   {
+                    id: 2,
                     tipo: 'Regimen especial',
                     cantidad: 0
                   },
                   {
+                    id: 3,
                     tipo: 'Indígena',
                     cantidad: 15
                   },
@@ -184,14 +135,17 @@ export default {
                 departamento: 'Sucre',
                 universidades: [
                   {
+                    id: 1,
                     tipo: 'Público',
                     cantidad: 9
                   },
                   {
+                    id: 2,
                     tipo: 'Regimen especial',
                     cantidad: 0
                   },
                   {
+                    id: 3,
                     tipo: 'Indígena',
                     cantidad: 15
                   },
@@ -200,14 +154,17 @@ export default {
                 departamento: 'Tarija',
                 universidades: [
                   {
+                    id: 1,
                     tipo: 'Público',
                     cantidad: 4
                   },
                   {
+                    id: 2,
                     tipo: 'Regimen especial',
                     cantidad: 6
                   },
                   {
+                    id: 3,
                     tipo: 'Indígena',
                     cantidad: 10
                   },
@@ -217,14 +174,17 @@ export default {
                 departamento: 'Pando',
                 universidades: [
                   {
+                    id: 1,
                     tipo: 'Público',
                     cantidad: 9
                   },
                   {
+                    id: 2,
                     tipo: 'Regimen especial',
                     cantidad: 0
                   },
                   {
+                    id: 3,
                     tipo: 'Indígena',
                     cantidad: 15
                   },
@@ -277,37 +237,11 @@ export default {
             text: 'Cantidad de universidades por departamento'
           }
         }
-        console.log('chartdata', this.chartdata)
-      } catch (error) {
-        console.log(error)
-      }
-    },
-    getColorBarra(tipo){
-      let color = '#3e95cd'
-      switch (tipo) {
-        case 'Público':
-            color = '#3e95cd'
-            break;
-        case 'Regimen especial':
-            color = '#c45850'
-            break;
-        case 'Indígena':
-            color = '#e8c3b9'
-            break;
-      }
-      return color
+        this.renderChart(this.chartdata, this.options)
     }
   }
 }
 </script>
 
 <style>
-  .prueba {
-    color: #d4b609;
-  }
-  .small {
-    max-width: 500px;
-    /* max-height: 200px;
-    margin:  150px auto; */
-  }
 </style>
