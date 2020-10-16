@@ -50,6 +50,7 @@ export default {
     }
   },
   mounted(){
+    console.log(this.logo)
     this.actualizar = false;
   },
   methods : {
@@ -83,14 +84,15 @@ export default {
 }
 </script>
 <style scope>
-.contenido-logo{
+/* .contenido-logo{
   padding-top: 20px;
-}
+} */
   .logo-maximizado {
+    position: relative;
     display: block;
     width: 100%;
     height: auto;
-    min-height: 350px;
+    min-height: 100px;
     background-color: #FFFFFF;
   }
 </style>

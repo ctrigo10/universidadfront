@@ -1,9 +1,5 @@
 <template>
-  <v-dialog
-    v-model="dialogUniversidad"
-    max-width="500px"
-    transition="dialog-transition"
-  >
+  
     <v-card>
       <v-card-title primary-title>
         Actualizar datos
@@ -47,20 +43,24 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="secondary" @click="dialogUniversidad = false">Cancelar</v-btn>
+        <v-btn color="secondary" @click="close">Cancelar</v-btn>
         <v-btn color="primary" @click="update">Actualizar</v-btn>
       </v-card-actions>
     </v-card>
-  </v-dialog>
+
 </template>
 
 <script>
+import UniversidadesService from '@/services/universidadesService'
+import { mapMutations } from 'vuex';
 export default {
   name: 'edit-form',
+  props: ['universidad'],
   data: () => ({
-    universidad: ''
+    // universidad: ''
   }),
   methods: {
+    ...mapMutations(['uniAlert']),
     edit(item){
       this.universidad = item;
       console.log('editando', item)
@@ -73,8 +73,7 @@ export default {
         console.log(data);
         if (data.status == 'success') {
           this.uniAlert({ color: 'success', text: 'Registro actualizado correctamente' });
-          this.obtenerUniversidades();
-          this.dialogUniversidad = false;
+          this.close();
         }else{
           this.uniAlert({ color: 'error', text: 'Error al actualizar el registro' });
         }
@@ -83,6 +82,9 @@ export default {
         this.uniAlert({ color: 'error', text: 'Error al actualizar el registro' });
       }
     },
+    close(){
+      this.$emit('closeDialog', false)
+    }
   }
 }
 </script>

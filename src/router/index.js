@@ -114,6 +114,10 @@ let paths = [
         path: "",
         name: "universidades-publico",
         component: () => import(`@/views/universidades/publico/Publico.vue`),
+      }, {
+        path: ":sie",
+        name: "universidades-publico-informacion",
+        component: () => import(`@/views/universidades/publico/Informacion.vue`),
       },
       {
         path: "dashboard",

@@ -84,7 +84,7 @@
             <v-spacer></v-spacer>
             <v-tooltip left>
               <template v-slot:activator="{ on, attrs }">
-                <v-btn color="primary" v-bind="attrs" v-on="on">  <v-icon>mdi-pencil</v-icon></v-btn>
+                <v-btn color="primary" v-bind="attrs" v-on="on" @click="edit()">  <v-icon>mdi-pencil</v-icon></v-btn>
               </template>
               <span>Actualizar Información</span>
             </v-tooltip>
@@ -97,6 +97,10 @@
             <h4>Logo</h4>
             <div class="div-logo">
               <v-img :src="`${host + universidad.imagen }`" ></v-img>
+              <div v-if="1 ==2">
+
+                <Logo :idUniversidad="universidad.id" :logo="'http://localhost:3000/universidad/'+universidad.imagen"/>
+              </div>
             </div>
           </v-card-text>
           <v-card-actions>
@@ -116,7 +120,7 @@
       v-model="dialogFormulario"
       max-width="500px"
     >
-      
+      <EditForm @closeDialog="closeDialog" :universidad="universidad"/>
     </v-dialog>
 
   </div>
@@ -125,16 +129,28 @@
 <script>
 import Servicio from '@/services/general'
 import Dato from '@/components/universidades/universidad/Dato'
+import EditForm from '@/components/universidades/universidad/EditForm'
+import Logo from '@/components/universidades/Logo'
 export default {
   name: 'datos-generales',
   props: ['universidad'],
   components: {
-    Dato
+    Dato,
+    EditForm,
+    Logo
   },
   data: () => ({
     host: Servicio.getServe(),
     dialogFormulario: false
-  })
+  }),
+  methods: {
+    edit(){
+      this.dialogFormulario = true
+    },
+    closeDialog(){
+      this.dialogFormulario = false
+    }
+  }
 }
 </script>
 
