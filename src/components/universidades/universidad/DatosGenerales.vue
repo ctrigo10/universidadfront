@@ -1,17 +1,20 @@
 <template>
-  <div>
+  <div v-cloak>
     <h3>Información general</h3>
     <v-row>
       <v-col cols="12" lg="9" md="9" sm="8" xs="12">
-        <v-card>
+        <v-card v-if="Object.keys(universidad).length">
           <v-card-text>
             <h4>1.- Datos Generales</h4>
             <v-row>
               <v-col cols="12" lg="3" md="4" sm="6" xs="12">
                 <Dato label="Código SIE" :value="universidad.id" />
               </v-col>
-              <v-col cols="12" lg="6" md="8" sm="12" xs="12">
-                <Dato label="Nombre" :value="universidad.institucioneducativa" />
+              <v-col cols="12" lg="5" md="8" sm="12" xs="12">
+                <Dato label="Nombre Universidad" :value="universidad.institucioneducativa" />
+              </v-col>
+              <v-col cols="12" lg="4" md="8" sm="12" xs="12">
+                <Dato label="SEDE/SUBSEDE" :value="universidad.nombre_sede_subsede" />
               </v-col>
               <v-col cols="12" lg="3" md="4" sm="6" xs="12">
                 <Dato label="Dependencia" :value="universidad.dependencia" />
@@ -31,27 +34,30 @@
               <v-col cols="12" lg="3" md="4" sm="6" xs="12">
                 <Dato label="Sitio web" :value="universidad.sitio_web" />
               </v-col>
-              <v-col cols="12" lg="3" md="4" sm="6" xs="12">
+              <v-col cols="12" lg="3" md="4" sm="6" xs="12" v-if="universidad.id == universidad.sede">
                 <Dato label="Rector" :value="universidad.rector? universidad.rector : ''" />
               </v-col>
               <v-col cols="12" lg="3" md="4" sm="6" xs="12">
                 <Dato label="Vice Rector" :value="universidad.vicerector? universidad.vicerector : ''" />
               </v-col>
+              <v-col cols="12" lg="3" md="4" sm="6" xs="12">
+                <Dato label="Fecha de Creación" :value="universidad.fecha_creacion | formatearFecha" />
+              </v-col>
             </v-row>
             <br>
             <h4>2.- Datos legales</h4>
             <v-row>
-              <v-col cols="12" sm="3" xs="6">
+              <v-col cols="12" sm="3" xs="6" v-if="universidad.id == universidad.sede">
                 <Dato label="Decreto Supremo" :value="universidad.decreto_supremo" />
               </v-col>
-              <v-col cols="12" sm="3" xs="6">
-                <Dato label="Fecha Decreto Supremo" :value="universidad.fecha_decreto_supremo" />
+              <v-col cols="12" sm="3" xs="6" v-if="universidad.id == universidad.sede">
+                <Dato label="Fecha Decreto Supremo" :value="universidad.fecha_decreto_supremo | formatearFecha" />
               </v-col>
               <v-col cols="12" sm="3" xs="6">
                 <Dato label="Resolución Ministerial" :value="universidad.nro_resolucion" />
               </v-col>
               <v-col cols="12" sm="3" xs="6">
-                <Dato label="Fecha Resolución" :value="universidad.fecha_resolucion" />
+                <Dato label="Fecha Resolución" :value="universidad.fecha_resolucion | formatearFecha" />
               </v-col>
             </v-row>
             <br>
@@ -82,12 +88,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-tooltip left>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn color="primary" v-bind="attrs" v-on="on" @click="edit()">  <v-icon>mdi-pencil</v-icon></v-btn>
-              </template>
-              <span>Actualizar Información</span>
-            </v-tooltip>
+            <EditFormFull :datosUniversidad="universidad"  @actualizar="obtenerDatosUniversidad"/>
           </v-card-actions>
         </v-card>
       </v-col>
@@ -96,14 +97,10 @@
           <v-card-text>
             <h4>Logo</h4>
             <div class="div-logo">
-              <v-img :src="`${host + universidad.imagen }`" ></v-img>
-              <div v-if="1 ==2">
-
-                <Logo :idUniversidad="universidad.id" :logo="'http://localhost:3000/universidad/'+universidad.imagen"/>
-              </div>
+            <Logo :idUniversidad="universidad.id" :logo="'http://localhost:3000/'+universidad.imagen"/>
             </div>
           </v-card-text>
-          <v-card-actions>
+          <!-- <v-card-actions>
             <v-spacer></v-spacer>
             <v-tooltip left>
               <template v-slot:activator="{ on, attrs }">
@@ -111,53 +108,69 @@
               </template>
               <span>Actualizar logo</span>
             </v-tooltip>
-          </v-card-actions>
+          </v-card-actions> -->
         </v-card>
       </v-col>
     </v-row>
-
-    <v-dialog
-      v-model="dialogFormulario"
-      max-width="500px"
-    >
-      <EditForm @closeDialog="closeDialog" :universidad="universidad"/>
-    </v-dialog>
-
   </div>
 </template>
 
 <script>
 import Servicio from '@/services/general'
+import UniversidadesService from '@/services/universidadesService'
 import Dato from '@/components/universidades/universidad/Dato'
-import EditForm from '@/components/universidades/universidad/EditForm'
+import EditFormFull from '@/components/universidades/universidad/EditFormFull'
 import Logo from '@/components/universidades/Logo'
 export default {
   name: 'datos-generales',
-  props: ['universidad'],
+  props: ['idUniversidad'],
   components: {
     Dato,
-    EditForm,
+    EditFormFull,
     Logo
   },
   data: () => ({
+    universidad: {},
     host: Servicio.getServe(),
-    dialogFormulario: false
+    usuarioLogueado: ''
   }),
-  methods: {
-    edit(){
-      this.dialogFormulario = true
-    },
-    closeDialog(){
-      this.dialogFormulario = false
+  filters: {
+    formatearFecha(fecha) {
+      if (fecha != null && fecha != '') {
+        let datos = fecha.split('-')
+        if (datos.length == 3) {
+          return datos[2]+'-'+datos[1]+'-'+datos[0]
+        }
+      }
+      return fecha
     }
+  },
+  watch: {
+    idUniversidad: function(){
+      this.obtenerDatosUniversidad()  
+    }
+  },
+  mounted() {
+    this.usuarioLogueado = Servicio.getUser()
+    console.log('this', this.usuarioLogueado)
+    this.obtenerDatosUniversidad()
+  },
+  methods: {
+    async obtenerDatosUniversidad(){
+      try {
+        let response = await UniversidadesService.getDatosUniversidad(this.idUniversidad);
+        let data = await response.data.data;
+        this.universidad = data;
+      } catch (error) {
+        console.log(error)
+      }
+    },
   }
 }
 </script>
 
 <style>
-  .div-logo {
-    align-items: center;
-    display: flex;
-    justify-content: center !important;
+  .v-cloak {
+    display: none;
   }
 </style>

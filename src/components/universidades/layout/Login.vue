@@ -17,7 +17,12 @@
               class="uni-avatar"
             >
           </v-avatar>
-          <span class="username">{{ usuarioLogueado.nombre }} {{ usuarioLogueado.materno }}</span>
+          <div>
+            <span class="username">{{ usuarioLogueado.nombre }} {{ usuarioLogueado.materno }}</span>
+            <!-- <div class="usuarioRol"> {{usuarioLogueado.roles[0].rol_tipo.rol}} </div> -->
+            <div class="usuarioRol" v-if="usuarioLogueado.roles[0].rol_tipo_id == 48"> Técnico Nacional </div>
+            <div class="usuarioRol" v-else> Universidad </div>
+          </div>
         </v-btn>
       </template>
       <v-list>
@@ -145,5 +150,8 @@ import { mapMutations } from 'vuex';
   }
   .username {
     margin-left: 10px;
+  }
+  .usuarioRol {
+    font-size: 8px;
   }
 </style>

@@ -125,6 +125,12 @@ export default {
         icon: 'mdi-domain',
         rols: [51,48]
       },
+      {
+        title: 'Trámites', 
+        href: 'universidades-tramites', 
+        icon: 'mdi-domain',
+        rols: [48]
+      },
       // {
       //   title: 'Carreras', 
       //   href: 'universidades-carreras', 

@@ -23,7 +23,7 @@
     <h4>Estadísticas</h4>
     <v-row>
       <v-col cols="12" lg="4" md="4" sm="4" xs="12">
-        <Barra />
+        <Barra :datos="universidadesDepartamento.data" :options="universidadesDepartamento.options"/>
       </v-col>
       <v-col cols="12" lg="4" md="4" sm="4" xs="12">
         <Torta />
@@ -45,7 +45,11 @@ export default {
   data: () => ({
     tipos: [],
     chartdata: '',
-    options: ''
+    options: '',
+    universidadesDepartamento: {
+      data: '',
+      options: ''
+    }
   }),
   computed: {
     
@@ -77,200 +81,50 @@ export default {
         console.log(error)
       }
     },
-    getCantidadUniversidadesPorDepartamento(){
+    async getCantidadUniversidadesPorDepartamento(){
       try {
-
-        let datos = [
-              {
-                departamento: 'La Paz',
-                universidades: [
-                  {
-                    tipo: 'Público',
-                    cantidad: 4
-                  },
-                  {
-                    tipo: 'Regimen especial',
-                    cantidad: 6
-                  },
-                  {
-                    tipo: 'Indígena',
-                    cantidad: 10
-                  },
-                ]
-              },
-              {
-                departamento: 'Oruro',
-                universidades: [
-                  {
-                    tipo: 'Público',
-                    cantidad: 9
-                  },
-                  {
-                    tipo: 'Regimen especial',
-                    cantidad: 0
-                  },
-                  {
-                    tipo: 'Indígena',
-                    cantidad: 15
-                  },
-                ]
-              },{
-                departamento: 'cochabamba',
-                universidades: [
-                  {
-                    tipo: 'Público',
-                    cantidad: 4
-                  },
-                  {
-                    tipo: 'Regimen especial',
-                    cantidad: 6
-                  },
-                  {
-                    tipo: 'Indígena',
-                    cantidad: 10
-                  },
-                ]
-              },
-              {
-                departamento: 'Sucre',
-                universidades: [
-                  {
-                    tipo: 'Público',
-                    cantidad: 9
-                  },
-                  {
-                    tipo: 'Regimen especial',
-                    cantidad: 0
-                  },
-                  {
-                    tipo: 'Indígena',
-                    cantidad: 15
-                  },
-                ]
-              },{
-                departamento: 'Tarija',
-                universidades: [
-                  {
-                    tipo: 'Público',
-                    cantidad: 4
-                  },
-                  {
-                    tipo: 'Regimen especial',
-                    cantidad: 6
-                  },
-                  {
-                    tipo: 'Indígena',
-                    cantidad: 10
-                  },
-                ]
-              },
-              {
-                departamento: 'Pando',
-                universidades: [
-                  {
-                    tipo: 'Público',
-                    cantidad: 9
-                  },
-                  {
-                    tipo: 'Regimen especial',
-                    cantidad: 0
-                  },
-                  {
-                    tipo: 'Indígena',
-                    cantidad: 15
-                  },
-                ]
-              }, {
-                departamento: 'Sucre',
-                universidades: [
-                  {
-                    tipo: 'Público',
-                    cantidad: 9
-                  },
-                  {
-                    tipo: 'Regimen especial',
-                    cantidad: 0
-                  },
-                  {
-                    tipo: 'Indígena',
-                    cantidad: 15
-                  },
-                ]
-              },{
-                departamento: 'Tarija',
-                universidades: [
-                  {
-                    tipo: 'Público',
-                    cantidad: 4
-                  },
-                  {
-                    tipo: 'Regimen especial',
-                    cantidad: 6
-                  },
-                  {
-                    tipo: 'Indígena',
-                    cantidad: 10
-                  },
-                ]
-              },
-              {
-                departamento: 'Pando',
-                universidades: [
-                  {
-                    tipo: 'Público',
-                    cantidad: 9
-                  },
-                  {
-                    tipo: 'Regimen especial',
-                    cantidad: 0
-                  },
-                  {
-                    tipo: 'Indígena',
-                    cantidad: 15
-                  },
-                ]
-              },
-
-            ];
         
+        let response = await UniversidadesService.getCantidadUniversidadesDepartamentoTipo();  
+        let data = response.data;
+        let datos = data.data;
+        console.log('depa', datos)
+
         let labels = []
         let datasets = []
         datos.forEach(item => {
+          if (item.universidades.length == 0) {
+            item.universidades = [
+              {id: 7, dependencia: "Regimen Especial", total: 2},
+              {id: 3, dependencia: "Privada", total: 9},
+              {id: 6, dependencia: "Indigena", total: 2}
+            ]
+          }
+          
           labels.push(item.departamento)
           item.universidades.forEach(universidadTipo => {
-            let index = datasets.findIndex(elemento => elemento.label == universidadTipo.tipo)
-            console.log(index)
+            let index = datasets.findIndex(elemento => elemento.label == universidadTipo.dependencia)
             if (index < 0) {
               datasets.push({
-                label: universidadTipo.tipo,
+                label: universidadTipo.dependencia,
                 backgroundColor: ['#3e95cd'],
-                data: [universidadTipo.cantidad]
+                data: [universidadTipo.total]
               })
             }else{
               datasets[index].backgroundColor.push('#3e95cd')
-              datasets[index].data.push(universidadTipo.cantidad)
+              datasets[index].data.push(universidadTipo.total)
             }
           })
         })
 
-        this.chartdata = {
+        console.log('labels', labels)
+        console.log('datasets', datasets)
+
+        this.universidadesDepartamento.data = {
           labels: labels,
           datasets: datasets
         }
 
-        console.log('datacreado', this.chartdata)
-
-        // this.chartdata = {
-        //   labels: ["Africa", "Asia", "Europe", "Latin America", "North America"],
-        //   datasets: [
-        //     {
-        //       label: "Population (millions)",
-        //       backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
-        //       data: [2478,5267,734,784,433]
-        //     }
-        //   ]
-        // }
-        this.options = {
+        this.universidadesDepartamento.options = {
           legend: { display: false },
           title: {
             display: true,

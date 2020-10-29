@@ -18,7 +18,7 @@ export default {
             {
               label: "Estudiantes a nivel Nacional",
               backgroundColor: ["#3e95cd", "#8e5ea2"],
-              data: [2478,5267]
+              data: [2,6]
             }
           ]
         }

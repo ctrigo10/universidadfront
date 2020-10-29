@@ -2,7 +2,7 @@
   <v-row>
     <v-col
       cols="12"
-      sm="6"
+      sm="4"
       v-for="(item, index) in universidades" :key="index"
     >
       <v-card class="card-animated" @click="seleccionar(item)">
@@ -16,7 +16,7 @@
               xs="12"
             >
               <div class="text-center">
-                <v-img :src="'http://localhost:3000/'+item.imagen" width="100px"></v-img>
+                <v-img :src=" item.imagen != 'universidades/imagen/null' ? 'http://localhost:3000/'+item.imagen : require(`../../../assets/not-image.jpg`)" width="100px"></v-img>
               </div>
             </v-col>
             <v-col
@@ -27,23 +27,10 @@
               xs="12"
             >
               <h2>{{item.institucioneducativa}}</h2>
-              <h4 v-html="item.id == item.sede ? 'Sede Central' : 'Sub sede'"></h4>
-              <br>
+              <h4 v-text="item.nombre_sede_subsede"></h4>
+              
               <div> <b>Código SIE: </b> {{item.id}} </div>
-              <div> <b>Departamento: </b> {{item.deparmento}} </div>
-              <div> <b>Distrito: </b> {{item.distrito.dist}} </div>
-              <!-- <v-simple-table dense>
-                <tbody>
-                  <tr><th>Departamento</th><td>{{ item.departamento.depa }}</td></tr>
-                  <tr><th>Distrito</th><td>{{ item.departamento.dist }}</td></tr>
-                  <tr><th>Teléfonos</th><td>{{ item.telefonos }}</td></tr>
-                  <tr><th>Email</th><td>{{ item.email }}</td></tr>
-                  <tr><th>Sitio web</th><td>{{ item.sitio_web }}</td></tr>
-                  <tr><th>Fax</th><td>{{ item.fax }}</td></tr>
-                  <tr><th>Rector</th><td>{{ item.rector }}</td></tr>
-                  <tr><th>Vice rector</th><td>{{ item.vicerector }}</td></tr>
-                </tbody>
-              </v-simple-table> -->
+              <div> <b>Dependencia: </b> {{item.dependencia}} </div>
             </v-col>
           </v-row>
         </v-card-text>

@@ -1,14 +1,20 @@
 <template>
   <div>
+    <Breadcrumbs :items="breadItems"/>
     <v-card>
       <v-card-title primary-title>
         Administración
         <v-spacer></v-spacer>
       </v-card-title>
       <v-card-text>
+        <div class="text-right">
+          <CreateForm v-if="verificarPermiso('tecnico')">
+            Crear Sede
+          </CreateForm>
+        </div>
         <v-text-field
           v-model="search"
-          label="Buscar universidad"
+          label="Buscar universidad por nombre"
           append-icon="mdi-magnify"
           @keyup="searchUniversity"
         ></v-text-field>
@@ -21,19 +27,26 @@
 <script>
 import Service from '@/services/general'
 import UniversidadesService from '@/services/universidadesService'
+import Breadcrumbs from '@/components/universidades/utils/Breadcrumbs'
 import UniversidadCardList from '@/components/universidades/universidad/UniversidadCardList'
+import CreateForm from '@/components/universidades/universidad/CreateForm'
 import { mapMutations } from 'vuex';
 export default {
   name: 'admin-home',
   components: {
-    UniversidadCardList
+    Breadcrumbs,
+    UniversidadCardList,
+    CreateForm
   },
   data: () => ({
+    breadItems: [
+      { text: 'Universidades', disabled: true }
+    ],
     usuario: '',
     universidades: [],
     universidadId: '',
     dialogUniversidad: false,
-    search: ''
+    search: '',
   }),
   mounted(){
     this.usuario = Service.getUser();
@@ -41,19 +54,22 @@ export default {
   },
   methods: {
     ...mapMutations(['uniAlert']),
+    verificarPermiso(rol) {
+      return UniversidadesService.verificarPermisoRol(rol)
+    },
     async obtenerUniversidades(){
       try {
         let response = await UniversidadesService.getUniversidades();
         let data = await response.data;
         this.universidades = data.data;
-        // console.log('us usuario', this.universidades)
       } catch (error) {
         console.log(error);
       }
     },
     seleccionar(universidadId){
       this.universidadId = universidadId;
-      this.$router.push({name: 'universidades-admin-information', params: { sie: universidadId }})
+      sessionStorage.setItem('ids', this.universidadId)
+      this.$router.push({name: 'universidades-admin-sedes-subsedes'})
     },
     async searchUniversity(){
       try {

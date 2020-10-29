@@ -1,10 +1,12 @@
 <template>
   <div class="contenido-logo">
-    <v-img class="logo-maximizado" :src="pathLogo" ></v-img>
+    <div class="div-logo">
+      <v-img class="logo-maximizado" :src="pathLogo" ></v-img>
+    </div>
     <!-- <v-img class="logo-maximizado" :src="path"></v-img> -->
     <!-- <v-img v-if="path != ''" class="logo-maximizado" :src="path"></v-img> -->
-
-    <v-btn color="primary" block v-if="!actualizar" @click="actualizar = true"> <v-icon>mdi-pencil</v-icon> Cambiar logo </v-btn>
+    <br>
+    <v-btn color="primary" v-if="!actualizar" @click="actualizar = true"> <v-icon>mdi-pencil</v-icon> </v-btn>
     <div v-if="actualizar">
       <v-form
         ref="form1"
@@ -43,8 +45,10 @@ export default {
         if (this.logo == '') {
           return null;
         }
+        console.log('logo', this.logo)
         return this.logo;
       }else{
+        console.log('path', this.path)
         return this.path;
       }
     }
@@ -84,15 +88,20 @@ export default {
 }
 </script>
 <style scope>
-/* .contenido-logo{
-  padding-top: 20px;
-} */
-  .logo-maximizado {
+  .contenido-logo{
+    padding-top: 20px;
+  }
+  .div-logo {
+    width: 150px;
+    /* display: flex;
+    justify-content: center; */
+  }
+  /* .logo-maximizado {
     position: relative;
     display: block;
-    width: 100%;
+    width: 150px;
     height: auto;
     min-height: 100px;
     background-color: #FFFFFF;
-  }
+  } */
 </style>

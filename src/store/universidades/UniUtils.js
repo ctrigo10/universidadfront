@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+// import general from '@/services/general'
 
 Vue.use(Vuex)
 
@@ -13,6 +14,7 @@ export default {
       timeout: 5000,
       multiline: false
     },
+    // permisoUsuario: false
   },
   mutations: {
     
@@ -38,6 +40,25 @@ export default {
       state.uniSnackbar.multiline = false;
       state.uniSnackbar.text = null;
     },
+    // uniVerificarPermiso(state, payload){
+    //   let idRol = null;
+    //   switch (payload) {
+    //     case 'universidad':
+    //       idRol = 51;
+    //       break;
+    //     case 'tecnico':
+    //       idRol = 48;
+    //       break;
+    //   }
+    //   let user = general.getUser()
+    //   if (user) {
+    //     let rolUsuario = user.roles.find(rol => rol.rol_tipo_id == idRol)
+    //     if (rolUsuario) {
+    //       state.permisoUsuario = true
+    //     }
+    //   }
+    //   state.permisoUsuario = false
+    // }
     //uniSnackbar fin
   },
     // actions: {

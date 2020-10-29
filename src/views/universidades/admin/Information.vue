@@ -1,5 +1,6 @@
 <template>
   <div v-cloak>
+    <Breadcrumbs :items="breadItems"/>
     <UniversidadHeader :universidadId="universidad.id" :universidad="universidad.institucioneducativa"/>
     
     <div class="admin-body">
@@ -25,7 +26,7 @@
         </ul>
       </div>
       <div class="admin-contenido">
-        <DatosGenerales v-if="componente == 'DatosGenerales'" :universidad="universidad"/>
+        <DatosGenerales v-if="componente == 'DatosGenerales'" :idUniversidad="universidadId"/>
         <Carreras v-if="componente == 'Carreras'" :carreras="carreras"/>
         <Docentes v-if="componente == 'Docentes'" :idUniversidad="universidadId"/>
         <Estudiantes v-if="componente == 'Estudiantes'" :idUniversidad="universidadId"/>
@@ -37,6 +38,7 @@
 
 <script>
 import UniversidadesService from '@/services/universidadesService'
+import Breadcrumbs from '@/components/universidades/utils/Breadcrumbs'
 import UniversidadHeader from '@/components/universidades/universidad/UniversidadHeader'
 import DatosGenerales from '@/components/universidades/universidad/DatosGenerales'
 import Carreras from '@/components/universidades/academico/Carreras1'
@@ -46,6 +48,7 @@ import Tramite from '@/components/universidades/tramites/Tramite'
 export default {
   name: 'admin-information',
   components: {
+    Breadcrumbs,
     UniversidadHeader,
     DatosGenerales,
     Carreras,
@@ -55,6 +58,12 @@ export default {
   },
   props: [''],
   data: () => ({
+    breadItems: [
+      { text: 'Universidades', href: 'universidades-admin-home', disabled: false },
+      { text: 'Sedes/Subsedes', href: 'universidades-admin-sedes-subsedes', disabled: false },
+      { text: 'Académico', href: '', disabled: true },
+    ],
+    universidadId: '',
     menus: [
       {component: 'DatosGenerales', icon: 'mdi-home', text: 'Información general'},
       {component: 'Carreras', icon: 'mdi-file', text: 'Carreras'},
@@ -63,17 +72,26 @@ export default {
       {component: 'Tramite', icon: 'mdi-stack-overflow', text: 'Solicitudes'},
 
     ],
+    menusTecnico: [
+      {component: 'DatosGenerales', icon: 'mdi-home', text: 'Información general'},
+      {component: 'Carreras', icon: 'mdi-file', text: 'Carreras'},
+      {component: 'Docentes', icon: 'mdi-account', text: 'Docentes'},
+      {component: 'Estudiantes', icon: 'mdi-account-multiple', text: 'Estudiantes'},
+
+    ],
     componente: 'DatosGenerales',
-    universidadId: '',
     universidad: {},
     carreras: []
   }),
   mounted() {
-    this.universidadId = this.$route.params.sie;
+    this.universidadId = sessionStorage.getItem('idss');
     this.verDatosUniversidad();
     this.obtenerCarreras();
   },
   methods: {
+    verificarPermiso(rol) {
+      return UniversidadesService.verificarPermisoRol(rol)
+    },
     async verDatosUniversidad(){
       try {
         let response = await UniversidadesService.getDatosUniversidad(this.universidadId);
