@@ -26,9 +26,14 @@
       </v-menu>
     </div>
     <div v-if="!usuario">
-      <v-btn class="ma-2" small outlined color="white" @click="showDialogLoggin()">
-        <v-icon left>mdi-account-key</v-icon>Ingresar
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+      <v-btn  v-bind="attrs" v-on="on" class="ma-2" icon color="white" @click="showDialogLoggin()">
+        <v-icon>mdi-account-key</v-icon>
       </v-btn>
+        </template>
+        <span>Ingresar</span>
+      </v-tooltip>
     </div>
     <!-- modal -->
     <v-row justify="center">

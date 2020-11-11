@@ -5,12 +5,12 @@
         <InfU v-if="!loading" :universidad="getUniversidad.datos"/>
     </v-card>
     <v-card class="mt-2">
-        <Header titulo="Carreras con becas" :subTituloUno="becasDisponibles" :subTituloDos="BecasRegistradas" />
+        <Header titulo="CARRERAS CON BECAS DISPONIBLES" :subTituloUno="becasDisponibles" :subTituloDos="BecasRegistradas" />
         <NuevoEditar v-if="$store.getters.isAuthenticated" :dialogF="dialogF" :edited_index_enviar="edited_index_enviar" :edited_item_enviar="edited_item_enviar" />
-        <v-alert v-if="cantidad_becas_falta != 0" dense border="left" type="warning">
+        <v-alert v-if="cantidad_becas_falta != 0 && isAuthenticated" dense border="left" type="warning">
             Le falta registrar <strong>{{ cantidad_becas_falta }} Beca(s)</strong>
         </v-alert>
-        <List class="mt-5 pa-1" v-if="!loading" :items="getCarrerasBecas" :acciones="acciones" :headers="headers" v-on:deleteItem="deleteItem($event)" v-on:editItem="editItem($event)" v-on:ingresar="ingresar($event)" />
+        <List class="mt-5 pa-1" v-if="!loading" :items="getCarrerasBecas" :acciones="acciones" :headers="headers" v-on:deleteItem="deleteItem($event)" v-on:editItem="editItem($event)" v-on:ingresar="ingresar($event)" v-on:solicitarBeca="solicitarBeca($event)" />
         <Loading v-else />
     </v-card>
 </v-container>
@@ -46,7 +46,7 @@ export default {
                 await this.cargarCarrerasBecas(this.getUniversidadBecaId);
             } catch (error) {
                 let texto = error;
-                if(error.responde)texto =  error.responde.data;
+                if(error.response)texto =  error.response.data;
                 this.alert({
                     text: texto,
                     color: "red"
@@ -62,7 +62,8 @@ export default {
             this.acciones.ingresar = true;
             this.acciones.solicitarBeca = false;
         }
-        if(this.getEsFechaSolicitud){
+
+        if(this.getEsFechaSolicitud && !this.$store.getters.isAuthenticated){
             this.acciones.solicitarBeca = true;
         }
     },
@@ -113,23 +114,27 @@ export default {
             editar: false,
             eliminar: false,
             ingresar: false,
-            solicitarBeca: true,
+            solicitarBeca: false,
         },
     }),
 
     computed: {
-        ...mapGetters(["getUniversidad", "getUniversidadBecaId", "getCarrerasBecas", "getCarrerasBecasIndex", "getCantidadBecasSuma", "getConvocatoriaLast", "getEsFechaRegistro", "getEsFechaSolicitud"]),
+        ...mapGetters(["getUniversidad", "getUniversidadBecaId", "getCarrerasBecas", "getCarrerasBecasIndex", "getCantidadBecasSuma", "getConvocatoriaLast", "getEsFechaRegistro", "getEsFechaSolicitud", "isAuthenticated"]),
         fechasRegistro(){
-            return `Fechas Registro: ${this.getConvocatoriaLast.fecha_registro_convocatoria}`
+            if(this.getConvocatoriaLast.seleccionar_becados == false)
+                return (this.isAuthenticated) ? `Fecha Registro: ${this.getConvocatoriaLast.fecha_registro_convocatoria}`: `Fecha Convocatoria: ${this.getConvocatoriaLast.fecha_solicitud_convocatoria}`;
+            else return 'Convocatoria Finalizada';
         },
         fechasSolicitud(){
-            return `Fecha Solicitud: ${this.getConvocatoriaLast.fecha_solicitud_convocatoria}`
+            if(this.getConvocatoriaLast.seleccionar_becados == false)
+                return (this.isAuthenticated) ? `Fecha Convocatoria: ${this.getConvocatoriaLast.fecha_solicitud_convocatoria}`: '';
+            else return '';
         },
         becasDisponibles(){
-            return `Becas disponibles: ${this.getUniversidad.datos.cantidad_becas}`
+            return (this.isAuthenticated) ? `Becas disponibles: ${this.getUniversidad.datos.cantidad_becas}`: `Becas disponibles: ${this.getCantidadBecasSuma}`;
         },
         BecasRegistradas(){
-            return `Becas registradas: ${this.getCantidadBecasSuma}`;
+            return (this.isAuthenticated) ? `Becas registradas: ${this.getCantidadBecasSuma}`:'';
         },
         cantidad_becas_falta(){
             return this.getUniversidad.datos.cantidad_becas - this.getCantidadBecasSuma;
@@ -168,6 +173,25 @@ export default {
             } finally {
                 this.loading = false
             }
+        },
+
+        solicitarBeca(item){
+            if(this.getConvocatoriaLast.seleccionar_becados == false)
+                if(this.getEsFechaSolicitud){
+                    item.universidad = this.getUniversidad.datos.nombre.toUpperCase();
+                    this.cargarCarreraSolicitudes(item);
+                    this.$router.push({ name: 'becas-solicitud' })
+                }else{
+                    this.alert({
+                        text: `No está disponible, no está en los plazos de las FECHAS DE CONVOCATORIA (${this.getConvocatoriaLast.fecha_solicitud_convocatoria})`,
+                        color: "primary",
+                        });
+                }
+            else
+                this.alert({
+                    text: `Convocatoria Finalizada`,
+                    color: "primary",
+                    });
         }
     }
 };

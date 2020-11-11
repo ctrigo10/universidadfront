@@ -26,10 +26,11 @@ export default {
       "tyuia",
       JSON.stringify({
         pid: user.persona_id,
-        uid: user.id,
+        uid: user.usuario_id,
         nombre: user.nombre,
         paterno: user.paterno,
         materno: user.materno,
+        username: user.username,
         roles: user.roles,
       })
     );

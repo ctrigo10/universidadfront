@@ -7,7 +7,7 @@ Vue.use(Vuex)
 
 export default {
   state: {
-    index : null,
+    index: null,
     convocatorias:[],
   },
   mutations : {
@@ -35,7 +35,7 @@ export default {
       try{
         if(item.seleccionar_becados == true)item.seleccionar_becados_text = "Si"
         else item.seleccionar_becados_text = "No"
-        //converertir fechas
+        //convertir fechas
         let [year1, month1, day1] = item.fecha_inicio_registro_beca.split("-");let date1 = `${day1}/${month1}/${year1}`;
         let [year2, month2, day2] = item.fecha_fin_registro_beca.split("-");let date2 = `${day2}/${month2}/${year2}`;
         let [year3, month3, day3] = item.fecha_inicio_solicitud_beca.split("-");let date3 = `${day3}/${month3}/${year3}`;
@@ -54,6 +54,11 @@ export default {
 
     eliminarConvocatoria(state, index){
       state.convocatorias.splice(index, 1)
+    },
+
+    convocatoriaFinish(state, index){
+      state.convocatorias[index].seleccionar_becados_text = "Si";
+      state.convocatorias[index].seleccionar_becados = true;
     },
   },
   actions : {
@@ -79,6 +84,11 @@ export default {
       let index = context.state.convocatorias.indexOf(item);
       context.commit('eliminarConvocatoria', index);
     },
+
+    async convocatoriaFinish(context,item){
+      await becasService.convocatoriaFinish(item.item);
+      context.commit('convocatoriaFinish', item.index);
+    }
   },
   getters : {
     getConvocatorias(state){
@@ -112,29 +122,33 @@ export default {
     },
 
     getEsFechaRegistro(state){
-      if(state.convocatorias.length > 0){
-        let fechaAhora = new Date();
-        fechaAhora.setHours(0,0,0,0);
-        let fechaInicio = new Date(state.convocatorias[state.convocatorias.length - 1].fecha_inicio_registro_beca+"T00:00:00");
-        let fechaFin = new Date(state.convocatorias[state.convocatorias.length - 1].fecha_fin_registro_beca+"T00:00:00");
-        if(fechaInicio <= fechaAhora && fechaAhora <= fechaFin)return true;
-        else return false;
-      }
-      else
-        return false;
+      if(state.convocatorias[state.convocatorias.length - 1].seleccionar_becados == false)
+        if(state.convocatorias.length > 0){
+          let fechaAhora = new Date();
+          fechaAhora.setHours(0,0,0,0);
+          let fechaInicio = new Date(state.convocatorias[state.convocatorias.length - 1].fecha_inicio_registro_beca+"T00:00:00");
+          let fechaFin = new Date(state.convocatorias[state.convocatorias.length - 1].fecha_fin_registro_beca+"T00:00:00");
+          if(fechaInicio <= fechaAhora && fechaAhora <= fechaFin)return true;
+          else return false;
+        }
+        else
+          return false;
+      else return false
     },
 
     getEsFechaSolicitud(state){
-      if(state.convocatorias.length > 0){
-        let fechaAhora = new Date();
-        fechaAhora.setHours(0,0,0,0);
-        let fechaInicio = new Date(state.convocatorias[state.convocatorias.length - 1].fecha_inicio_solicitud_beca+"T00:00:00");
-        let fechaFin = new Date(state.convocatorias[state.convocatorias.length - 1].fecha_fin_solicitud_beca+"T00:00:00");
-        if(fechaInicio <= fechaAhora && fechaAhora <= fechaFin)return true;
-        else return false;
-      }
-      else
-        return false;
+      if(state.convocatorias[state.convocatorias.length - 1].seleccionar_becados == false)
+        if(state.convocatorias.length > 0){
+          let fechaAhora = new Date();
+          fechaAhora.setHours(0,0,0,0);
+          let fechaInicio = new Date(state.convocatorias[state.convocatorias.length - 1].fecha_inicio_solicitud_beca+"T00:00:00");
+          let fechaFin = new Date(state.convocatorias[state.convocatorias.length - 1].fecha_fin_solicitud_beca+"T00:00:00");
+          if(fechaInicio <= fechaAhora && fechaAhora <= fechaFin)return true;
+          else return false;
+        }
+        else
+          return false;
+      else return false;
     }
   }
 }

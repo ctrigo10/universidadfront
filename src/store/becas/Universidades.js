@@ -34,11 +34,11 @@ export default {
                     }
                     else
                         universidad.departamento = " --- "
-                    if(dato.universidad_beca_universidad){
-                        universidad.id = dato.universidad_beca_universidad.id;
-                        universidad.cantidad_estudiantes = dato.universidad_beca_universidad.cantidad_estudiantes;
-                        universidad.cantidad_becas = dato.universidad_beca_universidad.cantidad_becas;
-                        universidad.universidad_beca_convocatoria_id = dato.universidad_beca_universidad.universidad_beca_convocatorium.id
+                    if(dato.buniversidad){
+                        universidad.id = dato.buniversidad.id;
+                        universidad.cantidad_estudiantes = dato.buniversidad.cantidad_estudiantes;
+                        universidad.cantidad_becas = dato.buniversidad.cantidad_becas;
+                        universidad.universidad_beca_convocatoria_id = dato.universidad_beca_convocatoria_id;
                     }else{
                         universidad.id = 0;
                         universidad.cantidad_estudiantes = 0;
@@ -47,14 +47,16 @@ export default {
                     }
                     if(dato.institucioneducativa_dato){
                         universidad.imagen = dato.institucioneducativa_dato.imagen;
+                        universidad.pathImage = dato.institucioneducativa_dato.pathImage;
                     }else{
                         universidad.imagen = null;
+                        universidad.pathImage = null;
                     }
                     let becas = [];
                     let cantidadBecasRegistradas = 0;
-                    if(dato.universidad_beca_universidad && dato.universidad_beca_universidad.bcarrera)
+                    if(dato.buniversidad && dato.buniversidad.bcarrera)
                     {
-                        for (let beca of dato.universidad_beca_universidad.bcarrera){
+                        for (let beca of dato.buniversidad.bcarrera){
                             if(beca.titpro.tica){
                                 let becasolo = [];
                                 becasolo.nombre = beca.titpro.tica.tct.nombre;
@@ -79,7 +81,6 @@ export default {
                     }
                     //restamos la cantidad de filas encontradas
                 }
-//                console.log(state.universidades);
             }catch(error){
                 console.log(error)
             }
@@ -122,7 +123,6 @@ export default {
             if (opcion == 'uTodos'){
                 result = await becasService.getUniversidades(item.options);
             }
-            //console.log(result)
             context.commit("cargarUniversidades", result.data)
             context.commit('editarOptions', result.data.options)
         },
