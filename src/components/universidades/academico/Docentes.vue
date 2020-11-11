@@ -1,7 +1,8 @@
 <template>
   <div>
+    <h3>Docentes</h3>
     <v-row>
-      <v-col sm="6" xs="12">
+      <v-col cols="12" lg="6" md="6" sm="4" xs="4">
         <v-select
           :items="gestiones"
           item-text="gestion"
@@ -11,7 +12,7 @@
           @change="getDocentes()"
         ></v-select>
       </v-col>
-      <v-col sm="6" xs="12">
+      <v-col cols="12" lg="6" md="6" sm="8" xs="8">
         <v-select
           :items="periodos"
           item-text="periodo"
@@ -32,7 +33,7 @@
                 <v-list-item
                   v-for="(item, i) in docentes"
                   :key="i"
-                  @click="getMaterias(99)"
+                  @click="getMaterias(item.id)"
                 >
                   <v-list-item-avatar>
                     <v-img src="../../../assets/user.svg"></v-img>
@@ -120,6 +121,7 @@ export default {
         let response = await axios.get(`${Servicio.getServe()}informe/listaDocentesPeriodo/${this.idUniversidad}/${this.gestion}/${this.periodo}`);
         let data = await response.data;
         this.docentes = data.data;
+        console.log(this.docentes)
       } catch (error) {
         console.log(error)
       }
@@ -138,7 +140,10 @@ export default {
       try {
         let response = await axios.get(Servicio.getServe() + 'informe/listaperiodo');
         let data = await response.data;
-        this.periodos = data.data;
+        this.periodos = [{ id: 0, periodo: 'Todos' }]
+        data.data.map(item => {
+          this.periodos.push(item);
+        })
         console.log(data)
       } catch (error) {
         console.log(error)

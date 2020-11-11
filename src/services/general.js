@@ -6,8 +6,8 @@ export default {
       return "http://localhost:3000/";
     }
   },
-  getBase() {
-    return this.getServe() + "prefa/";
+  getBasePre() {
+    return this.getServe() + "preuniversitario/";
   },
   getLogin() {
     return this.getServe() + "login/";

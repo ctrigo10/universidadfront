@@ -3,7 +3,7 @@ import Router from "vue-router";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
 import store from "../store.js";
-import general from '@/services/general'
+import general from "@/services/general";
 
 let paths = [
   {
@@ -23,88 +23,171 @@ let paths = [
     name: "not-found",
     component: () => import(`@/views/NotFound.vue`),
   },
+
+  //Preuniversitario
   {
-    path: "/prefacultad",
+    path: "/preuniversitario",
     meta: { public: true },
-    // name: "prefacultads",
-    component: () => import(`@/views/prefacultad/Inicio.vue`),
+    component: () => import(`@/views/preuniversitario/Inicio.vue`),
     children: [
       {
         path: "",
         meta: { public: true },
-        name: "orientacion",
-        component: () => import(`@/views/prefacultad/Publico.vue`),
+        name: "pre-escritorio",
+        component: () => import(`@/views/preuniversitario/Publico.vue`),
       },
       {
-        path: "orientacion/vocacional",
+        path: "universidades",
         meta: { public: true },
-        name: "orientacion-vocacional1",
+        name: "pre-universidad",
+        component: () => import(`@/views/preuniversitario/Universidad.vue`),
+      },
+      {
+        path: "inscripcion",
+        meta: { public: true },
+        name: "pre-inscripcion",
+        component: () => import(`@/views/preuniversitario/Inscripcion.vue`),
+      },
+      {
+        path: "aptitud/numerica",
+        meta: { public: true },
+        name: "pre-aptitud-numerica",
+        component: () => import(`@/views/preuniversitario/AptitudNumerica.vue`),
+      },
+      {
+        path: "aptitud/verbal",
+        meta: { public: true },
+        name: "pre-aptitud-verbal",
+        component: () => import(`@/views/preuniversitario/AptitudVerbal.vue`),
+      },
+      {
+        path: "aptitud/mecanica",
+        meta: { public: true },
+        name: "pre-aptitud-mecanica",
+        component: () => import(`@/views/preuniversitario/AptitudMecanica.vue`),
+      },
+      {
+        path: "aptitud/espacial",
+        meta: { public: true },
+        name: "pre-aptitud-espacial",
+        component: () => import(`@/views/preuniversitario/AptitudEspacial.vue`),
+      },
+      {
+        path: "aptitud/abstracta",
+        meta: { public: true },
+        name: "pre-aptitud-abstracta",
         component: () =>
-          import(`@/views/prefacultad/OrientacionVocacional.vue`),
+          import(`@/views/preuniversitario/AptitudAbstracta.vue`),
       },
       {
-        path: "universidades",
+        path: "interes/ocupacional",
         meta: { public: true },
-        name: "universidad",
-        component: () => import(`@/views/prefacultad/Universidad.vue`),
+        name: "pre-interes-ocupacional",
+        component: () =>
+          import(`@/views/preuniversitario/InteresOcupacional.vue`),
       },
-      /* {
-        path: "universidades",
-        component: () => import(`@/views/universidades/Universidades.vue`),
-      }, */
+      {
+        path: "estilo/aprendizaje",
+        meta: { public: true },
+        name: "pre-estilo-aprendizaje",
+        component: () =>
+          import(`@/views/preuniversitario/EstiloAprendizaje.vue`),
+      },
+      {
+        path: "resultado/prueba",
+        meta: { public: true },
+        name: "pre-resultado-prueba",
+        component: () => import(`@/views/preuniversitario/ResultadoPrueba.vue`),
+      },
     ],
   },
-  /* {
-    path: "/prefacultad/orientacion/vocacional",
-    meta: { public: false },
-    name: "orientacion-vocacional",
-    component: () => import(`@/views/prefacultad/Publico.vue`),
-  }, */
-  /* {
-    path: "/prefacultad/universidades",
-    meta: { public: false },
-    name: "universidades",
-    component: () => import(`@/views/prefacultad/Publico.vue`),
-  }, */
+
+  //Universidades
   {
     path: "/universidades",
     meta: { public: false },
-    name: "universidades",
-    component: () => import(`@/views/universidades/layout/UniversidadLayout.vue`),
+    // name: "universidades",
+    component: () =>
+      import(`@/views/universidades/layout/UniversidadLayout.vue`),
     children: [
       {
         path: "",
-        name: 'universidades-publico',
-        component: () => import(`@/views/universidades/Publico.vue`),
+        name: "universidades-publico",
+        component: () => import(`@/views/universidades/publico/Publico.vue`),
+      }, {
+        path: "informacion/:sie",
+        name: "universidades-publico-informacion",
+        component: () => import(`@/views/universidades/publico/Informacion.vue`),
       },
       {
         path: "dashboard",
-        name: 'universidades-dashboard',
+        name: "universidades-dashboard",
         // meta: { requiresAuth: true },
         component: () => import(`@/views/universidades/Dashboard.vue`),
       },
       {
         path: "carreras",
-        name: 'universidades-carreras',
+        name: "universidades-carreras",
         meta: { requiresAuth: true },
         component: () => import(`@/views/universidades/Carreras.vue`),
       },
       {
         path: "universidades",
-        name: 'universidades-universidades',
+        name: "universidades-universidades",
         meta: { requiresAuth: true },
         component: () => import(`@/views/universidades/Universidades.vue`),
       },
       {
+        path: "academico",
+        name: 'universidades-admin-home',
+        meta: { requiresAuth: true },
+        component: () => import(`@/views/universidades/admin/Home.vue`),
+        // children: [
+        //   {
+        //     path: "asdfadsf/:sie",
+        //     name: 'universidades-admin-information',
+        //     component: () => import(`@/views/universidades/admin/Information.vue`),
+        //   },
+        // ]
+      },
+      {
+        path: "admin/sedes-subsedes",
+        name: 'universidades-admin-sedes-subsedes',
+        component: () => import(`@/views/universidades/admin/ListSedesSubsedes.vue`),
+      },
+      {
+        path: "admin/academico",
+        name: 'universidades-admin-information',
+        component: () => import(`@/views/universidades/admin/Information.vue`),
+      },
+      {
         path: "gestion/:sie",
-        name: 'universidades-universidades-gestion',
+        name: "universidades-universidades-gestion",
         meta: { requiresAuth: true },
         component: () => import(`@/views/universidades/UniversidadGestion.vue`),
-      },{
+      },
+      {
         path: "academico",
-        name: 'universidades-academico',
+        name: "universidades-academico",
         meta: { requiresAuth: true },
         component: () => import(`@/views/universidades/Academico.vue`),
+      },
+      {
+        path: "tramites",
+        name: "universidades-tramites",
+        meta: { requiresAuth: true },
+        component: () => import(`@/views/universidades/Tramites.vue`),
+      },
+      {
+        path: "usuarios-permisos",
+        name: "universidades-usuarios-permisos",
+        meta: { requiresAuth: true },
+        component: () => import(`@/views/universidades/UsuariosPermisos.vue`),
+      },{
+        path: "gestion-operativos",
+        name: 'universidades-gestion-operativos',
+        meta: { requiresAuth: true },
+        component: () => import(`@/views/universidades/GestionOperativos.vue`),
       },
     ],
   },
@@ -129,15 +212,15 @@ let paths = [
         component: () => import(`@/views/becas/Universidades.vue`),
       },
       {
-        path: 'universidades/carreras',
+        path: "universidades/carreras",
         name: "becas-carreras",
-        component: () =>import('@/views/becas/Carreras.vue'),
+        component: () => import("@/views/becas/Carreras.vue"),
       },
       {
-        path: 'universidades/carreras/solicitudes',
+        path: "universidades/carreras/solicitudes",
         name: "becas-solicitudes",
         meta: { requiresAuth: true },
-        component: () =>import('@/views/becas/Solicitudes.vue'),
+        component: () => import("@/views/becas/Solicitudes.vue"),
       },
       {
         path: 'universidades/carreras/solicitud',
@@ -153,13 +236,13 @@ let paths = [
       {
         path: "convocatoria",
         name: "becas-convocatorias",
-        meta: { requiresAuth: true , UniversidadTecnicoBecasNacional : true},
+        meta: { requiresAuth: true, UniversidadTecnicoBecasNacional: true },
         component: () => import(`@/views/becas/Convocatoria.vue`),
       },
       {
         path: "usuarios",
         name: "becas-usuarios",
-        meta: { requiresAuth: true , UniversidadTecnicoBecasNacional : true},
+        meta: { requiresAuth: true, UniversidadTecnicoBecasNacional: true },
         component: () => import(`@/views/becas/Usuarios.vue`),
       },
       {
@@ -170,37 +253,6 @@ let paths = [
       },
     ],
   },
-
-  /* {
-    path: "/inicio",
-    meta: { public: true },
-    name: "inicio",
-    component: () => import(`@/views/Inicio.vue`),
-  },
-  {
-    path: "/autenticacion",
-    meta: { public: true },
-    name: "login",
-    component: () => import(`@/views/Login.vue`),
-  }, */
-  /* {
-    path: "/principal",
-    meta: { public: false, requiresAuth: true },
-    name: "principal",
-    component: () => import(`@/views/Principal.vue`),
-  }, */
-  /* {
-      path: '/usuarios',
-      meta: { public: false, requiresAuth: true },
-      name: 'usuarios',
-      component: () => import(`@/views/Usuarios.vue`)
-    },
-    {
-      path: '/roles',
-      meta: { public: false, requiresAuth: true },
-      name: 'roles',
-      component: () => import(`@/views/Roles.vue`)
-    }, */
 ];
 Vue.use(Router);
 const router = new Router({
@@ -218,19 +270,19 @@ router.beforeEach((to, from, next) => {
   NProgress.start();
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     if (store.getters.isAuthenticated) {
-      if(to.meta.UniversidadTecnicoBecasNacional){
+      if (to.meta.UniversidadTecnicoBecasNacional) {
         let op = false;
-        for(let rol of general.getUser().roles){
-          if(rol.rol_tipo.rol == "Universidad Tecnico Becas Nacional")
+        for (let rol of general.getUser().roles) {
+          if (rol.rol_tipo.rol == "Universidad Tecnico Becas Nacional")
             op = true;
         }
-        op == true ? next():next("/");
+        op == true ? next() : next("/");
       }
       next();
       //return;
-    }else{
-      /* if (ruta == "prefacultad") {
-        next("/prefacultad");
+    } else {
+      /* if (ruta == "preuniversitario") {
+        next("/preuniversitario");
       }  */
       next("/");
     }

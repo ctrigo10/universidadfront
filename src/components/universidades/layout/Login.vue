@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-icon v-if="!usuarioLogueado" @click="showDialogLogin">mdi-account</v-icon>
+    <v-btn v-if="!usuarioLogueado" @click="showDialogLogin" color="primary" class="elevation-10">Ingresar</v-btn>
     <v-menu v-else offset-y>
       <template v-slot:activator="{ on, attrs }">
         <v-btn
@@ -8,15 +8,28 @@
           dark
           v-bind="attrs"
           v-on="on"
+          elevation="0"
         >
-          {{ usuarioLogueado.nombre }} {{ usuarioLogueado.materno }}
+          <v-avatar size="25px">
+            <img
+              src="../../../assets/user.svg"
+              alt="John"
+              class="uni-avatar"
+            >
+          </v-avatar>
+          <div>
+            <span class="username">{{ usuarioLogueado.nombre }} {{ usuarioLogueado.materno }}</span>
+            <!-- <div class="usuarioRol"> {{usuarioLogueado.roles[0].rol_tipo.rol}} </div> -->
+            <div class="usuarioRol" v-if="usuarioLogueado.roles[0].rol_tipo_id == 48"> Técnico Nacional </div>
+            <div class="usuarioRol" v-else> Universidad </div>
+          </div>
         </v-btn>
       </template>
       <v-list>
         <v-list-item
           @click="logout()"
         >
-          <v-list-item-title>Cerrar sesion</v-list-item-title>
+          <v-list-item-title> <v-icon>mdi-logout</v-icon> Cerrar sesion</v-list-item-title>
         </v-list-item>
       </v-list>
     </v-menu>
@@ -62,6 +75,7 @@
 
 <script>
   import Servicio from '@/services/general'
+import { mapMutations } from 'vuex';
   export default {
     name: 'login',
     data: () => ({
@@ -78,36 +92,66 @@
     }),
     mounted() {
       this.usuarioLogueado = this.usuarioLogueado = Servicio.getUser();
-      console.log('usuariologueado', this.usuarioLogueado)
+      // console.log('usuariologueado', this.usuarioLogueado)
     },
     methods: {
+      ...mapMutations(['uniAlert']),
       showDialogLogin(){
         this.dialogLogin = true;
         // this.$refs.formLogin.resetValidation();
         if (this.$refs.formlogin) this.$refs.formLogin.resetValidation();
       },
       async loginUser(){
-        if (this.$refs.formLogin.validate()) {
-          console.log(this.usuario)
-          let response = await this.$store.dispatch("login", this.usuario);
-          console.log(response)
-          this.dialogLogin = false;
-          this.usuarioLogueado = Servicio.getUser();
-          console.log('usuariologueado', this.usuarioLogueado)
-          this.$router.push({ name: "universidades-carreras" });
-        }else{
-          console.log('login', 'Error al ingresar')
+        try {
+          if (this.$refs.formLogin.validate()) {
+            console.log(this.usuario)
+            let response = await this.$store.dispatch("login", this.usuario);
+            console.log(response)
+            this.dialogLogin = false;
+            this.usuarioLogueado = Servicio.getUser();
+            console.log('usuariologueado', this.usuarioLogueado);
+
+            // // definir la pagina de incio segun el rol
+            // let rol;
+            // this.usuarioLogueado.roles.forEach(usuarioRol => {
+            //   if (usuarioRol.rol_tipo_id == 51) {
+            //     permiso = true;
+            //   }
+            // });
+
+            if (this.usuarioLogueado.roles[0].rol_tipo_id == 51) {
+              this.$router.push({ name: "universidades-admin-home" });
+            }else{
+              this.$router.push({ name: "universidades-dashboard" });  
+            }
+            this.$emit('actualizarUsuario', true);
+          }else{
+            console.log('login', 'Error al ingresar')
+          }
+        } catch (error) {
+          console.log('login error', error)
+          this.uniAlert({ color: 'error', text: 'El usuario y/o contraseña no son válidos'});
         }
       },
       logout() {
         this.$store.dispatch("logout");
         this.usuarioLogueado = null;
-        this.$router.push({ name: "universidades" });
+        this.$router.push({ name: "universidades-publico" });
+
+        this.$emit('actualizarUsuario', true);
       },
     }
   }
 </script>
 
 <style scoped>
-
+  .uni-avatar {
+    /* margin-right: ; */
+  }
+  .username {
+    margin-left: 10px;
+  }
+  .usuarioRol {
+    font-size: 8px;
+  }
 </style>
