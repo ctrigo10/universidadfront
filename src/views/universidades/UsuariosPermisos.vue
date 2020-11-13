@@ -188,7 +188,7 @@ export default {
       // { text: '#', sortable: false, value: 'id'},
       { text: '', value: 'acciones', sortable: false, align: 'end'},
       { text: 'Universidad', value: 'institucioneducativa'},
-      { text: 'Departamento', value: 'departamento.depa'},
+      { text: 'Departamento', value: 'deparmento'},
       { text: 'Dependencia', value: 'dependencia'},
     ],
     search: '',
@@ -196,7 +196,7 @@ export default {
   }),
   mounted(){
     this.obtenerUsuarios();
-    this.obtenerUniversidadesActivas();
+    this.obtenerUniversidadesSedesSubsedes();
   },
   methods: {
     ...mapMutations(['uniAlert']),
@@ -255,9 +255,10 @@ export default {
     editPermisos(){
       this.dialogPermisos = true;
     },
-    async obtenerUniversidadesActivas(){
+    async obtenerUniversidadesSedesSubsedes(){
       try {
-        let response = await UniversidadesService.getUniversidadesActivas();
+        // let response = await UniversidadesService.getUniversidadesActivas();
+        let response = await UniversidadesService.getTodasSedesSubsedes();
         let data = await response.data;
         this.universidades = data.data;
         console.log('activas', this.universidades)

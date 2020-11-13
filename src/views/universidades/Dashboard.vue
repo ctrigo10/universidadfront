@@ -96,7 +96,7 @@ export default {
             item.universidades = [
               {id: 7, dependencia: "Regimen Especial", total: 2},
               {id: 3, dependencia: "Privada", total: 9},
-              {id: 6, dependencia: "Indigena", total: 2}
+              {id: 6, dependencia: "Indigena", total: 8}
             ]
           }
           

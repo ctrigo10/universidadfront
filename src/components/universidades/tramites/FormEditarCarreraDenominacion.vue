@@ -228,6 +228,7 @@ export default {
     // this.datos.universidad_id = this.idUniversidad;
     // this.getCarreras();
     this.idUniversidad = this.tramite.tramite_id
+    this.idTramiteTipo = this.tramite.tramiteTipo.id
     this.getNiveles();
     this.getRegimenes();
     this.getPeriodosMateria();
@@ -312,6 +313,7 @@ export default {
     eliminarMateria(index){
       this.datos.materias.splice(index, 1)
     },
+    // METODO PARA INICIALIZAR EL TRAMITE
     async enviarSolicitud() {
       try {
         let datos = {
@@ -332,6 +334,7 @@ export default {
         this.uniAlert({color: 'error', text: 'Ocurrio un error al enviar la solicitud'})
       }
     },
+    // METODO PARA ENVIAR EL TRAMITE MODIFICADO
     async enviarTramiteUniversidad() {
       try {
         let datos = {
@@ -353,23 +356,10 @@ export default {
         this.uniAlert({color: 'error', text: 'Ocurrio un error al enviar la solicitud'})
       }
     },
+    // METODO PARA DEVLVER
     async enviarTramiteTecnico() {
       try {
-        if (this.procede == 'SI') {
-          // Registramos los datos del objeto json en la base de datos
-          // let tipo = 56 // nueva carrera
-          let tipo = 56 // nueva denominacion
-          if (tipo == 56) {
-            let response2 = await UniversidadesService.createNuevaCarrera(this.datosJson)
-            let data2 = await response2.data
-            console.log('response data registrar carrera', data2)
-          }
-          if (tipo == 57) {
-            let response2 = await UniversidadesService.createNuevaDenominacion(this.datosJson)
-            let data2 = await response2.data
-            console.log('response data registrar carrera', data2)
-          }
-        }
+        // ENVIAMOS EL TRAMITE A LA SIGUIENTE TAREA
         let datos = {
           tipotramite_id: '',
           universidad_id: '',
@@ -381,24 +371,115 @@ export default {
         let response = await UniversidadesService.enviarTramite(datos)
         let data = await response.data
         if (data.status == 'success') {
-          // SI EL TRAMITE NO PROCEDE ENTONCES TAMBIEN SE ENVIA LA SIGUIENTE TAREA DE OBSERVACION
-          if (this.procede == 'NO') {
-            let datos1 = {
-              tipotramite_id: '',
-              universidad_id: '',
-              tramite_id: this.tramite.tramite_id,
-              valor_evaluacion: this.finaliza,
-              observacion: this.observacion,
-              datos: ''
-            }
+          // RECEPCIONAMOS EN LA SIGUIENTE TAREA
+          let datos1 = {
+            tipotramite_id: '',
+            universidad_id: '',
+            tramite_id: this.tramite.tramite_id,
+            valor_evaluacion: '',
+            observacion: '',
+            datos: ''
+          }
+          let response1 = await UniversidadesService.enviarTramite(datos1)
+          let data1 = await response1.data
+          if (data1.status == 'success') {
+            // SI PROCEDE ES SI ENTONCES REGISTRAMOS EL JSON
+            if (this.procede == 'SI') {
+              let tipo = this.idTramiteTipo;
+              // corergit
+              if (tipo == 56) {
+                let response2 = await UniversidadesService.createNuevaCarrera(this.datosJson)
+                let data2 = await response2.data
+                console.log('response data registrar carrera', data2)
+              }
+              if (tipo == 57) {
+                let response3 = await UniversidadesService.createNuevaDenominacion(this.datosJson)
+                let data3 = await response3.data
+                console.log('response data registrar carrera', data3)
+              }
+              if (tipo == 58) {
+                let response4 = await UniversidadesService.createNuevaCarrera(this.datosJson)
+                let data4 = await response4.data
+                console.log('response data registrar carrera', data4)
+              }
+              // switch (tipo) {
+              //   case 56: // REGISTRO DE CARRERA
+              //     let response2 = await UniversidadesService.createNuevaCarrera(this.datosJson)
+              //     let data2 = await response2.data
+              //     console.log('response data registrar carrera', data2)
+              //     break;
+              //   case 57: // REGISTRO DE DENOMINACION
+              //     let response3 = await UniversidadesService.createNuevaDenominacion(this.datosJson)
+              //     let data3 = await response3.data
+              //     console.log('response data registrar carrera', data3)
+              //     break;
+              //   case 58: // REGISTRO DE DENOMINACION
+              //     let response4 = await UniversidadesService.createNuevaCarrera(this.datosJson)
+              //     let data4 = await response4.data
+              //     console.log('response data registrar carrera', data4)
+              //     break;
+              // }
+              
+              let datos2 = {
+                tipotramite_id: '',
+                universidad_id: '',
+                tramite_id: this.tramite.tramite_id,
+                valor_evaluacion: '',
+                observacion: '',
+                datos: ''
+              }
+              let response5 = await UniversidadesService.enviarTramite(datos2)
+              let data5 = await response5.data
+              if (data5.status == 'success') {
+                let datos6 = {
+                  tipotramite_id: '',
+                  universidad_id: '',
+                  tramite_id: this.tramite.tramite_id,
+                  valor_evaluacion: '',
+                  observacion: '',
+                  datos: ''
+                }
+                let response6 = await UniversidadesService.enviarTramite(datos6)
+                let data6 = await response6.data
+                if (data6.status == 'success') {
+                  this.uniAlert({color: 'success', text: 'Registro realizado correctamente'})
+                }
+              }
 
-            let response1 = await UniversidadesService.enviarTramite(datos1)
-            let data1 = await response1.data
-            if (data1.status == 'success') {
-              this.uniAlert({color: 'success', text: 'Registro realizado correctamente'})
+            }else{
+              // SI EL TRÁMITE NO PROCEDE - ENVIAMOS EL TRAMITE A LA SIGUIENTE TAREA CON LA VARIABLE DE EVALUACION Y CON LA OBSERVACION
+              let datos7 = {
+                tipotramite_id: '',
+                universidad_id: '',
+                tramite_id: this.tramite.tramite_id,
+                valor_evaluacion: this.finaliza,
+                observacion: this.observacion,
+                datos: ''
+              }
+              let response7 = await UniversidadesService.enviarTramite(datos7)
+                let data7 = await response7.data
+                if (data7.status == 'success') {
+                  if (this.finaliza == 'SI') {
+                    
+                    let datos8 = {
+                      tipotramite_id: '',
+                      universidad_id: '',
+                      tramite_id: this.tramite.tramite_id,
+                      valor_evaluacion: this.finaliza,
+                      observacion: this.observacion,
+                      datos: ''
+                    }
+                    let response8 = await UniversidadesService.enviarTramite(datos8)
+                    let data8 = await response8.data
+                    if (data8.status == 'success') {
+                      
+                      this.uniAlert({color: 'success', text: 'Registro realizado correctamente'})
+                    }
+                  }else{
+                     this.uniAlert({color: 'success', text: 'Registro realizado correctamente'})
+                  }
+              }
             }
-          }else{
-            this.uniAlert({color: 'success', text: 'Registro realizado correctamente'})
           }
         }
       } catch (error) {

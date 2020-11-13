@@ -31,6 +31,7 @@
         <Docentes v-if="componente == 'Docentes'" :idUniversidad="universidadId"/>
         <Estudiantes v-if="componente == 'Estudiantes'" :idUniversidad="universidadId"/>
         <Tramite v-if="componente == 'Tramite'" :idUniversidad="universidadId"/>
+        <Formularios v-if="componente == 'Formularios'" :idUniversidad="universidadId"/>
       </div>
     </div>
   </div>
@@ -45,6 +46,7 @@ import Carreras from '@/components/universidades/academico/Carreras1'
 import Docentes from '@/components/universidades/academico/Docentes'
 import Estudiantes from '@/components/universidades/academico/Estudiantes'
 import Tramite from '@/components/universidades/tramites/Tramite'
+import Formularios from '@/components/universidades/formularios/Formularios'
 export default {
   name: 'admin-information',
   components: {
@@ -54,7 +56,8 @@ export default {
     Carreras,
     Docentes,
     Estudiantes,
-    Tramite
+    Tramite,
+    Formularios
   },
   props: [''],
   data: () => ({
@@ -70,6 +73,7 @@ export default {
       {component: 'Docentes', icon: 'mdi-account', text: 'Docentes'},
       {component: 'Estudiantes', icon: 'mdi-account-multiple', text: 'Estudiantes'},
       {component: 'Tramite', icon: 'mdi-stack-overflow', text: 'Solicitudes'},
+      {component: 'Formularios', icon: 'mdi-stack-overflow', text: 'Formularios'},
 
     ],
     menusTecnico: [
@@ -106,6 +110,7 @@ export default {
         let response = await UniversidadesService.getCarrerasDenominacionesPensumsUniversidad(this.universidadId);
         let data = await response.data.data;
         this.carreras = data;
+        console.log('carreras', data)
       } catch (error) {
         console.log(error)
       }
