@@ -42,6 +42,7 @@
           </ul>
         </td>
       </template>
+      <template v-slot:no-data>No hay registros</template>
     </v-data-table>
   </div>
 </template>

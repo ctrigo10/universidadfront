@@ -1,7 +1,7 @@
 <template>
 <v-container fluid cols="12">
     <v-card>
-        <Header titulo="Usuarios" subTituloUno="Becas" :subTituloDos="gestion" />
+        <Header titulo="USUARIOS" :subTituloUno="gestion" />
         <ListOpen class="ma-2" v-if="!loading" v-on:editItem="editItem($event)" :headers="headers" :items="getUsuarios" :acciones="acciones" :sortby="sortby" />
         <Loading v-else />
     </v-card>
@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import ListOpen from "@/components/becas/shared/ListOpen";
+import ListOpen from "@/components/becas/usuario/ListOpen";
 import Header from "@/components/becas/shared/Header";
 import Loading from "@/components/becas/shared/Loading";
 import NuevoEditar from "@/components/becas/usuario/NuevoEditar";

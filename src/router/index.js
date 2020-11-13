@@ -245,7 +245,13 @@ let paths = [
         component: () => import("@/views/becas/Solicitudes.vue"),
       },
       {
+        path: 'universidades/carreras/solicitud',
+        name: "becas-solicitud",
+        component: () =>import('@/views/becas/Solicitud.vue'),
+      },
+      {
         path: "seguimiento",
+        props: true,
         name: "becas-seguimiento",
         component: () => import(`@/views/becas/Seguimiento.vue`),
       },
@@ -260,6 +266,12 @@ let paths = [
         name: "becas-usuarios",
         meta: { requiresAuth: true, UniversidadTecnicoBecasNacional: true },
         component: () => import(`@/views/becas/Usuarios.vue`),
+      },
+      {
+        path: "solicitud/:solicitud_id/pdf",
+        name: "becas-solicitud_pdf",
+        props: true,
+        component: () => import(`@/components/becas/shared/SolicitudPdf.vue`),
       },
     ],
   },

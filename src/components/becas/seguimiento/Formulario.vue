@@ -2,10 +2,10 @@
   <v-form ref="form" lazy-validation>
     <v-container>
       <v-row>
-        <v-col cols="6">
+        <v-col cols="12" sm="6" md="6">
           <v-text-field
             prepend-icon="mdi-card-account-details-outline"
-            v-model="consulta.ci"
+            v-model="consulta.carnet_identidad"
             :rules="[rules.required, rules.numberRule]"
             label="Número de identidad"
             @keyup.enter="consultar"
@@ -15,9 +15,9 @@
             onkeypress="if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;"
           ></v-text-field>
         </v-col>
-        <v-col cols="6">
+        <v-col cols="12" sm="6" md="6">
           <v-text-field
-            prepend-icon="mdi-alphabet-latin"
+            prepend-icon="mdi-minus"
             v-model="consulta.complemento"
             label="Complemento"
             @keyup.enter="consultar"
@@ -28,20 +28,21 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col>
+        <v-col cols="12" sm="6" md="6">
           <v-text-field
             prepend-icon="mdi-account-tie"
-            v-model="consulta.rude"
-            :rules="[rules.required, rules.numberRule1]"
+            v-model="consulta.codigo_rude"
+            :rules="[rules.required, rules.rude, rules.alphanumerics]"
+            onkeyup="this.value = this.value.toUpperCase();"
             label="Registro Rude"
+            class="my-input"
             required
             color="secondary"
             @keyup.enter="consultar"
-            maxlength="15"
-            onkeypress="if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;"
+            maxlength="16"
           ></v-text-field>
         </v-col>
-        <v-col>
+        <v-col cols="12" sm="6" md="6">
           <v-menu
             ref="menu"
             v-model="menu"
@@ -52,7 +53,7 @@
           >
             <template v-slot:activator="{ on, attrs }">
               <v-text-field
-                v-model="fecha_nac"
+                v-model="fecha_nacimiento"
                 :rules="[rules.required]"
                 label="Fecha de nacimiento"
                 prepend-icon="mdi-calendar"
@@ -64,7 +65,7 @@
             </template>
             <v-date-picker
               ref="picker"
-              v-model="consulta.fecha_nac"
+              v-model="consulta.fecha_nacimiento"
               :max="new Date().toISOString().substr(0, 10)"
               min="1950-01-01"
               @change="save"
@@ -93,7 +94,7 @@
             v-else
             color="secondary"
             class="white--text"
-            @click="consultar"
+            @click="consultarConfirmar"
             :loading="loading"
             :disabled="loading"
           >Consultar</v-btn>
@@ -104,18 +105,26 @@
 </template>
 
 <script>
+import becasService from "@/services/becasService"
 import VueRecaptcha from "vue-recaptcha";
+import { mapActions } from 'vuex';
 export default {
+  props:{solicitud_id:{default: 0}},
   components: { VueRecaptcha },
+  mounted(){
+    if(this.solicitud_id!=0){
+      this.llenarDatos();
+    }
+  },
   data() {
     return {
       consulta: {
-        ci: "",
+        carnet_identidad: "",
         complemento: "",
-        rude: "",
-        fecha_nac: "",
+        codigo_rude: "",
+        fecha_nacimiento: "",
       },
-      buscar: false,
+      buscar: true, //cambiar a false
       menu: false,
       loader: null,
       loading: false,
@@ -124,21 +133,22 @@ export default {
         numberRule: (value) => {
           if (
             !isNaN(parseFloat(value)) &&
-            value >= 1000000 &&
+            value >= 100000 &&
             value <= 999999999
           )
             return true;
-          return "Número entre 10000000 y 999999999";
+          return "Debe tener entre 6 a 9 dígitos";
         },
-        numberRule1: (value) => {
-          if (
-            !isNaN(parseFloat(value)) &&
-            value >= 1000000 &&
-            value <= 99999999999999
-          )
+        rude: (value) => {
+          if (value.length >= 8 && value.length <= 16)
             return true;
-          return "Número entre 1000000 y 99999999999999";
+          return "Debe tener entre 8 a 16 caracteres";
         },
+        alphanumerics: (value) => {
+          var re = /^[a-zA-Z0-9-_]+$/;
+          if(re.test(value))return true;
+          return 'Caracter no válido'
+        }
       },
     };
   },
@@ -156,15 +166,19 @@ export default {
     },
   },
   computed: {
-    fecha_nac() {
-      if (this.consulta.fecha_nac != "") {
-        let [year, month, day] = this.consulta.fecha_nac.split("-");
+    fecha_nacimiento() {
+      if (this.consulta.fecha_nacimiento != "") {
+        let [year, month, day] = this.consulta.fecha_nacimiento.split("-");
         return `${day}/${month}/${year}`;
       }
       return "";
     },
   },
   methods: {
+    ...mapActions(["alert"]),
+    upper(e) {
+        e.target.value = e.target.value.toUpperCase()
+    },
     onCaptchaVerified(){
       this.buscar = true;
     },
@@ -175,17 +189,64 @@ export default {
       if (this.$refs.form) this.$refs.form.resetValidation();
       this.$refs.recaptcha.reset();
       this.buscar = false;
-      this.consulta.fecha_nac = this.consulta.ci = this.consulta.complemento = this.consulta.rude =
-        "";
+      this.consulta.fecha_nacimiento = this.consulta.carnet_identidad = this.consulta.complemento = this.consulta.codigo_rude = "";
+      //cambiar el mensaje
+      this.$emit("mensajes", 0);
       //if (this.$refs.form) this.$refs.form.reset();
     },
-    consultar() {
+    consultarConfirmar(){
       if (this.$refs.form.validate() == true) {
+        this.consulta.codigo_rude = this.consulta.codigo_rude.toUpperCase();
+        this.$vuetifyConfirmDialog
+            .open(
+              "Confirmación",
+              "Confimar si todos sus datos son correctos para realizar la consulta. Gracias.",
+              "Cancelar",
+              "Confirmar",
+              "primary",
+              "secondary"
+            )
+            .then((state) => {
+              if (state == true) this.consultar();
+            });
+      }
+    },
+    async consultar() {
         this.loader = "loading";
         this.$refs.recaptcha.reset();
         this.buscar = false;
-      }
+        const resp = await becasService.getEstudiante(this.consulta);
+        let mensaje = "";
+        // el estudiante existe pero no registro su solicitud
+        if(resp.data.data && resp.data.data.id != 0)
+          mensaje = "Usted no realizó ninguna solicitud de beca, puede realizarlo ingresando a Universidades.";
+        if(resp.data && resp.data.msg)mensaje = resp.data.msg;
+        this.consulta.fecha_nacimiento = this.consulta.carnet_identidad = this.consulta.complemento = this.consulta.codigo_rude = "";
+        if (this.$refs.form) this.$refs.form.resetValidation();
+        this.$emit("mensajes", mensaje);
     },
+    async llenarDatos(){
+      try{
+        let datos = await becasService.getEstudianteBySolicitud(this.solicitud_id);
+        datos = datos.data.data;
+        this.consulta.carnet_identidad = datos.estudiante.carnet_identidad;
+        this.consulta.complemento = datos.estudiante.complemento;
+        this.consulta.codigo_rude = datos.estudiante.codigo_rude;
+        this.consulta.fecha_nacimiento = datos.estudiante.fecha_nacimiento;
+      }catch(error){
+         let texto = error;
+        if (error.response) texto = error.response.data.msg;
+        this.alert({
+          text: texto,
+          color: "red",
+        });
+      }
+    }
   },
 };
 </script>
+<style scoped>
+.my-input input{
+  text-transform: uppercase
+}
+</style>

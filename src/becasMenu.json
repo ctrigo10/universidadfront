@@ -26,7 +26,7 @@
       "group": [
         {
           "href": "becas-convocatorias",
-          "title": "Conv. y Fechas",
+          "title": "Convocatorias",
           "icon": "mdi-calendar-multiple-check",
           "permission": "show-ajustes",
           "params": {}

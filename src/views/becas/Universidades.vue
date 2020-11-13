@@ -1,7 +1,7 @@
 <template>
   <v-container fluid cols="12">
     <v-card>
-      <Header titulo="Universidades" :subTituloUno="fechasRegistro" :subTituloDos="fechasSolicitud" />
+      <Header titulo="  UNIVERSIDADES" :subTituloUno="fechasRegistro" :subTituloDos="fechasSolicitud" />
       <v-card-title>
         <v-text-field
           v-model="search"
@@ -27,6 +27,7 @@
           class="pr-3 pb-1"
         ></v-select>
       </v-card-title>
+      <small class="ml-3">(n): Cantidad de becas por carrera.</small>
       <v-row class="ma-0" v-if="!loading">
       <template v-if="getUniversidades.length > 0">
         <v-col
@@ -50,19 +51,9 @@
       </template>
       </v-row>
       <Loading v-else />
-      <v-row class="pa-2">
-        <v-col cols="2">&nbsp;</v-col>
-        <v-col cols="2" class="text-center counter">
-          <v-select
-            :items="itemsPerPage"
-            label="Por Página"
-            v-model="getOptions.itemsPerPage"
-            @change="changeItemsPerPage"
-            color="secondary"
-            class="pa-1"
-          ></v-select>
-        </v-col>
-        <v-col cols="4" class="text-center">
+      <v-row class="ml-2 mr-2">
+        <v-col cols="0" sm="1" >&nbsp;</v-col>
+        <v-col cols="12" sm="4" order-sm="2" class="text-center">
           <v-pagination
             @input="changePage"
             color="secondary"
@@ -72,9 +63,22 @@
           ></v-pagination>
         </v-col>
         <v-col
-          cols="3"
+          order-sm="3"
+          cols="12"
+          sm="4"
           class="text-center pa-5 p counter"
-        >Cantidad Total: {{ getOptions.itemsTotal }}</v-col>
+        >Cantidad Total: {{ getOptions.itemsTotal }}
+        </v-col>
+        <v-col cols="12" sm="3" order-sm="1" class="text-center counter">
+          <v-select
+            :items="itemsPerPage"
+            label="Por Página"
+            v-model="getOptions.itemsPerPage"
+            @change="changeItemsPerPage"
+            color="secondary"
+            class="pa-1"
+          ></v-select>
+        </v-col>
       </v-row>
     </v-card>
     <Edit
@@ -129,18 +133,29 @@ export default {
   }),
 
   computed: {
-    ...mapGetters(["getUniversidades", "getUniversidadIndex", "getOptions","getConvocatoriaLast", "getEsFechaRegistro"]),
+    ...mapGetters(["isAuthenticated","getUniversidades", "getUniversidadIndex", "getOptions","getConvocatoriaLast", "getEsFechaRegistro"]),
     pageTotal() {
       return (
-        Math.floor(this.getOptions.itemsTotal / this.getOptions.itemsPerPage) +
-        1
-      );
+        Math.floor(this.getOptions.itemsTotal / this.getOptions.itemsPerPage) + 1);
     },
     fechasRegistro(){
-      return `Fechas Registro: ${this.getConvocatoriaLast.fecha_registro_convocatoria}`
+      if(this.getConvocatoriaLast.seleccionar_becados == false)
+        if(this.getConvocatoriaLast.fecha_registro_convocatoria && this.isAuthenticated)
+          return `Fecha Registro: ${this.getConvocatoriaLast.fecha_registro_convocatoria}`;
+        else
+          if(this.getConvocatoriaLast.fecha_solicitud_convocatoria)
+            return `Fecha Convocatoria: ${this.getConvocatoriaLast.fecha_solicitud_convocatoria}`;
+          else
+            return 'No existe convocatoria';
+      else return `Convocatoria finalizada`;
     },
     fechasSolicitud(){
-      return `Fecha Convocatoria: ${this.getConvocatoriaLast.fecha_solicitud_convocatoria}`
+      if(this.getConvocatoriaLast.seleccionar_becados == false)
+        if(this.getConvocatoriaLast.fecha_solicitud_convocatoria && this.isAuthenticated)
+          return `Fecha Convocatoria: ${this.getConvocatoriaLast.fecha_solicitud_convocatoria}`;
+        else
+        return "";
+      else return ``;
     }
   },
 
@@ -168,7 +183,6 @@ export default {
         item.options = this.getOptions;
         await this.cargarUniversidades(item);
       } catch (error) {
-        console.log(error);
         this.alert({
           text: error,
           color: "red",
@@ -219,16 +233,22 @@ export default {
     },
 
     editItem(item) {
-      if(this.getEsFechaRegistro){
-         this.edited_index_enviar = this.getUniversidadIndex(item);
-         this.edited_item_enviar = Object.assign({}, item);
-         this.dialogF = !this.dialogF;
-      }
+      if(this.getConvocatoriaLast.seleccionar_becados == false)
+        if(this.getEsFechaRegistro){
+          this.edited_index_enviar = this.getUniversidadIndex(item);
+          this.edited_item_enviar = Object.assign({}, item);
+          this.dialogF = !this.dialogF;
+        }
+        else
+          this.alert({
+            text: `No está disponible, no está en los plazos de fecha de registro (${this.getConvocatoriaLast.fecha_registro_convocatoria})`,
+            color: "primary",
+          });
       else
           this.alert({
-          text: "No está disponible, no está en los plazos de fecha de registro",
-          color: "primary",
-        });
+            text: `Convocatoria finalizada`,
+            color: "primary",
+          });
     },
 
     async ingresarUniversidad(item){
