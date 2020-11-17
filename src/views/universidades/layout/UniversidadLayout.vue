@@ -120,13 +120,19 @@ export default {
         rols: [57,48]
       },
       {
-        title: 'Administración', 
+        title: 'Universidades', 
         href: 'universidades-admin-home', 
         icon: 'mdi-domain',
         rols: [51,48]
       },
       {
         title: 'Trámites', 
+        href: 'universidades-tramites', 
+        icon: 'mdi-domain',
+        rols: [48,51]
+      },
+      {
+        title: 'Formularios', 
         href: 'universidades-tramites', 
         icon: 'mdi-domain',
         rols: [48,51]

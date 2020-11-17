@@ -23,11 +23,14 @@
             <v-chip :color="item.estado == 'creado' ? 'gray' : 'success'" v-text="item.estado"></v-chip>
           </template>
           <template v-slot:[`item.acciones`]="{ item }">
-            <v-btn @click="editarFormulario(item)" color="secondary" small>
-              <v-icon small>mdi-pencil-outline</v-icon>
+            <v-btn @click="editarFormulario(item)" color="secondary" x-small class="mr-1">
+              <v-icon x-small class="mr-1">mdi-pencil-outline</v-icon> Editar
             </v-btn>
-            <v-btn @click="eliminarFormulario(item.id)" color="error" small>
-              <v-icon small>mdi-delete</v-icon>
+            <v-btn @click="eliminarFormulario(item.id)" color="error" x-small class="mr-1">
+              <v-icon x-small class="mr-1">mdi-delete</v-icon> Eliminar
+            </v-btn>
+            <v-btn @click="enviarFormulario(item)" color="info" x-small>
+              <v-icon x-small class="mr-1">mdi-send-outline</v-icon> Enviar
             </v-btn>
           </template>
         </v-data-table>
@@ -454,7 +457,7 @@ export default {
     },
     resetearFormulario(){
       this.formulario.id = '';
-      this.formulario.institucioneducativa_id = '';
+      // this.formulario.institucioneducativa_id = '';
       this.formulario.representante = '';
       this.formulario.localidad = '';
       this.formulario.req11 = true;
@@ -626,6 +629,21 @@ export default {
         this.uniAlert({color: 'error', text: 'Error en el servidor'})
       }
     },
+    async enviarFormulario(item) {
+      try {
+        let response = await UniversidadesService.updateForm1(item.id, {estado: 'enviado' })
+        let data = response.data
+        if (data.status == 'success') {
+          this.getFormularios()
+          this.uniAlert({color: 'success', text: 'Formulario enviado correctamente'})
+        }else{
+          this.uniAlert({color: 'error', text: 'Error al actualizar el formulario'})
+        }
+      } catch (error) {
+        console.log(error)
+        this.uniAlert({color: 'error', text: 'Error en el servidor'})
+      }
+    }
   }
 }
 </script>

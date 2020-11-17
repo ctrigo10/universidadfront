@@ -7,7 +7,7 @@
       <v-card-text>
         <v-row>
           <v-spacer></v-spacer>
-          <v-btn color="primary" @click="openModal">Crear operativo</v-btn>
+          <!-- <v-btn color="primary" @click="openModal">Crear operativo</v-btn> -->
         </v-row>
         <br>
         <v-simple-table>
@@ -25,8 +25,8 @@
               <td>{{operativo.fecha_inicio}}</td>
               <td>{{operativo.fecha_final}}</td>
               <td>
-                <v-btn color="primary" @click="editar(operativo)"  class="btn-accion"> <v-icon>mdi-pencil</v-icon> </v-btn>
-                <v-btn color="primary" @click="eliminar(operativo.id)" class="btn-accion"> <v-icon>mdi-delete</v-icon> </v-btn>
+                <v-btn color="primary" @click="editar(operativo)" x-small> <v-icon x-small>mdi-pencil</v-icon> Editar </v-btn>
+                <!-- <v-btn color="primary" @click="eliminar(operativo.id)" class="btn-accion"> <v-icon>mdi-delete</v-icon> </v-btn> -->
               </td>
             </tr>
           </tbody>

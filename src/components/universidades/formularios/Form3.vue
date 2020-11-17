@@ -23,11 +23,14 @@
             <v-chip :color="item.estado == 'creado' ? 'gray' : 'success'" v-text="item.estado"></v-chip>
           </template>
           <template v-slot:[`item.acciones`]="{ item }">
-            <v-btn @click="editarFormulario(item)" color="secondary" small>
-              <v-icon small>mdi-pencil-outline</v-icon>
+            <v-btn @click="editarFormulario(item)" color="secondary" x-small class="mr-1">
+              <v-icon x-small class="mr-1">mdi-pencil-outline</v-icon> Editar
             </v-btn>
-            <v-btn @click="eliminarFormulario(item.id)" color="error" small>
-              <v-icon small>mdi-delete</v-icon>
+            <v-btn @click="eliminarFormulario(item.id)" color="error" x-small class="mr-1">
+              <v-icon x-small class="mr-1">mdi-delete</v-icon> Eliminar
+            </v-btn>
+            <v-btn @click="enviarFormulario(item)" color="info" x-small>
+              <v-icon x-small class="mr-1">mdi-send-outline</v-icon> Enviar
             </v-btn>
           </template>
         </v-data-table>
@@ -196,7 +199,7 @@ export default {
     formularios: [],
     formulario: {
       id: '',
-      institucioneducativa_id: 95240019,
+      institucioneducativa_id: '',
       representante: '',
       localidad: '',
       ind_pres1: true,
@@ -378,6 +381,9 @@ export default {
         this.uniAlert({color: 'error', text: 'Error en el servidor'})
       }
     },
+    enviarFormulario(item) {
+      console.log(item)
+    }
   }
 }
 </script>

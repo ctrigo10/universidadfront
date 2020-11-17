@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div v-cloak>
     <Breadcrumbs :items="breadItems"/>
-    <UniversidadHeader :universidadId="universidad.id" :universidad="universidad.institucioneducativa"/>
+    <UniversidadHeader :universidadId="universidad.id" :universidad="universidad.institucioneducativa" :imagen="universidad.imagen"/>
     <v-card>
       <v-card-title primary-title>
         Sedes / Subsedes
@@ -113,5 +113,7 @@ export default {
 </script>
 
 <style>
-
-</style>
+  [v-cloak] {
+    display: none;
+  }
+</style>  

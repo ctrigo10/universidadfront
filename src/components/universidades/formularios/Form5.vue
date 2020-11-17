@@ -23,11 +23,14 @@
             <v-chip :color="item.estado == 'creado' ? 'gray' : 'success'" v-text="item.estado"></v-chip>
           </template>
           <template v-slot:[`item.acciones`]="{ item }">
-            <v-btn @click="editarFormulario(item)" color="secondary" small>
-              <v-icon small>mdi-pencil-outline</v-icon>
+            <v-btn @click="editarFormulario(item)" color="secondary" x-small class="mr-1">
+              <v-icon x-small class="mr-1">mdi-pencil-outline</v-icon> Editar
             </v-btn>
-            <v-btn @click="eliminarFormulario(item.id)" color="error" small>
-              <v-icon small>mdi-delete</v-icon>
+            <v-btn @click="eliminarFormulario(item.id)" color="error" x-small class="mr-1">
+              <v-icon x-small class="mr-1">mdi-delete</v-icon> Eliminar
+            </v-btn>
+            <v-btn @click="enviarFormulario(item)" color="info" x-small>
+              <v-icon x-small class="mr-1">mdi-send-outline</v-icon> Enviar
             </v-btn>
           </template>
         </v-data-table>
@@ -87,21 +90,21 @@
                     <td>De acuerdo a los recursos presentados por cada universidad</td>
                     <td>
                       <v-checkbox
-                        v-model="formulario.modalidad"
+                        v-model="formulario.presencial"
                         color="success"
                         hide-details
                       ></v-checkbox>
                     </td>
                     <td>
                       <v-checkbox
-                        v-model="formulario.modalidad_virtual"
+                        v-model="formulario.virtual"
                         color="success"
                         hide-details
                       ></v-checkbox>
                     </td>
                     <td>
                       <v-checkbox
-                        v-model="formulario.modalidad_distancia"
+                        v-model="formulario.distancia"
                         color="success"
                         hide-details
                       ></v-checkbox>
@@ -161,7 +164,11 @@ export default {
       modalidad_distancia: false,
       observaciones: '',
       revision: true,
-      revision_obs: ''
+      revision_obs: '',
+      estado: 'creado',
+      presencial: false,
+      virtual: false,
+      distancia: false
     },
     dialogForm: false,
     modo: ''
@@ -195,6 +202,10 @@ export default {
       this.formulario.localidad = '';
       this.formulario.modalidad = false;
       this.formulario.observaciones = '';
+      this.formulario.presencial = false;
+      this.formulario.virtual = false;
+      this.formulario.distancia = false;
+      this.formulario.estado = 'creado';
       this.formulario.revision = true;
       this.formulario.revision_obs = '';
     },
@@ -228,6 +239,9 @@ export default {
       this.formulario.localidad = item.localidad;
       this.formulario.modalidad =  item.modalidad;
       this.formulario.observaciones = item.observaciones;
+      this.formulario.presencial = item.presencial;
+      this.formulario.virtual = item.virtual;
+      this.formulario.distancia = item.distancia;
       this.formulario.revision = item.revision;
       this.formulario.revision_obs = item.revision_obs;
 
@@ -276,6 +290,9 @@ export default {
         this.uniAlert({color: 'error', text: 'Error en el servidor'})
       }
     },
+    enviarFormulario(item) {
+      console.log(item)
+    }
   }
 }
 </script>

@@ -1,13 +1,32 @@
 <template>
   <div v-cloak>
     <Breadcrumbs :items="breadItems"/>
-    <UniversidadHeader :universidadId="universidad.id" :universidad="universidad.institucioneducativa"/>
+    <UniversidadHeader :universidadId="universidad.id" :universidad="universidad.institucioneducativa" :sedeSubsede="universidad.nombre_sede_subsede" :imagen="universidad.imagen"/>
     
     <div class="admin-body">
       <div class="admin-menu">
-        <ul class="menu">
+        <ul class="menu" v-if="verificarPermiso('universidad')">
           <li
             v-for="(menu,index) in menus"
+            :key="index"
+            @click="componente = menu.component"
+          >
+            <v-tooltip right>
+              <template v-slot:activator="{ on, attrs }">
+                <v-icon
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  {{menu.icon}}
+                </v-icon>
+              </template>
+              <span> {{menu.text}}</span>
+            </v-tooltip>
+          </li>
+        </ul>
+        <ul class="menu" v-if="verificarPermiso('tecnico')">
+          <li
+            v-for="(menu,index) in menusTecnico"
             :key="index"
             @click="componente = menu.component"
           >
@@ -69,16 +88,16 @@ export default {
     universidadId: '',
     menus: [
       {component: 'DatosGenerales', icon: 'mdi-home', text: 'Información general'},
-      {component: 'Carreras', icon: 'mdi-file', text: 'Carreras'},
+      {component: 'Carreras', icon: 'mdi-format-list-bulleted-square', text: 'Carreras'},
       {component: 'Docentes', icon: 'mdi-account', text: 'Docentes'},
       {component: 'Estudiantes', icon: 'mdi-account-multiple', text: 'Estudiantes'},
-      {component: 'Tramite', icon: 'mdi-stack-overflow', text: 'Solicitudes'},
-      {component: 'Formularios', icon: 'mdi-stack-overflow', text: 'Formularios'},
+      // {component: 'Tramite', icon: 'mdi-stack-overflow', text: 'Solicitudes'},
+      {component: 'Formularios', icon: 'mdi-file-multiple', text: 'Formularios'},
 
     ],
     menusTecnico: [
       {component: 'DatosGenerales', icon: 'mdi-home', text: 'Información general'},
-      {component: 'Carreras', icon: 'mdi-file', text: 'Carreras'},
+      {component: 'Carreras', icon: 'mdi-format-list-bulleted-square', text: 'Carreras'},
       {component: 'Docentes', icon: 'mdi-account', text: 'Docentes'},
       {component: 'Estudiantes', icon: 'mdi-account-multiple', text: 'Estudiantes'},
 

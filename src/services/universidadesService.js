@@ -146,8 +146,18 @@ export default{
   
   //------------------------------ USUARIOS --------------------------------*//
   
-  async getRecordAcademicoCarnet(carnet){
-    let response = await axios.get(`${general.getServe()}informe/listaEstudianteCarnet/${carnet}`);
+  async getRecordAcademicoCarnet(carnet=null, carrera_autorizada_id=null, estudiante_id=null){
+
+    let params = '?';
+    if (carnet != null) {
+      params += `carnet=${carnet}`
+    }
+    if (carrera_autorizada_id != null) {
+      params += `carrera_autorizada_id=${carrera_autorizada_id}&estudiante_id=${estudiante_id}`
+    }
+
+    // let response = await axios.get(`${general.getServe()}informe/listaEstudianteCarnet/${carnet}`);
+    let response = await axios.get(`${general.getServe()}informe/listaRecordsEstudiante${params}`);
     let data = response.data
     if (data.status == 'success') {
       let datos = data.data
@@ -160,6 +170,33 @@ export default{
             estudiante: `${datos.nombre} ${datos.paterno} ${datos.materno}`,
             carnet: `${datos.carnet} ${datos.complemento}`,
             materias: []// carrera.materias.length > 0 ? carrera.materias : []
+          })
+        })
+      })
+      return records
+    }
+
+    return []
+  },
+
+  async getRecordAcademico(estudiante_id, carrera_autorizada_id){
+    let response = await axios.get(`${general.getServe()}informe/listaRecordsEstudiante?carrera_autorizada_id=${carrera_autorizada_id}&estudiante_id=${estudiante_id}`);
+    let data = response.data
+    console.log('dfasdfadsf', data)
+    if (data.status == 'success') {
+      let datos = data.data
+      let records = []
+      datos.universidades.map(universidad => {
+        universidad.carreras.map(carrera => {
+          records.push({
+            universidad: universidad.nombre,
+            carrera: carrera.nombre,
+            estudiante: `${datos.nombre} ${datos.paterno} ${datos.materno}`,
+            paterno: datos.paterno,
+            materno: datos.materno,
+            nombre: datos.nombre,
+            carnet: `${datos.carnet} ${datos.complemento}`,
+            materias: carrera.materias.length > 0 ? carrera.materias : []
           })
         })
       })

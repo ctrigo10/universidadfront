@@ -42,12 +42,12 @@
           <v-card-title primary-title>
             <h5>Estudiantes registrados</h5>
             <v-spacer></v-spacer>
+          </v-card-title>
+          <v-card-text>
             <v-text-field
               v-model="search"
               label="Buscar estudiante"
             ></v-text-field>
-          </v-card-title>
-          <v-card-text>
             <!-- <v-list>
               <v-list-item-group v-model="itemSeleccionado" color="primary">
                 <v-list-item
@@ -122,7 +122,7 @@ export default {
     dialogRecord: false,
     itemSeleccionado: '',
     gestion: new Date().getFullYear(),
-    periodo: 1,
+    periodo: 0,
     carrera: '',
     estudianteSeleccionado: '',
     recordAcademico: '',
@@ -207,10 +207,9 @@ export default {
     },
     async getRecordAcademico(estudiante){
       try {
-        console.log('asdfasd', estudiante)
         this.estudianteSeleccionado = estudiante;
-        let datos = await UniversidadesServicio.getRecordAcademicoCarnet(estudiante.carnet_identidad)
-        console.log('datos',datos);
+        let datos = await UniversidadesServicio.getRecordAcademico(estudiante.id, this.carrera)
+        // console.log('datos',datos);
         if (datos.length == 0) {
           this.uniAlert({color: 'warning', text: 'El estudiante no cuenta con un record académico'})
           return;

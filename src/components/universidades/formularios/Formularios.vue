@@ -1,8 +1,20 @@
 <template>
   <div>
-    <v-btn color="success" @click="currentComponent = 'Form1'">Formulario 1</v-btn>
-    <v-btn color="success" @click="currentComponent = 'Form3'">Formulario 3</v-btn>
-    <v-btn color="success" @click="currentComponent = 'Form5'">Formulario 5</v-btn>
+    <v-tabs
+      v-model="tab"
+      background-color="secondary"
+      dark
+    >
+      <v-tab @click="currentComponent = 'Form1'">
+        Formulario 1
+      </v-tab>
+      <v-tab @click="currentComponent = 'Form3'">
+        Formulario 3
+      </v-tab>
+      <v-tab @click="currentComponent = 'Form5'">
+        Formulario 5
+      </v-tab>
+    </v-tabs>
     <component v-bind:is="currentComponent" :idUniversidad="idUniversidad" :universidad="universidad"></component>
   </div>
 </template>
@@ -22,7 +34,8 @@ export default {
   },
   data: () => ({
     currentComponent: '',
-    universidad: ''
+    universidad: '',
+    tab: 'Form1'
   }),
   mounted(){
     this.currentComponent = 'Form1'

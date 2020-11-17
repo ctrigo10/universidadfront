@@ -1,19 +1,34 @@
 <template>
   <div>
     <h3>Trámites</h3>
-    <v-btn-toggle
-      v-model="toggle_exclusive"
-      rounded
-      color="purple"
-      class="menu-header"
+
+    <v-tabs
+      v-model="tab"
+      background-color="secondary"
+      dark
+      next-icon="mdi-arrow-right-bold-box-outline"
+      prev-icon="mdi-arrow-left-bold-box-outline"
     >
-      <v-btn v-if="usuario.roles[0].rol_tipo_id == 51" @click="seleccionarNuevo()">Nuevo</v-btn>
-      <v-btn @click="seleccionarLista('RECIBIDOS')">Recibidos</v-btn>
-      <v-btn @click="seleccionarLista('ENVIADOS')">Enviados</v-btn>
-      <v-btn @click="seleccionarLista('PENDIENTES')">Pendientes</v-btn>
-      <v-btn @click="seleccionarLista('CONCLUIDOS')">Concluidos</v-btn>
-      <v-btn @click="seleccionarSeguimiento()">Seguimiento</v-btn>
-    </v-btn-toggle>
+      <!-- <v-tabs-slider color="lime accent-1"></v-tabs-slider> -->
+      <v-tab v-if="usuario.roles[0].rol_tipo_id == 51" @click="seleccionarNuevo()">
+        Nuevo
+      </v-tab>
+      <v-tab @click="seleccionarLista('RECIBIDOS')">
+        Recibidos
+      </v-tab>
+      <v-tab @click="seleccionarLista('ENVIADOS')">
+        Enviados
+      </v-tab>
+      <v-tab @click="seleccionarLista('PENDIENTES')">
+        Pendientes
+      </v-tab>
+      <v-tab @click="seleccionarLista('CONCLUIDOS')">
+        Concluidos
+      </v-tab>
+      <v-tab @click="seleccionarSeguimiento()">
+        Seguimiento
+      </v-tab>
+    </v-tabs>
 
     <Nuevo v-if="componente == 'Nuevo' && usuario.roles[0].rol_tipo_id == 51" :idUniversidad="idUniversidad"/>
 
@@ -41,7 +56,8 @@ export default {
     toggle_exclusive: 0,
     componente: '',
     tipoLista: '',
-    usuario: Service.getUser()
+    usuario: Service.getUser(),
+    tab: 0
   }),
   mounted() {
     if (this.usuario.roles[0].rol_tipo_id == 48) {
@@ -71,5 +87,6 @@ export default {
 <style>
   .menu-header {
     margin-bottom: 20px;
+    /* color: rgb(111, 23, 122); */
   }
 </style>
