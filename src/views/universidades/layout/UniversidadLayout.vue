@@ -133,9 +133,15 @@ export default {
       },
       {
         title: 'Formularios', 
-        href: 'universidades-tramites', 
+        href: 'formularios', 
         icon: 'mdi-domain',
-        rols: [48,51]
+        rols: [48]
+      },
+      {
+        title: 'Buscar estudiante', 
+        href: 'estudiante-buscar', 
+        icon: 'mdi-domain',
+        rols: [48]
       },
       // {
       //   title: 'Formularios', 

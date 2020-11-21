@@ -178,6 +178,18 @@ let paths = [
         meta: { requiresAuth: true },
         component: () => import(`@/views/universidades/Tramites.vue`),
       },
+      {
+        path: "formularios",
+        name: "formularios",
+        meta: { requiresAuth: true },
+        component: () => import(`@/views/universidades/Formularios.vue`),
+      },
+      {
+        path: "buscar-estudiante",
+        name: "estudiante-buscar",
+        meta: { requiresAuth: true },
+        component: () => import(`@/views/universidades/estudiante/BuscarEstudiante.vue`),
+      },
       // {
       //   path: "formularios",
       //   name: "universidades-formularios",

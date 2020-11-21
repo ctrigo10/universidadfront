@@ -195,7 +195,7 @@ export default {
       // { text: '#', sortable: false, value: 'id'},
       { text: '', value: 'acciones', sortable: false, align: 'end'},
       { text: 'Universidad', value: 'institucioneducativa'},
-      { text: 'Departamento', value: 'deparmento'},
+      { text: 'Sede/Sub sede', value: 'nombre_sede_subsede'},
       { text: 'Dependencia', value: 'dependencia'},
     ],
     search: '',

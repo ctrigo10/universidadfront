@@ -4,7 +4,7 @@
       <v-card-title primary-title>
         <h4>Formulario 3</h4>
         <v-spacer></v-spacer>
-        <v-btn color="primary" @click="openDialog">Nuevo</v-btn>
+        <v-btn v-if="verificarPermiso('universidad')" color="primary" @click="openDialog">Nuevo</v-btn>
       </v-card-title>
       <v-card-text>
         <div class="">
@@ -23,15 +23,22 @@
             <v-chip :color="item.estado == 'creado' ? 'gray' : 'success'" v-text="item.estado"></v-chip>
           </template>
           <template v-slot:[`item.acciones`]="{ item }">
-            <v-btn @click="editarFormulario(item)" color="secondary" x-small class="mr-1">
-              <v-icon x-small class="mr-1">mdi-pencil-outline</v-icon> Editar
-            </v-btn>
-            <v-btn @click="eliminarFormulario(item.id)" color="error" x-small class="mr-1">
-              <v-icon x-small class="mr-1">mdi-delete</v-icon> Eliminar
-            </v-btn>
-            <v-btn @click="enviarFormulario(item)" color="info" x-small>
-              <v-icon x-small class="mr-1">mdi-send-outline</v-icon> Enviar
-            </v-btn>
+            <span v-if="verificarPermiso('universidad') && item.estado == 'creado'">
+              <v-btn @click="editarFormulario(item)" color="secondary" x-small class="mr-1">
+                <v-icon x-small class="mr-1">mdi-pencil-outline</v-icon> Editar
+              </v-btn>
+              <v-btn @click="eliminarFormulario(item.id)" color="error" x-small class="mr-1">
+                <v-icon x-small class="mr-1">mdi-delete</v-icon> Eliminar
+              </v-btn>
+              <v-btn @click="enviarFormulario(item)" color="info" x-small>
+                <v-icon x-small class="mr-1">mdi-send-outline</v-icon> Enviar
+              </v-btn>
+            </span>
+            <span v-if="verificarPermiso('tecnico') && (item.estado == 'envio' || item.estado == 'recepcion')">
+              <v-btn @click="editarFormulario(item)" color="secondary" x-small class="mr-1">
+                <v-icon x-small class="mr-1">mdi-check-outline</v-icon> Verificar
+              </v-btn>
+            </span>
           </template>
         </v-data-table>
       </v-card-text>
@@ -186,13 +193,14 @@ export default {
   props: ['idUniversidad','universidad'],
   data: () => ({
     headers: [
-      {text: 'ID', value: 'id'},
+      // {text: 'ID', value: 'id'},
+      {text: 'Universidad', value: 'institucioneducativa.institucioneducativa'},
+      {text: 'Sede/Sub sede', value: 'institucioneducativa.rue_ue.nombre_sede_subsede'},
       {text: 'Estado', value: 'estado'},
       {text: 'Fecha', value: 'fecha_registro'},
       {text: 'Representante', value: 'representante'},
       {text: 'Localidad', value: 'localidad'},
       {text: 'Gestión', value: 'gestion'},
-      {text: 'Universidad', value: 'institucioneducativa_id'},
       {text: 'Acciones', value: 'acciones'},
     ],
     search: '',
@@ -242,6 +250,9 @@ export default {
   },
   methods: {
     ...mapMutations(['uniAlert']),
+    verificarPermiso(rol) {
+      return UniversidadesService.verificarPermisoRol(rol)
+    },
     async getFormularios() {
       try {
         let response = await UniversidadesService.getListForm3(this.idUniversidad)
@@ -381,8 +392,20 @@ export default {
         this.uniAlert({color: 'error', text: 'Error en el servidor'})
       }
     },
-    enviarFormulario(item) {
-      console.log(item)
+    async enviarFormulario(item) {
+      try {
+        let response = await UniversidadesService.updateForm3(item.id, {estado: 'envio' })
+        let data = response.data
+        if (data.status == 'success') {
+          this.getFormularios()
+          this.uniAlert({color: 'success', text: 'Formulario enviado correctamente'})
+        }else{
+          this.uniAlert({color: 'error', text: 'Error al actualizar el formulario'})
+        }
+      } catch (error) {
+        console.log(error)
+        this.uniAlert({color: 'error', text: 'Error en el servidor'})
+      }
     }
   }
 }

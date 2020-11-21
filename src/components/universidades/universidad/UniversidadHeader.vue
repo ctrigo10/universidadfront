@@ -1,7 +1,7 @@
 <template>
   <div class="academico-header">
     <div style="opacity: 0" class="laterales">
-      -----------
+      <!-- ----------- -->
       <!-- <img :src="rutaImagen" class="logoHeader"/> -->
     </div>
     <div>
@@ -9,7 +9,7 @@
       <div v-if="sedeSubsede != ''" class="sedeSubsede">{{sedeSubsede}}</div>
     </div>
     <div class="laterales">
-      SIE: {{ universidadId }}
+      <!-- SIE: {{ universidadId }} -->
     </div>
   </div>
 </template>

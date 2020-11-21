@@ -179,8 +179,24 @@ export default{
     return []
   },
 
-  async getRecordAcademico(estudiante_id, carrera_autorizada_id){
-    let response = await axios.get(`${general.getServe()}informe/listaRecordsEstudiante?carrera_autorizada_id=${carrera_autorizada_id}&estudiante_id=${estudiante_id}`);
+//------------------------------ ESTUDIANTE --------------------------------*//
+  // buscar estudiante
+  async getEstudiante(carnet, complemento){
+    if (complemento != '') {
+      return await axios.get(`${general.getServe()}informe/estudiante?carnet=${carnet}&complemento=${complemento}`);
+    }
+    return await axios.get(`${general.getServe()}informe/estudiante?carnet=${carnet}`);
+  },
+
+  // obtener recors academicos
+  async getRecordAcademico(estudiante_id = null, carrera_autorizada_id = null, carnet = null){
+    let url;
+    if (carnet === null || carnet == undefined) {
+      url = `${general.getServe()}informe/listaRecordsEstudiante?carrera_autorizada_id=${carrera_autorizada_id}&estudiante_id=${estudiante_id}`
+    }else{
+      url = `${general.getServe()}informe/listaRecordsEstudiante?carnet=${carnet}`
+    }
+    let response = await axios.get(url);
     let data = response.data
     console.log('dfasdfadsf', data)
     if (data.status == 'success') {
@@ -205,6 +221,7 @@ export default{
 
     return []
   },
+
 
 
 
@@ -316,7 +333,10 @@ export default{
   //////////////////////////////////// FORMULARIOS ///////////////////////////////////////////////////////
   // Formulario 1
   async getListForm1(idUniversidad){
-    return await axios.get(`${general.getServe()}formulario/${idUniversidad}`);
+    if (idUniversidad !== 'ninguno') {
+      return await axios.get(`${general.getServe()}formulario?universidad=${idUniversidad}`);
+    }
+    return await axios.get(`${general.getServe()}formulario`);
   },
   async createForm1(data){
     return await axios.post(`${general.getServe()}formulario`, data, general.getHeader());
@@ -330,7 +350,10 @@ export default{
   
   // Formulario 3
   async getListForm3(idUniversidad){
-    return await axios.get(`${general.getServe()}formulario/form3/${idUniversidad}`);
+    if (idUniversidad !== 'ninguno') {
+      return await axios.get(`${general.getServe()}formulario/form3?universidad=${idUniversidad}`);
+    }
+    return await axios.get(`${general.getServe()}formulario/form3`);
   },
   async getForm3(id){
     return await axios.get(`${general.getServe()}formulario/form3/${id}`);
@@ -347,7 +370,10 @@ export default{
   
   // Formulario 5
   async getListForm5(idUniversidad){
-    return await axios.get(`${general.getServe()}formulario/form5/${idUniversidad}`);
+    if (idUniversidad !== 'ninguno') {
+      return await axios.get(`${general.getServe()}formulario/form5?universidad=${idUniversidad}`);
+    }
+    return await axios.get(`${general.getServe()}formulario/form5`);
   },
   async getForm5(id){
     return await axios.get(`${general.getServe()}formulario/form5/${id}`);

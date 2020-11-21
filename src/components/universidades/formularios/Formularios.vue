@@ -15,7 +15,7 @@
         Formulario 5
       </v-tab>
     </v-tabs>
-    <component v-bind:is="currentComponent" :idUniversidad="idUniversidad" :universidad="universidad"></component>
+    <component v-bind:is="currentComponent" :idUniversidad="id" :universidad="universidad"></component>
   </div>
 </template>
 
@@ -26,7 +26,12 @@ import Form3 from '@/components/universidades/formularios/Form3'
 import Form5 from '@/components/universidades/formularios/Form5'
 export default {
   name: 'universidad-formularios',
-  props: ['idUniversidad'],
+  props: {
+    idUniversidad: {
+      type: String,
+      default: 'ninguno'
+    }
+  },
   components: {
     Form1,
     Form3,
@@ -35,15 +40,23 @@ export default {
   data: () => ({
     currentComponent: '',
     universidad: '',
+    id: '',
     tab: 'Form1'
   }),
   mounted(){
     this.currentComponent = 'Form1'
-    this.verDatosUniversidad()
+    this.id = 'ninguno'
+    this.universidad = ''
+    if (this.idUniversidad != 'ninguno') {
+      this.id = this.idUniversidad
+      this.verDatosUniversidad()
+    }
   },
   watch: {
     idUniversidad: function() {
-      this.verDatosUniversidad()
+      if (this.idUniversidad != 'ninguno') {
+        this.verDatosUniversidad()
+      }
     }
   },
   methods: {
