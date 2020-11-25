@@ -31,7 +31,6 @@
             <v-container>
               <v-row>
                 <v-col cols="12" sm="6" md="6">
-                  <label for>Fecha de Registro de Becas</label>
                   <v-menu
                     ref="menu1"
                     v-model="menu1"
@@ -44,7 +43,7 @@
                     <template v-slot:activator="{ on, attrs }">
                       <v-text-field
                         v-model="fecha_registro_convocatoria"
-                        label="Rango de fechas"
+                        label="Fecha de Registro de Becas"
                         readonly
                         persistent-hint
                         prepend-icon="mdi-calendar"
@@ -72,7 +71,6 @@
                   </v-menu>
                 </v-col>
                 <v-col cols="12" sm="6" md="6">
-                  <label for>Fecha de Solicitud de Becas</label>
                   <v-menu
                     ref="menu2"
                     v-model="menu2"
@@ -85,7 +83,7 @@
                     <template v-slot:activator="{ on, attrs }">
                       <v-text-field
                         v-model="fecha_solicitud_convocatoria"
-                        label="Rango de fechas"
+                        label="Fecha de Solicitud de Becas"
                         readonly
                         persistent-hint
                         prepend-icon="mdi-calendar"
@@ -113,6 +111,33 @@
                   </v-menu>
                 </v-col>
               </v-row>
+               <v-row>
+                  <v-col cols="12" sm="6" md="6">
+                    <v-text-field
+                      v-model="edited_item.ultimos_cursos"
+                      label="Notas del/los último(s)"
+                      prepend-icon="mdi-animation-outline"
+                      onkeypress="if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;"
+                      maxlength="1"
+                      suffix="curso(s)"
+                      color="secondary"
+                      :rules="[rules.required, rules.max9]">
+                    </v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="6">
+                    <v-text-field
+                      v-if="edited_item.ultimos_cursos != 0"
+                      v-model="edited_item.ponderacion"
+                      label="Ponderación (Max. 100)"
+                      prepend-icon="mdi-alarm-panel-outline"
+                      onkeypress="if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;"
+                      maxlength="3"
+                      suffix="Puntos"
+                      :rules="[rules.required, rules.max100]"
+                      color="secondary">
+                    </v-text-field>
+                  </v-col>
+               </v-row>
             </v-container>
           </v-card-text>
 
@@ -152,35 +177,51 @@ export default {
   },
   mounted() {},
 
-  data: () => ({
-    loader: null,
-    loading: false,
-    registar_editar: "",
-    showDatos: false,
-    dialog: false,
-    edited_index: -1,
-    menu1: false,
-    menu2: false,
-    min_menu2: "",
-    min_menu1: "",
-    dates_registro_convocatoria: [],
-    dates_solicitud_convocatoria: [],
-    fecha_registro_convocatoria: "",
-    fecha_solicitud_convocatoria: "",
-    edited_item: {
-      fecha_inicio_registro_beca: "",
-      fecha_fin_registro_beca: "",
-      fecha_inicio_solicitud_beca: "",
-      fecha_fin_solicitud_beca: "",
+  data(){
+    return{
+      loader: null,
+      loading: false,
+      registar_editar: "",
+      showDatos: false,
+      dialog: false,
+      edited_index: -1,
+      menu1: false,
+      menu2: false,
+      min_menu2: "",
+      min_menu1: "",
+      dates_registro_convocatoria: [],
+      dates_solicitud_convocatoria: [],
       fecha_registro_convocatoria: "",
       fecha_solicitud_convocatoria: "",
-      seleccionar_becados: false,
-      seleccionar_becados_text: "",
-    },
-    rules: {
-      required: (value) => !!value || "Requerido",
-    },
-  }),
+      edited_item: {
+        fecha_inicio_registro_beca: "",
+        fecha_fin_registro_beca: "",
+        fecha_inicio_solicitud_beca: "",
+        fecha_fin_solicitud_beca: "",
+        fecha_registro_convocatoria: "",
+        fecha_solicitud_convocatoria: "",
+        seleccionar_becados: false,
+        seleccionar_becados_text: "",
+        ultimos_cursos: "",
+        ponderacion: 0,
+      },
+      rules: {
+        required: (value) => !!value || "Requerido",
+        max9: (value) => {
+          if (!isNaN(parseFloat(value)) && value >= 0 && value <= 9)
+              return true;
+            return `Número entre 0 y 9`;
+          },
+        max100: (value) => {
+          let opcion = 0;
+          if(this.edited_item.ultimos_cursos > 0)opcion = 1;
+          if (!isNaN(parseFloat(value)) && value >= opcion && value <= 100)
+            return true;
+          return `Número entre ${opcion} y 100`;
+        },
+      },
+    }
+  },
 
   computed: {
     ...mapGetters([
@@ -223,6 +264,11 @@ export default {
       setTimeout(() => (this[l] = false), 2000);
 
       this.loader = null;
+    },
+    'edited_item.ultimos_cursos'(){
+      if(this.edited_item.ultimos_cursos == 0){
+        this.edited_item.ponderacion = 0;
+      }
     },
   },
 

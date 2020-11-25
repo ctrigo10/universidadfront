@@ -30,6 +30,7 @@ export default {
         nombre: user.nombre,
         paterno: user.paterno,
         materno: user.materno,
+        username: user.username,
         roles: user.roles,
       })
     );

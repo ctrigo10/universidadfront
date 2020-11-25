@@ -151,6 +151,10 @@ let paths = [
         path: "",
         name: "universidades-publico",
         component: () => import(`@/views/universidades/publico/Publico.vue`),
+      }, {
+        path: "informacion/:sie",
+        name: "universidades-publico-informacion",
+        component: () => import(`@/views/universidades/publico/Informacion.vue`),
       },
       {
         path: "dashboard",
@@ -171,10 +175,27 @@ let paths = [
         component: () => import(`@/views/universidades/Universidades.vue`),
       },
       {
-        path: "admin",
-        name: "universidades-admin",
+        path: "academico",
+        name: 'universidades-admin-home',
         meta: { requiresAuth: true },
-        component: () => import(`@/views/universidades/UniversidadesAdmin.vue`),
+        component: () => import(`@/views/universidades/admin/Home.vue`),
+        // children: [
+        //   {
+        //     path: "asdfadsf/:sie",
+        //     name: 'universidades-admin-information',
+        //     component: () => import(`@/views/universidades/admin/Information.vue`),
+        //   },
+        // ]
+      },
+      {
+        path: "admin/sedes-subsedes",
+        name: 'universidades-admin-sedes-subsedes',
+        component: () => import(`@/views/universidades/admin/ListSedesSubsedes.vue`),
+      },
+      {
+        path: "admin/academico",
+        name: 'universidades-admin-information',
+        component: () => import(`@/views/universidades/admin/Information.vue`),
       },
       {
         path: "gestion/:sie",
@@ -189,10 +210,55 @@ let paths = [
         component: () => import(`@/views/universidades/Academico.vue`),
       },
       {
+        path: "tramites",
+        name: "universidades-tramites",
+        meta: { requiresAuth: true },
+        component: () => import(`@/views/universidades/Tramites.vue`),
+      },
+      {
+        path: "formularios",
+        name: "formularios",
+        meta: { requiresAuth: true },
+        component: () => import(`@/views/universidades/Formularios.vue`),
+      },
+      {
+        path: "buscar-estudiante",
+        name: "estudiante-buscar",
+        meta: { requiresAuth: true },
+        component: () => import(`@/views/universidades/estudiante/BuscarEstudiante.vue`),
+      },
+      // {
+      //   path: "formularios",
+      //   name: "universidades-formularios",
+      //   meta: { requiresAuth: true },
+      //   component: () => import(`@/views/universidades/formularios/Formularios.vue`),
+      //   redirect: { name: "universidades-form1" },
+      //   children: [
+      //     {
+      //       path: "form1",
+      //       name: 'universidades-form1',
+      //       component: () => import(`@/views/universidades/formularios/Form1.vue`),
+      //     },{
+      //       path: "form3",
+      //       name: 'universidades-form3',
+      //       component: () => import(`@/views/universidades/formularios/Form3.vue`),
+      //     },{
+      //       path: "form5",
+      //       name: 'universidades-form5',
+      //       component: () => import(`@/views/universidades/formularios/Form5.vue`),
+      //     },
+      //   ]
+      // },
+      {
         path: "usuarios-permisos",
         name: "universidades-usuarios-permisos",
         meta: { requiresAuth: true },
         component: () => import(`@/views/universidades/UsuariosPermisos.vue`),
+      },{
+        path: "gestion-operativos",
+        name: 'universidades-gestion-operativos',
+        meta: { requiresAuth: true },
+        component: () => import(`@/views/universidades/GestionOperativos.vue`),
       },
     ],
   },
@@ -228,7 +294,13 @@ let paths = [
         component: () => import("@/views/becas/Solicitudes.vue"),
       },
       {
+        path: 'universidades/carreras/solicitud',
+        name: "becas-solicitud",
+        component: () =>import('@/views/becas/Solicitud.vue'),
+      },
+      {
         path: "seguimiento",
+        props: true,
         name: "becas-seguimiento",
         component: () => import(`@/views/becas/Seguimiento.vue`),
       },
@@ -243,6 +315,12 @@ let paths = [
         name: "becas-usuarios",
         meta: { requiresAuth: true, UniversidadTecnicoBecasNacional: true },
         component: () => import(`@/views/becas/Usuarios.vue`),
+      },
+      {
+        path: "solicitud/:solicitud_id/pdf",
+        name: "becas-solicitud_pdf",
+        props: true,
+        component: () => import(`@/components/becas/shared/SolicitudPdf.vue`),
       },
     ],
   },

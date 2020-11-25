@@ -6,6 +6,7 @@ import Carreras from "@/store/becas/Carreras";
 import BecasUtils from "@/store/becas/BecasUtils";
 import Usuarios from "@/store/becas/Usuarios";
 import Solicitudes from "@/store/becas/Solicitudes";
+import Cuestionario from "@/store/becas/Cuestionario";
 
 import UniUtils from "@/store/universidades/UniUtils.js";
 

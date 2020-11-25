@@ -1,6 +1,5 @@
 <template>
   <div>
-    
     <v-btn v-if="!usuarioLogueado" @click="showDialogLogin" color="primary" class="elevation-10">Ingresar</v-btn>
     <v-menu v-else offset-y>
       <template v-slot:activator="{ on, attrs }">
@@ -9,7 +8,7 @@
           dark
           v-bind="attrs"
           v-on="on"
-
+          elevation="0"
         >
           <v-avatar size="25px">
             <img
@@ -18,7 +17,12 @@
               class="uni-avatar"
             >
           </v-avatar>
-          {{ usuarioLogueado.nombre }} {{ usuarioLogueado.materno }}
+          <div>
+            <span class="username">{{ usuarioLogueado.nombre }} {{ usuarioLogueado.materno }}</span>
+            <!-- <div class="usuarioRol"> {{usuarioLogueado.roles[0].rol_tipo.rol}} </div> -->
+            <div class="usuarioRol" v-if="usuarioLogueado.roles[0].rol_tipo_id == 48"> Técnico Nacional </div>
+            <div class="usuarioRol" v-else> Universidad </div>
+          </div>
         </v-btn>
       </template>
       <v-list>
@@ -116,7 +120,7 @@ import { mapMutations } from 'vuex';
             // });
 
             if (this.usuarioLogueado.roles[0].rol_tipo_id == 51) {
-              this.$router.push({ name: "universidades-admin" });
+              this.$router.push({ name: "universidades-admin-home" });
             }else{
               this.$router.push({ name: "universidades-dashboard" });  
             }
@@ -143,5 +147,11 @@ import { mapMutations } from 'vuex';
 <style scoped>
   .uni-avatar {
     /* margin-right: ; */
+  }
+  .username {
+    margin-left: 10px;
+  }
+  .usuarioRol {
+    font-size: 8px;
   }
 </style>

@@ -19,33 +19,44 @@
         </v-card>
       </v-col>
     </v-row>
+    <br>
+    <h4>Estadísticas</h4>
+    <v-row>
+      <v-col cols="12" lg="4" md="4" sm="4" xs="12">
+        <Barra :datos="universidadesDepartamento.data" :options="universidadesDepartamento.options"/>
+      </v-col>
+      <v-col cols="12" lg="4" md="4" sm="4" xs="12">
+        <Torta />
+      </v-col>
+    </v-row>
   </div>
 </template>
 
 <script>
 import UniversidadesService from '@/services/universidadesService'
+import Barra from '@/components/universidades/graficos/Barra'
+import Torta from '@/components/universidades/graficos/Torta'
 export default {
   name: 'dashboard',
+  components: {
+    Barra,
+    Torta
+  },
   data: () => ({
-    // tipos: [
-    //   {
-    //     tipo: 'Privada',
-    //     cantidad: 12
-    //   },{
-    //     tipo: 'Indigena',
-    //     cantidad: 4
-    //   },{
-    //     tipo: 'Regimen Especial',
-    //     cantidad: 2
-    //   },
-    // ]
-    tipos: []
+    tipos: [],
+    chartdata: '',
+    options: '',
+    universidadesDepartamento: {
+      data: '',
+      options: ''
+    }
   }),
   computed: {
     
   },
   mounted(){
-    this.getTipos();
+    this.getTipos()
+    this.getCantidadUniversidadesPorDepartamento()
   },
   methods: {
     getColor(item){
@@ -66,10 +77,79 @@ export default {
         let response = await UniversidadesService.getTotalesTiposUniversidades();  
         let data = await response.data;
         this.tipos = data.data;
-        console.log('data', data)
       } catch (error) {
         console.log(error)
       }
+    },
+    async getCantidadUniversidadesPorDepartamento(){
+      try {
+        
+        let response = await UniversidadesService.getCantidadUniversidadesDepartamentoTipo();  
+        let data = response.data;
+        let datos = data.data;
+        console.log('depa', datos)
+
+        let labels = []
+        let datasets = []
+        datos.forEach(item => {
+          if (item.universidades.length == 0) {
+            item.universidades = [
+              {id: 7, dependencia: "Regimen Especial", total: 2},
+              {id: 3, dependencia: "Privada", total: 9},
+              {id: 6, dependencia: "Indigena", total: 8}
+            ]
+          }
+          
+          labels.push(item.departamento)
+          item.universidades.forEach(universidadTipo => {
+            let index = datasets.findIndex(elemento => elemento.label == universidadTipo.dependencia)
+            if (index < 0) {
+              datasets.push({
+                label: universidadTipo.dependencia,
+                backgroundColor: ['#3e95cd'],
+                data: [universidadTipo.total]
+              })
+            }else{
+              datasets[index].backgroundColor.push('#3e95cd')
+              datasets[index].data.push(universidadTipo.total)
+            }
+          })
+        })
+
+        console.log('labels', labels)
+        console.log('datasets', datasets)
+
+        this.universidadesDepartamento.data = {
+          labels: labels,
+          datasets: datasets
+        }
+
+        this.universidadesDepartamento.options = {
+          legend: { display: false },
+          title: {
+            display: true,
+            text: 'Cantidad de universidades por departamento'
+          }
+        }
+        console.log('chartdata', this.chartdata)
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    getColorBarra(tipo){
+      let color = '#3e95cd'
+      switch (tipo) {
+        case 'Público':
+            color = '#3e95cd'
+            break;
+        case 'Regimen especial':
+            color = '#c45850'
+            break;
+        case 'Indígena':
+            color = '#e8c3b9'
+            break;
+      }
+      return color
     }
   }
 }
@@ -78,5 +158,10 @@ export default {
 <style>
   .prueba {
     color: #d4b609;
+  }
+  .small {
+    max-width: 500px;
+    /* max-height: 200px;
+    margin:  150px auto; */
   }
 </style>

@@ -85,7 +85,7 @@ export default {
         if (this.buscar.length == 0) {
           this.getUniversidades();
         }else{
-          let response = await UniversidadesService.buscarUniversidadNombre(this.buscar);
+          let response = await UniversidadesService.buscarUniversidadNombrePublico(this.buscar);
           let data = await response.data;
           this.universidades = data.data;
         }

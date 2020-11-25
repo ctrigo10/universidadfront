@@ -3,6 +3,8 @@ import Vuetify from 'vuetify/lib';
 import { VDialog, VCard, VCardText, VBtn, VSpacer, VCardTitle, VCardActions } from "vuetify/lib";
 import colors from 'vuetify/lib/util/colors';
 
+import es from 'vuetify/es5/locale/es'
+
 // Vue.use(Vuetify);
 Vue.use(Vuetify, {
   components: {VDialog,VCard,VCardText,VBtn,VSpacer,VCardTitle,VCardActions},
@@ -27,4 +29,8 @@ export default new Vuetify({
       },
     },
   },
+  lang: {
+    locales: { es },
+    current: 'es',
+  }
 });

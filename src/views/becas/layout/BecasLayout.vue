@@ -1,6 +1,5 @@
 <template>
   <v-app id="mainview">
-    <Appbar :expanded.sync="expandNavbar" />
     <Navbar :expanded.sync="expandNavbar" :permission="permission" />
     <v-main>
       <div class="ml-2 mr-2">
@@ -17,7 +16,7 @@
 import { mapGetters } from "vuex";
 import Footer from "@/components/becas/layout/Footer";
 import Navbar from "@/components/becas/layout/Navbar";
-import Appbar from "@/components/becas/layout/Appbar";
+//import Appbar from "@/components/becas/layout/Appbar";
 import SnackBar from "@/components/becas/shared/SnackBar";
 import GeneralService from "@/services/general";
 //import Confirm from "@/components/becas/shared/Confirm";
@@ -26,7 +25,7 @@ export default {
   name: "beca-index",
   components: {
     Navbar,
-    Appbar,
+    //Appbar,
     Footer,
     SnackBar,
     //  Confirm
@@ -85,15 +84,6 @@ export default {
       }
     }
   }
-
-  /*created() {
-      const config = new Config()
-      config.get().then((data) => {
-        this.$store.commit("setDate", data.date)
-      }).catch(() => {
-        this.$store.commit("setDate", this.$moment().format("YYYY-MM-DD"))
-      })
-    }*/
 };
 </script>
 

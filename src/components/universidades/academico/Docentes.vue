@@ -1,7 +1,8 @@
 <template>
   <div>
+    <h3>Docentes</h3>
     <v-row>
-      <v-col sm="6" xs="12">
+      <v-col cols="12" lg="6" md="6" sm="4" xs="4">
         <v-select
           :items="gestiones"
           item-text="gestion"
@@ -11,7 +12,7 @@
           @change="getDocentes()"
         ></v-select>
       </v-col>
-      <v-col sm="6" xs="12">
+      <v-col cols="12" lg="6" md="6" sm="8" xs="8">
         <v-select
           :items="periodos"
           item-text="periodo"
@@ -25,6 +26,39 @@
     <v-row>
       <v-col :sm="docenteSeleccionado != '' ? 7 : 12">
         <v-card>
+          <v-card-title primary-title>
+            <h5>Docentes registrados</h5>
+            <v-spacer></v-spacer>
+            <!-- <v-btn color="error">
+              <v-icon>mdi-file-pdf-outline</v-icon> Descargar
+            </v-btn> -->
+          </v-card-title>
+          <v-card-text>
+            <v-text-field
+              v-model="search"
+              label="Buscar docente"
+            ></v-text-field>
+            <v-data-table
+              :headers="headers"
+              :items="docentes"
+              :search="search"
+              locales="es"
+            >
+              <template v-slot:[`item.genero`]="{ item }">
+                <v-list-item-avatar>
+                  <v-img v-if="item.genero == 'MASCULINO'" src="../../../assets/user.svg"></v-img>
+                </v-list-item-avatar>
+              </template>
+              <template v-slot:[`item.acciones`]="{ item }">
+                <v-btn @click="getRecordAcademico(item)" x-small color="secondary">
+                  <v-icon x-small>mdi-file</v-icon> Record Académico
+                </v-btn>
+              </template>
+            </v-data-table>
+          </v-card-text>
+        </v-card>
+
+        <!-- <v-card>
           <v-card-text>
             <h4>Docentes</h4>
             <v-list>
@@ -46,7 +80,7 @@
             </v-list>
             <div v-if="docentes.length == 0">Sin resultados</div>
           </v-card-text>
-        </v-card>
+        </v-card> -->
         <input type="hidden" :value="idUniversidad">
       </v-col>
       <v-col sm="5" v-show="docenteSeleccionado != ''">
@@ -84,13 +118,17 @@ export default {
   props: ['idUniversidad'],
   data: () => ({
     headers: [
+      { text: '', value: 'genero', sortable: false},
+      { text: 'Carnet', value: 'carnet'},
+      { text: 'Complemento', value: 'complemento'},
       { text: 'Nombre', value: 'nombre'},
       { text: 'Paterno', value: 'paterno'},
-      { text: 'Materno', value: 'materno'},
+      { text: 'Materno', value: 'materno'}
     ],
+    search: '',
     itemSeleccionado: '',
     gestion: new Date().getFullYear(),
-    periodo: 1,
+    periodo: 0,
     docenteSeleccionado: '',
     docentes: [],
     gestiones: [],

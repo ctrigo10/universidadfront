@@ -27,11 +27,12 @@ export default {
                 universidad.datos.email = dato.institucioneducativa.institucioneducativa_dato.email;
                 universidad.datos.fax = dato.institucioneducativa.institucioneducativa_dato.fax;
                 universidad.datos.imagen = dato.institucioneducativa.institucioneducativa_dato.imagen;
+                universidad.datos.pathImage = dato.institucioneducativa.institucioneducativa_dato.pathImage;
                 universidad.datos.sitio_web = dato.institucioneducativa.institucioneducativa_dato.sitio_web;
                 universidad.datos.telefonos = dato.institucioneducativa.institucioneducativa_dato.telefonos;
                 universidad.datos.decreto_supremo = dato.institucioneducativa.institucioneducativa_dato.decreto_supremo;
             }else{
-                universidad.datos.email = universidad.datos.fax = universidad.datos.imagen = universidad.datos.sitio_web = universidad.datos.telefonos = universidad.datos.decreto_supremo = "";
+                universidad.datos.pathImage = universidad.datos.email = universidad.datos.fax = universidad.datos.imagen = universidad.datos.sitio_web = universidad.datos.telefonos = universidad.datos.decreto_supremo = "";
             }
             if(dato.institucioneducativa.jurisdiccion_geografica){
                 universidad.datos.direccion = dato.institucioneducativa.jurisdiccion_geografica.direccion;
@@ -45,8 +46,6 @@ export default {
                 universidad.datos.depa = "";
             }
             state.universidad = universidad;
-            //console.log(dato)
-            //console.log(state.universidad)
         },
         cargarCarreras(state, data) {
             try{
@@ -86,15 +85,13 @@ export default {
                         "nombre": dato.titpro.tica.tct.nombre,
                         "titulo": dato.titpro.nivel_tipo.nivel,
                         "tiempo": dato.titpro.ttec_pensums[0].tiempo_estudio,
-                        "modalidad": dato.titpro.ttec_pensums[0].ttec_regimen_estudio_tipo.regimen_estudio,
+                        "modalidad": this.getters.getCapitalize(dato.titpro.ttec_pensums[0].ttec_regimen_estudio_tipo.regimen_estudio),
                         "cantidad_becas": +dato.cantidad_becas,
                     });
                 }
             }catch(error){
                 console.log(error);
             }
-            //console.log(data.data.data)
-            //console.log(state.carrerasBecas)
         },
 
         agregarBecaCarrera(state, item){
@@ -106,7 +103,7 @@ export default {
                 "nombre": carrera.nombre,
                 "titulo": carrera.titulo,
                 "tiempo": carrera.tiempo,
-                "modalidad": carrera.modalidad,
+                "modalidad": this.getters.getCapitalize(carrera.modalidad),
                 "cantidad_becas": +item.cantidad_becas,
             });
         },
@@ -115,7 +112,7 @@ export default {
             let carrera = [];
             carrera = state.carreras.find(dato=>dato.ttec_denominacion_titulo_profesional_tipo_id==item.item.ttec_denominacion_titulo_profesional_tipo_id);
             item.item.nombre = carrera.nombre;
-            item.item.modalidad = carrera.modalidad;
+            item.item.modalidad = this.getters.getCapitalize(carrera.modalidad);
             item.item.tiempo = carrera.tiempo;
             item.item.titulo = carrera.titulo;
             item.item.cantidad_becas = +item.item.cantidad_becas

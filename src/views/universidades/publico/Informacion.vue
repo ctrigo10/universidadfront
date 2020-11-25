@@ -1,6 +1,6 @@
 <template>
   <div>
-    <DatosUniversidad :idUniversidad="sie"/>
+    <UniversidadHeader :universidadId="sede.id" :universidad="sede.institucioneducativa"/>
     <v-row>
       <v-col
         cols="12"
@@ -8,6 +8,7 @@
       >
         <v-card>
           <v-card-text>
+            <h4>Sedes y sub sedes</h4>
             <v-list three-line>
               <v-list-item
                 @click="seleccionarUniversidad(sede)"
@@ -50,7 +51,7 @@
             <div class="text-center">
               <h2>{{ seleccionado.institucioneducativa }}</h2>
             </div>
-            <h5>Datos de ubicación</h5>
+            <h4>Datos de ubicación</h4>
             <v-list>
               <v-list-item class="pt-0 pb-0">
                 <v-list-item-icon class="pt-0 pb-0">
@@ -95,7 +96,7 @@
             </v-list>
 
             <div v-show="ofertaAcademica.length > 0 ">
-              <h5 class="mt-7 mb-3">Oferta académica</h5>
+              <h4 class="mt-7 mb-3">Oferta académica</h4>
               <v-simple-table>
                 <template v-slot:default>
                   <thead>
@@ -133,11 +134,11 @@
 
 <script>
 import UniversidadesService from '@/services/universidadesService'
-import DatosUniversidad from '@/components/universidades/DatosUniversidad'
+import UniversidadHeader from '@/components/universidades/universidad/UniversidadHeader'
 export default {
   name: 'informacion',
   components: {
-    DatosUniversidad
+    UniversidadHeader
   },
   data: () => ({
     sie: '',
@@ -163,19 +164,18 @@ export default {
     async obtenerDatosSede(){
       try {
         let response = await UniversidadesService.getDatosUniversidad(this.sie);
-        let data = await response.data;
+        let data = await response.data.data;
         this.sede = {
-          id: data.data.id,
-          institucioneducativa: data.data.institucioneducativa,
-          telefonos: data.datos.telefonos,
-          direccion: data.data.jurisdiccion_geografica.direccion,
-          email: data.datos.email,
-          sitio_web: data.datos.sitio_web,
-          imagen: data.datos.imagen,
-          departamento: data.data.jurisdiccion_geografica.distrito_tipo.departamento_tipo.departa
+          id: data.id,
+          institucioneducativa: data.institucioneducativa,
+          telefonos: data.telefonos,
+          direccion: data.direccion,
+          email: data.email,
+          sitio_web: data.sitio_web,
+          imagen: data.imagen,
+          departamento: data.departa
         };
 
-        // this.seleccionado = this.sede;
         this.seleccionarUniversidad(this.sede);
         console.log('seleccionado', this.seleccionado)
       } catch (error) {
@@ -201,8 +201,6 @@ export default {
         email: universidad.email,
         sitio_web: universidad.sitio_web
       };
-      // this.seleccionado = universidad;
-      console.log('asdfdasf', this.seleccionado)
       this.verOfertaAcademica();
     },
     async verOfertaAcademica(){
