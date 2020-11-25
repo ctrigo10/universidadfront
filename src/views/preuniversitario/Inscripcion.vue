@@ -4,8 +4,33 @@
       <header-title title="Inscripción"></header-title>
       <v-row class="mb-6">
         <v-col cols="12" sm="12">
+          <v-card class="mb-5 flat">
+            <v-card-text v-if="curso_habilitado.length > 0">
+              <v-select
+                label="Seleccione curso"
+                v-model="estudiante.curso_id"
+                :items="curso_habilitado"
+                item-text="descripcion"
+                item-value="id"
+                @change="showForm"
+              ></v-select>
+              <p v-if="habilitado" class="mt-2">
+                La inscripción está habilitado desde:
+                <b>{{ fecha_inicio | formatdate }}</b>
+                a
+                <b>{{ fecha_fin | formatdate }}</b>
+              </p>
+            </v-card-text>
+            <v-card-text v-else>
+              <b class="teal--text">{{ msg_check.title }}</b>
+              <p class="red--text mt-2">
+                {{ msg_check.message }}
+              </p>
+            </v-card-text>
+          </v-card>
           <v-card>
-            <v-card-text>
+            <!-- <v-card-title> Ingrese código RUDE. </v-card-title> -->
+            <v-card-text v-if="habilitado">
               Ingrese código RUDE.
               <v-form ref="sform">
                 <v-row>
@@ -31,30 +56,33 @@
                 <v-row>
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
-                      v-model="estudiante.nombre"
+                      v-model="estudiante.nombres"
                       label="Nombres"
                       filled
                       disabled
                     ></v-text-field>
                   </v-col>
-                  <v-col cols="12" sm="6" md="4">
+                  <v-col cols="12" sm="6" md="8">
                     <v-text-field
-                      v-model="estudiante.paterno"
-                      label="Apellido paterno"
-                      filled
-                      disabled
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      v-model="estudiante.materno"
-                      label="Apellido materno"
+                      v-model="estudiante.apellidos"
+                      label="Apellidos"
                       filled
                       disabled
                     ></v-text-field>
                   </v-col>
                 </v-row>
                 <v-row v-if="estado == 'inscribirse'">
+                  <v-col cols="12" sm="6" md="4">
+                    <v-select
+                      label="Departamento"
+                      v-model="estudiante.departamento_id"
+                      :items="departamentos"
+                      item-text="descripcion"
+                      item-value="id"
+                      filled
+                      :rules="[(v) => !!v || 'Seleccione una opción']"
+                    ></v-select>
+                  </v-col>
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
                       v-model="estudiante.correo"
@@ -75,7 +103,9 @@
                 </v-row>
                 <v-row v-else-if="estado == 'inscrito'">
                   <v-col cols="12" class="text-center">
-                    <h3 class="teal--text">El estudiante ya está inscrito</h3>
+                    <h3 class="teal--text">
+                      El/La estudiante ya está inscrito
+                    </h3>
                   </v-col>
                 </v-row>
               </v-form>
@@ -83,6 +113,14 @@
                 <v-progress-circular indeterminate></v-progress-circular>
               </div>
             </v-card-text>
+            <!-- <v-card-text v-else>
+              <div v-if="estado == ''">
+                <v-progress-circular indeterminate></v-progress-circular>
+              </div>
+              <div v-else>
+                <h3 class="teal--text">No hay inscripción habilitada.</h3>
+              </div>
+            </v-card-text> -->
           </v-card>
         </v-col>
       </v-row>
@@ -127,37 +165,35 @@ import HeaderTitle from "@/components/HeaderTitle";
 import Service from "../../services/general";
 import axios from "axios";
 export default {
-  name: "universidad",
+  name: "inscripcion",
   components: {
     HeaderTitle,
   },
   data: () => ({
-    edialog: false,
     cdialog: false,
-    loading: false,
-    question_loading: false,
     data_loading: false,
     send_loading: false,
     btn_loading: false,
-    server: "",
-    estado: "",
-    headers: [
-      { text: "Nombre ", value: "nombre" },
-      { text: "Paterno ", value: "paterno" },
-      { text: "Materno ", value: "materno" },
-      { text: "Estado ", value: "estado" },
-    ],
-    inscripcion: [],
     estudiante: {
-      id: "",
+      curso_id: "",
       codigo_rude: "819813412008154",
-      nombre: "",
-      paterno: "",
-      materno: "",
+      nombres: "",
+      apellidos: "",
+      departamento_id: "",
       ci: "",
       complemento: "",
+      correo: "",
     },
-    cateory_id: 2,
+    fecha_inicio: "",
+    fecha_fin: "",
+    estado: "",
+    habilitado: false,
+    curso_habilitado: {},
+    departamentos: [],
+    msg_check: {
+      title: "",
+      message: "",
+    },
     snack: {
       state: false,
       color: "success",
@@ -165,15 +201,37 @@ export default {
     },
   }),
   mounted() {
-    this.server = Service.getServe();
+    this.checkCursoHabilitado();
+    this.departamentos = [{ id: 1, descripcion: "La Paz" }];
   },
-  computed: {},
   methods: {
+    checkCursoHabilitado() {
+      axios
+        .get(Service.getBasePre() + "habilitar/cursos/inscripcion")
+        .then((response) => {
+          this.curso_habilitado = response.data;
+          this.msg_check.title = "Nota:";
+          this.msg_check.message =
+            "No existe ningún Curso Pre Universitario habilitado para la inscripción.";
+        })
+        .catch((error) => {
+          console.error("Error al cargar registros", error);
+        });
+    },
+    showForm() {
+      let data = this.curso_habilitado.find(
+        (item) => item.id === this.estudiante.curso_id
+      );
+      if (data) {
+        this.fecha_inicio = data.fecha_inicio;
+        this.fecha_fin = data.fecha_fin;
+        this.habilitado = true;
+      }
+    },
     searchStudent() {
       if (this.$refs.sform.validate()) {
         this.btn_loading = true;
         this.estado = "";
-        this.estudiante.preguntas = [];
         axios
           .post(
             Service.getBasePre() + "busca/estudiante",
@@ -183,10 +241,8 @@ export default {
           .then((response) => {
             this.btn_loading = false;
             if (response.data.id > 0) {
-              this.estudiante.id = response.data.id;
-              this.estudiante.nombre = response.data.nombre;
-              this.estudiante.paterno = response.data.paterno;
-              this.estudiante.materno = response.data.materno;
+              this.estudiante.nombres = response.data.nombre;
+              this.estudiante.apellidos = response.data.paterno;
               this.checkResponse(this.estudiante.codigo_rude);
             } else {
               this.toast("info", "Registro no encontrado");
@@ -213,7 +269,6 @@ export default {
             this.estado = "inscribirse";
           } else {
             this.estado = "inscrito";
-            this.inscripcion = response.data.message;
           }
         })
         .catch((error) => {
@@ -222,7 +277,7 @@ export default {
         });
     },
 
-    async showConfirm() {
+    showConfirm() {
       if (this.$refs.iform.validate()) {
         this.cdialog = true;
       }
@@ -242,6 +297,8 @@ export default {
             this.cdialog = false;
             this.toast("success", response.data.message);
             this.estado = "";
+            this.estudiante.correo = "";
+            this.estudiante.departamento_id = "";
           } else if (response.status === 200) {
             this.toast("info", response.data.message);
           }

@@ -7,13 +7,14 @@
           <v-card>
             <v-card-text>
               Ingrese código RUDE.
-              <v-form ref="sform">
+              <v-form ref="sform" v-on:submit.prevent="searchStudent">
                 <v-row>
                   <v-col cols="12" sm="8" class="py-0">
                     <v-text-field
                       label="Código RUDE"
                       v-model="estudiante.codigo_rude"
                       :rules="[(v) => !!v || 'Campo requerido']"
+                      autocomplete="off"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="4">
@@ -37,7 +38,7 @@
                     hide-details
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" sm="6" md="4">
+                <!-- <v-col cols="12" sm="6" md="4">
                   <v-text-field
                     v-model="estudiante.paterno"
                     label="Apellido paterno"
@@ -50,6 +51,15 @@
                   <v-text-field
                     v-model="estudiante.materno"
                     label="Apellido materno"
+                    filled
+                    disabled
+                    hide-details
+                  ></v-text-field>
+                </v-col> -->
+                <v-col cols="12" sm="8" md="8">
+                  <v-text-field
+                    v-model="estudiante.paterno"
+                    label="Apellidos"
                     filled
                     disabled
                     hide-details

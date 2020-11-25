@@ -20,6 +20,15 @@ Vue.use(confirmDialog, {
   context: { vuetify },
 });
 
+Vue.filter("formatdate", function(value) {
+  if (!value) return "";
+  return value
+    .substring(0, 10)
+    .split("-")
+    .reverse()
+    .join("/");
+});
+
 Vue.config.productionTip = false;
 
 new Vue({

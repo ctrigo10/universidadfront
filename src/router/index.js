@@ -49,6 +49,13 @@ let paths = [
         component: () => import(`@/views/preuniversitario/Inscripcion.vue`),
       },
       {
+        path: "inscripciones",
+        meta: { public: true },
+        name: "pre-inscripciones",
+        component: () =>
+          import(`@/views/preuniversitario/ListaInscripcion.vue`),
+      },
+      {
         path: "aptitud/numerica",
         meta: { public: true },
         name: "pre-aptitud-numerica",
@@ -98,6 +105,36 @@ let paths = [
         meta: { public: true },
         name: "pre-resultado-prueba",
         component: () => import(`@/views/preuniversitario/ResultadoPrueba.vue`),
+      },
+      {
+        path: "reporte/prueba",
+        meta: { public: true },
+        name: "pre-reporte-prueba",
+        component: () => import(`@/views/preuniversitario/ReportePrueba.vue`),
+      },
+      {
+        path: "habilitar/curso",
+        meta: { public: true },
+        name: "pre-habilitar-curso",
+        component: () => import(`@/views/preuniversitario/HabilitarCurso.vue`),
+      },
+      {
+        path: "categoria",
+        meta: { public: true },
+        name: "pre-categoria",
+        component: () => import(`@/views/preuniversitario/Categoria.vue`),
+      },
+      {
+        path: "pregunta",
+        meta: { public: true },
+        name: "pre-pregunta",
+        component: () => import(`@/views/preuniversitario/Pregunta.vue`),
+      },
+      {
+        path: "respuesta",
+        meta: { public: true },
+        name: "pre-respuesta",
+        component: () => import(`@/views/preuniversitario/Opcion.vue`),
       },
     ],
   },

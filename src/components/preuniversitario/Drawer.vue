@@ -8,7 +8,7 @@
     :dark="$vuetify.dark"
   >
     <v-toolbar @click="redirectTo" style="cursor: pointer">
-      <v-img src="../assets/logo-minedu.png" class="logo" />
+      <v-img src="../../assets/logo-minedu.png" class="logo" />
     </v-toolbar>
     <v-list nav dense link>
       <v-subheader>
@@ -59,6 +59,7 @@
 </template>
 
 <script>
+// import Service from "../services/general";
 export default {
   data: () => ({
     mini: false,
@@ -79,6 +80,11 @@ export default {
         text: "Inscripción",
         path: "/preuniversitario/inscripcion",
         icon: "mdi-file-account",
+      },
+      {
+        text: "Inscripciones",
+        path: "/preuniversitario/inscripciones",
+        icon: "mdi-file-document",
       },
       {
         text: "Test Vocacional",
@@ -124,9 +130,14 @@ export default {
             path: "/preuniversitario/resultado/prueba",
             icon: "mdi-check",
           },
+          {
+            text: "Reporte",
+            path: "/preuniversitario/reporte/prueba",
+            icon: "mdi-check",
+          },
         ],
       },
-      {
+      /* {
         icon: "mdi-folder",
         text: "Templates",
         submenu: [
@@ -141,6 +152,32 @@ export default {
             icon: "mdi-plus",
           },
         ],
+      }, */
+      {
+        text: "Configuración",
+        icon: "mdi-cog",
+        submenu: [
+          {
+            text: "Habilitar cursos",
+            path: "/preuniversitario/habilitar/curso",
+            icon: "mdi-check",
+          },
+          {
+            text: "Categorías",
+            path: "/preuniversitario/categoria",
+            icon: "mdi-check",
+          },
+          {
+            text: "Preguntas",
+            path: "/preuniversitario/pregunta",
+            icon: "mdi-check",
+          },
+          {
+            text: "Respuestas",
+            path: "/preuniversitario/respuesta",
+            icon: "mdi-check",
+          },
+        ],
       },
     ],
   }),
@@ -148,6 +185,9 @@ export default {
     window.getApp.$on("DRAWER_TOGGLE", () => {
       this.drawer = !this.drawer;
     });
+  },
+  mounted() {
+    // this.menus = Service.getMenuPreuniversitario();
   },
   methods: {
     draweMini() {
