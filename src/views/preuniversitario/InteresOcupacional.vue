@@ -38,27 +38,9 @@
                     hide-details
                   ></v-text-field>
                 </v-col>
-                <!-- <v-col cols="12" sm="6" md="4">
-                  <v-text-field
-                    v-model="estudiante.paterno"
-                    label="Apellido paterno"
-                    filled
-                    disabled
-                    hide-details
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" sm="6" md="4">
-                  <v-text-field
-                    v-model="estudiante.materno"
-                    label="Apellido materno"
-                    filled
-                    disabled
-                    hide-details
-                  ></v-text-field>
-                </v-col> -->
                 <v-col cols="12" sm="8" md="8">
                   <v-text-field
-                    v-model="estudiante.paterno"
+                    v-model="estudiante.apellido"
                     label="Apellidos"
                     filled
                     disabled
@@ -222,7 +204,7 @@ export default {
       id: "",
       codigo_rude: "",
       nombre: "",
-      paterno: "",
+      apellido: "",
       materno: "",
       preguntas: [],
       acierto: 0,
@@ -236,13 +218,12 @@ export default {
       text: "",
     },
   }),
-  mounted() {},
-  computed: {},
   methods: {
     searchStudent() {
       if (this.$refs.sform.validate()) {
         this.btn_loading = true;
         this.estado = "";
+        this.estudiante.apellido = "";
         this.estudiante.preguntas = [];
         axios
           .post(
@@ -255,8 +236,24 @@ export default {
             if (response.data.id > 0) {
               this.estudiante.id = response.data.id;
               this.estudiante.nombre = response.data.nombre;
-              this.estudiante.paterno = response.data.paterno;
-              this.estudiante.materno = response.data.materno;
+              if (
+                response.data.paterno &&
+                response.data.paterno != null &&
+                response.data.paterno != ""
+              ) {
+                this.estudiante.apellido = response.data.paterno.trim();
+              }
+              if (
+                response.data.materno &&
+                response.data.materno != null &&
+                response.data.materno != ""
+              ) {
+                this.estudiante.apellido = (
+                  this.estudiante.apellido +
+                  " " +
+                  response.data.materno
+                ).trim();
+              }
               this.checkResponse(this.estudiante.codigo_rude, this.cateory_id);
             } else {
               this.toast("info", "Registro no encontrado");

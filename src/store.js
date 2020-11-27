@@ -6,7 +6,7 @@ import Carreras from "@/store/becas/Carreras";
 import BecasUtils from "@/store/becas/BecasUtils";
 import Usuarios from "@/store/becas/Usuarios";
 import Solicitudes from "@/store/becas/Solicitudes";
-import Cuestionario from "@/store/becas/Cuestionario";
+// import Cuestionario from "@/store/becas/Cuestionario";
 
 import UniUtils from "@/store/universidades/UniUtils.js";
 
@@ -18,7 +18,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     status: "",
-    token: sessionStorage.getItem("token") || "",
+    token: sessionStorage.getItem("token") || "", //sessionStorage.getItem("token") Service.getToken()
   },
   mutations: {
     authSuccess(state, token) {
@@ -45,17 +45,14 @@ export default new Vuex.Store({
           .then((response) => {
             let token = response.data.token;
             Service.setUser(response.data.data);
-            Service.setMenuPreuniversitario(response.data.data.roles);
             commit("authSuccess", token);
             resolve({
               status: "success",
               msg: response.data.message,
               nombre: response.data.data.nombre,
             });
-            // evaluar cualquier condicion
           })
           .catch((err) => {
-            console.log(err);
             Service.removeUser();
             commit("authError", "Error en autenticación");
             reject({ status: "error", msg: err.response.data }); //revisar si viene en data

@@ -38,28 +38,10 @@
                     hide-details
                   ></v-text-field>
                 </v-col>
-                <!-- <v-col cols="12" sm="6" md="4">
-                  <v-text-field
-                    v-model="estudiante.paterno"
-                    label="Apellido paterno"
-                    filled
-                    disabled
-                    hide-details
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" sm="6" md="4">
-                  <v-text-field
-                    v-model="estudiante.materno"
-                    label="Apellido materno"
-                    filled
-                    disabled
-                    hide-details
-                  ></v-text-field>
-                </v-col> -->
                 <v-col cols="12" sm="8" md="8">
                   <v-text-field
-                    v-model="estudiante.paterno"
-                    label="Apellido paterno"
+                    v-model="estudiante.apellido"
+                    label="Apellidos"
                     filled
                     disabled
                     hide-details
@@ -243,8 +225,7 @@ export default {
       id: "",
       codigo_rude: "",
       nombre: "",
-      paterno: "",
-      materno: "",
+      apellido: "",
       aptitudes: 0,
       intereses: 0,
       estilos: 0,
@@ -276,6 +257,7 @@ export default {
       if (this.$refs.sform.validate()) {
         this.btn_loading = true;
         this.estado = "";
+        this.estudiante.apellido = "";
         this.estudiante.aptitudes = 0;
         this.estudiante.intereses = 0;
         this.estudiante.estilos = 0;
@@ -290,8 +272,24 @@ export default {
             if (response.data.id > 0) {
               this.estudiante.id = response.data.id;
               this.estudiante.nombre = response.data.nombre;
-              this.estudiante.paterno = response.data.paterno;
-              this.estudiante.materno = response.data.materno;
+              if (
+                response.data.paterno &&
+                response.data.paterno != null &&
+                response.data.paterno != ""
+              ) {
+                this.estudiante.apellido = response.data.paterno.trim();
+              }
+              if (
+                response.data.materno &&
+                response.data.materno != null &&
+                response.data.materno != ""
+              ) {
+                this.estudiante.apellido = (
+                  this.estudiante.apellido +
+                  " " +
+                  response.data.materno
+                ).trim();
+              }
               this.getReportAptitudes(
                 this.codigo_rude,
                 this.cateory_init,

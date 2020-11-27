@@ -8,10 +8,10 @@
             <v-select
               label="Seleccione curso"
               :items="curso_habilitado"
-              v-model="estudiante.curso_id"
+              v-model="options.curso_id"
               item-text="descripcion"
               item-value="id"
-              @change="changeCurso(estudiante.curso_id)"
+              @change="changeCurso"
             ></v-select>
           </v-flex>
           <v-text-field
@@ -22,7 +22,7 @@
             single-line
             clearable
             @input="changeSearch"
-            :disabled="estudiante.curso_id == 0 && inscritos.length == 0"
+            :disabled="options.curso_id == 0 && inscritos.length == 0"
           ></v-text-field>
           <v-spacer></v-spacer>
           <v-btn
@@ -85,22 +85,6 @@
         </v-col>
       </v-row>
     </v-container>
-
-    <v-dialog v-model="cdialog" width="300">
-      <v-card>
-        <v-card-title class="headline grey lighten-3" primary-title>
-          <span class="headline">Alerta</span>
-        </v-card-title>
-        <v-card-text>
-          <p>¿Esta seguro(a) de realizar la inscripción?</p>
-        </v-card-text>
-        <v-divider></v-divider>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="red" text @click="cdialog = false">Cancelar</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
     <v-snackbar
       v-model="snack.state"
       top="top"
@@ -123,7 +107,6 @@ export default {
     HeaderTitle,
   },
   data: () => ({
-    cdialog: false,
     loading: false,
     downloading: false,
     btn_loading: false,
@@ -139,7 +122,7 @@ export default {
       { text: "Nombres", value: "nombres" },
       { text: "Apellidos", value: "apellidos" },
       { text: "Correo", value: "correo" },
-      // { text: "Departamento", value: "departamento" },
+      { text: "Departamento", value: "departamento" },
     ],
     options: {
       search: "",
@@ -149,22 +132,8 @@ export default {
       itemsPerPage: 10,
     },
     inscritos: [],
-    estudiante: {
-      curso_id: "",
-      codigo_rude: "819813412008154",
-      nombres: "",
-      apellidos: "",
-      departamento_id: "",
-      ci: "",
-      complemento: "",
-      correo: "",
-    },
-    fecha_inicio: "",
-    fecha_fin: "",
-    estado: "",
     habilitado: false,
     curso_habilitado: [],
-    departamentos: [],
     snack: {
       state: false,
       color: "success",
@@ -172,8 +141,15 @@ export default {
     },
   }),
   mounted() {
-    this.checkCursoHabilitado();
-    this.departamentos = [{ id: 1, descripcion: "La Paz" }];
+    let user = Service.getUser();
+    let role_id = user ? user.roles.findIndex(
+      (item) => item.rol_tipo_id == Service.rolePreuniversitario()
+    ) : -1;
+    if (user && role_id >= 0) {
+      this.checkCursoHabilitado();
+    } else {
+      this.$router.replace({ name: "pre-escritorio" });
+    }
   },
   methods: {
     checkCursoHabilitado() {
@@ -186,10 +162,9 @@ export default {
           console.error("Error al cargar registros", error);
         });
     },
-    changeCurso(curso_id) {
+    changeCurso() {
       this.habilitado = true;
       this.inscritos = [];
-      this.options.curso_id = curso_id;
       this.getInscripcion();
     },
     getInscripcion() {
@@ -211,40 +186,15 @@ export default {
           console.error("Error al cargar registros", error);
         });
     },
-    searchStudent() {
-      if (this.$refs.sform.validate()) {
-        this.btn_loading = true;
-        this.estado = "";
-        axios
-          .post(
-            Service.getBasePre() + "busca/estudiante",
-            { codigo_rude: this.estudiante.codigo_rude },
-            Service.getHeader()
-          )
-          .then((response) => {
-            this.btn_loading = false;
-            if (response.data.id > 0) {
-              this.estudiante.nombres = response.data.nombre;
-              this.estudiante.apellidos = response.data.paterno;
-            } else {
-              this.toast("info", "Registro no encontrado");
-            }
-          })
-          .catch((error) => {
-            this.btn_loading = false;
-            console.error("Error al cargar registros", error);
-          });
-      }
-    },
 
     downloadFile() {
-      if (this.estudiante.curso_id != "") {
+      if (this.options.curso_id != "") {
         this.downloading = true;
         axios
           .post(
             Service.getBasePre() + "export/inscripcion",
             // { responseType: "blob" },
-            { curso_id: this.estudiante.curso_id },
+            { curso_id: this.options.curso_id },
             Service.getHeader()
           )
           .then((response) => {

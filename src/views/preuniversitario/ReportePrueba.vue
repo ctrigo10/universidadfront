@@ -84,6 +84,7 @@ export default {
     },
   }),
   mounted() {
+    //Validar auth
     this.getReportPruebas();
   },
   computed: {},

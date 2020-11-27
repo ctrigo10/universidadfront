@@ -33,27 +33,12 @@ import Toolbar from "@/components/preuniversitario/Toolbar";
 import Drawer from "@/components/preuniversitario/Drawer";
 
 export default {
-  name: "universidad-view",
+  name: "preuniversitario-inicio",
   components: {
     Toolbar,
     Drawer,
   },
-  data: () => ({
-    items: [
-      { header: "Menú" },
-      { icon: "fas fa-map", title: "Inicio", path: "/prefacultad" },
-      {
-        icon: "fas fa-list",
-        title: "Orientación Vocacional",
-        path: "/prefacultad/orientacion/vocacional",
-      },
-      {
-        icon: "fas fa-home",
-        title: "Universidades",
-        path: "/prefacultad/universidades",
-      },
-    ],
-  }),
+  data: () => ({}),
   created() {
     // window.getApp = this;
   },

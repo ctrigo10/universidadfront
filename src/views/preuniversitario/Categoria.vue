@@ -56,7 +56,7 @@
               </template>
               <span>Editar</span>
             </v-tooltip>
-            <v-tooltip bottom>
+            <!-- <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
                   icon
@@ -70,7 +70,7 @@
                 </v-btn>
               </template>
               <span>Eliminar</span>
-            </v-tooltip>
+            </v-tooltip> -->
           </td>
         </template>
       </v-data-table>
@@ -168,7 +168,6 @@
       timeout="2500"
     >
       {{ snack.text }}
-      <!-- <v-btn dark text @click="snack.state = false">Cerrar</v-btn> -->
     </v-snackbar>
   </div>
 </template>
@@ -211,10 +210,18 @@ export default {
     };
   },
   mounted() {
-    // if (Service.getUser()) {
-    this.estados = Service.getEstado();
-    this.getCategorias();
-    // }
+    let user = Service.getUser();
+    let role_id = user
+      ? user.roles.findIndex(
+          (item) => item.rol_tipo_id == Service.rolePreuniversitario()
+        )
+      : -1;
+    if (user && role_id >= 0) {
+      this.estados = Service.getEstado();
+      this.getCategorias();
+    } else {
+      this.$router.replace({ name: "pre-escritorio" });
+    }
   },
   computed: {},
   methods: {
@@ -237,10 +244,8 @@ export default {
         descripcion: "",
         estado: true,
       };
+      if (this.$refs.form) this.$refs.form.resetValidation();
       this.mode = true;
-      // if (this.$refs.form) {
-      // this.$refs.form.reset();
-      // }
       this.mdialog = true;
     },
     createCategoria() {

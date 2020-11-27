@@ -10,13 +10,13 @@
     <v-toolbar @click="redirectTo" style="cursor: pointer">
       <v-img src="../../assets/logo-minedu.png" class="logo" />
     </v-toolbar>
-    <v-list nav dense link>
+    <v-list nav dense link class="mb-4">
       <v-subheader>
         <span v-show="!mini">Menú</span>
         <v-spacer></v-spacer>
         <v-icon @click.stop="draweMini" color="teal">{{ icon_mini }}</v-icon>
       </v-subheader>
-      <div v-for="(link, i) in menus" :key="i">
+      <div v-for="(link, i) in (isAuth && 1 ? auth_menu : public_menu)" :key="i">
         <v-list-item
           v-if="!link.submenu"
           :to="link.path"
@@ -65,7 +65,7 @@ export default {
     mini: false,
     icon_mini: "mdi-transfer-left",
     drawer: true,
-    menus: [
+    auth_menu: [
       {
         text: "Inicio",
         path: "/preuniversitario",
@@ -77,14 +77,14 @@ export default {
         icon: "mdi-bank",
       },
       {
-        text: "Inscripción",
+        text: "Registro de Inscripción",
         path: "/preuniversitario/inscripcion",
         icon: "mdi-file-account",
       },
       {
-        text: "Inscripciones",
+        text: "Lista de Inscripciones",
         path: "/preuniversitario/inscripciones",
-        icon: "mdi-file-document",
+        icon: "mdi-file-document-outline",
       },
       {
         text: "Test Vocacional",
@@ -137,22 +137,6 @@ export default {
           },
         ],
       },
-      /* {
-        icon: "mdi-folder",
-        text: "Templates",
-        submenu: [
-          {
-            text: "Universidades",
-            path: "/preuniversitario/universidades",
-            icon: "mdi-view-list",
-          },
-          {
-            text: "New Template",
-            path: "/templates/new",
-            icon: "mdi-plus",
-          },
-        ],
-      }, */
       {
         text: "Configuración",
         icon: "mdi-cog",
@@ -180,14 +164,79 @@ export default {
         ],
       },
     ],
+    public_menu: [
+      {
+        text: "Inicio",
+        path: "/preuniversitario",
+        icon: "mdi-view-dashboard",
+      },
+      {
+        text: "Universidades",
+        path: "/preuniversitario/universidades",
+        icon: "mdi-bank",
+      },
+      {
+        text: "Inscripción",
+        path: "/preuniversitario/inscripcion",
+        icon: "mdi-file-account",
+      },
+      {
+        text: "Test Vocacional",
+        icon: "mdi-account-check",
+        submenu: [
+          {
+            text: "Aptitud numérica",
+            path: "/preuniversitario/aptitud/numerica",
+            icon: "mdi-check",
+          },
+          {
+            text: "Aptitud verbal",
+            path: "/preuniversitario/aptitud/verbal",
+            icon: "mdi-check",
+          },
+          {
+            text: "Aptitud mecánica",
+            path: "/preuniversitario/aptitud/mecanica",
+            icon: "mdi-check",
+          },
+          {
+            text: "Aptitud espacial",
+            path: "/preuniversitario/aptitud/espacial",
+            icon: "mdi-check",
+          },
+          {
+            text: "Aptitud abstracta",
+            path: "/preuniversitario/aptitud/abstracta",
+            icon: "mdi-check",
+          },
+          {
+            text: "Interes ocupacional",
+            path: "/preuniversitario/interes/ocupacional",
+            icon: "mdi-check",
+          },
+          {
+            text: "Estilo aprendizaje",
+            path: "/preuniversitario/estilo/aprendizaje",
+            icon: "mdi-check",
+          },
+          {
+            text: "Resultado",
+            path: "/preuniversitario/resultado/prueba",
+            icon: "mdi-check",
+          },
+        ],
+      },
+    ],
   }),
   created() {
     window.getApp.$on("DRAWER_TOGGLE", () => {
       this.drawer = !this.drawer;
     });
   },
-  mounted() {
-    // this.menus = Service.getMenuPreuniversitario();
+  computed: {
+    isAuth() {
+      return this.$store.getters.isAuthenticated;
+    },
   },
   methods: {
     draweMini() {

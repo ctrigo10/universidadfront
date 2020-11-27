@@ -95,6 +95,22 @@
                     required
                   ></v-text-field>
                 </v-flex>
+                <v-flex xs12>
+                  <v-text-field
+                    type="url"
+                    label="Enlace plataforma *"
+                    v-model="curso.enlace"
+                    :rules="[
+                      (v) => !!v || 'El campo es requerido',
+                      (v) =>
+                        /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/.test(
+                          v
+                        ) || 'Debe ser una url',
+                    ]"
+                    autocomplete="off"
+                    required
+                  ></v-text-field>
+                </v-flex>
                 <v-flex xs12 sm6>
                   <v-menu
                     ref="menu1"
@@ -224,7 +240,6 @@
       timeout="2500"
     >
       {{ snack.text }}
-      <!-- <v-btn dark text @click="snack.state = false">Cerrar</v-btn> -->
     </v-snackbar>
   </div>
 </template>
@@ -250,7 +265,7 @@ export default {
         { text: "Descripción ", value: "descripcion" },
         { text: "Fecha inicio ", value: "fecha_inicio" },
         { text: "Fecha fin ", value: "fecha_fin" },
-        { text: "Acciones", value: "accion", sortable: false, width: "18%" },
+        { text: "Acciones", value: "accion", sortable: false },
       ],
       cursos: [],
       curso: {
@@ -259,6 +274,8 @@ export default {
         fecha_inicio: "",
         fecha_fin: "",
         tipo_id: "",
+        enlace: "",
+        estado: true,
       },
       tipoeducacion: [],
       mdialog: false,
@@ -272,11 +289,19 @@ export default {
     };
   },
   mounted() {
-    // if (Service.getUser()) {
-    this.estados = Service.getEstado();
-    this.getHabilitarCursos();
-    this.getTipoEducaciones();
-    // }
+    let user = Service.getUser();
+    let role_id = user
+      ? user.roles.findIndex(
+          (item) => item.rol_tipo_id == Service.rolePreuniversitario()
+        )
+      : -1;
+    if (user && role_id >= 0) {
+      this.estados = Service.getEstado();
+      this.getHabilitarCursos();
+      this.getTipoEducaciones();
+    } else {
+      this.$router.replace({ name: "pre-escritorio" });
+    }
   },
   computed: {
     initDateFormat() {
@@ -334,8 +359,10 @@ export default {
         fecha_inicio: "",
         fecha_fin: "",
         tipo_id: "",
+        enlace: "",
         estado: true,
       };
+      if (this.$refs.form) this.$refs.form.resetValidation();
       this.mode = true;
       this.mdialog = true;
     },

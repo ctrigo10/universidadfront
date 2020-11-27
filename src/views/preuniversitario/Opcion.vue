@@ -260,14 +260,22 @@ export default {
     };
   },
   mounted() {
-    // if (Service.getUser()) {
-    this.estados = Service.getEstado();
-    this.respuetas = [
-      { id: true, descripcion: "Si" },
-      { id: false, descripcion: "No" },
-    ];
-    this.getCategorias();
-    // }
+    let user = Service.getUser();
+    let role_id = user
+      ? user.roles.findIndex(
+          (item) => item.rol_tipo_id == Service.rolePreuniversitario()
+        )
+      : -1;
+    if (user && role_id >= 0) {
+      this.estados = Service.getEstado();
+      this.respuetas = [
+        { id: true, descripcion: "Si" },
+        { id: false, descripcion: "No" },
+      ];
+      this.getCategorias();
+    } else {
+      this.$router.replace({ name: "pre-escritorio" });
+    }
   },
   computed: {},
   methods: {
@@ -322,6 +330,7 @@ export default {
         this.opcion.opcion = "";
         this.opcion.estado = true;
         this.opcion.respuesta_correcta = false;
+        if (this.$refs.form) this.$refs.form.resetValidation();
         this.mode = true;
         this.mdialog = true;
       }

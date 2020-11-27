@@ -75,7 +75,7 @@
                   <v-col cols="12" sm="6" md="4">
                     <v-select
                       label="Departamento"
-                      v-model="estudiante.departamento_id"
+                      v-model="estudiante.departamento"
                       :items="departamentos"
                       item-text="descripcion"
                       item-value="id"
@@ -92,6 +92,7 @@
                         (v) => !!v || 'El campo es requerido',
                         (v) => /.+@.+/.test(v) || 'Correo no valido',
                       ]"
+                      autocomplete="off"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" class="text-center">
@@ -113,14 +114,6 @@
                 <v-progress-circular indeterminate></v-progress-circular>
               </div>
             </v-card-text>
-            <!-- <v-card-text v-else>
-              <div v-if="estado == ''">
-                <v-progress-circular indeterminate></v-progress-circular>
-              </div>
-              <div v-else>
-                <h3 class="teal--text">No hay inscripción habilitada.</h3>
-              </div>
-            </v-card-text> -->
           </v-card>
         </v-col>
       </v-row>
@@ -176,10 +169,10 @@ export default {
     btn_loading: false,
     estudiante: {
       curso_id: "",
-      codigo_rude: "819813412008154",
+      codigo_rude: "",
       nombres: "",
       apellidos: "",
-      departamento_id: "",
+      departamento: "",
       ci: "",
       complemento: "",
       correo: "",
@@ -202,7 +195,17 @@ export default {
   }),
   mounted() {
     this.checkCursoHabilitado();
-    this.departamentos = [{ id: 1, descripcion: "La Paz" }];
+    this.departamentos = [
+      { id: "Chuquisaca", descripcion: "Chuquisaca" },
+      { id: "La Paz", descripcion: "La Paz" },
+      { id: "Cochabamba", descripcion: "Cochabamba" },
+      { id: "Oruro", descripcion: "Oruro" },
+      { id: "Potosí", descripcion: "Potosí" },
+      { id: "Tarija", descripcion: "Tarija" },
+      { id: "Santa Cruz", descripcion: "Santa Cruz" },
+      { id: "Beni", descripcion: "Beni" },
+      { id: "Pando", descripcion: "Pando" },
+    ];
   },
   methods: {
     checkCursoHabilitado() {
@@ -232,6 +235,7 @@ export default {
       if (this.$refs.sform.validate()) {
         this.btn_loading = true;
         this.estado = "";
+        this.estudiante.apellidos = "";
         axios
           .post(
             Service.getBasePre() + "busca/estudiante",
@@ -242,7 +246,24 @@ export default {
             this.btn_loading = false;
             if (response.data.id > 0) {
               this.estudiante.nombres = response.data.nombre;
-              this.estudiante.apellidos = response.data.paterno;
+              if (
+                response.data.paterno &&
+                response.data.paterno != null &&
+                response.data.paterno != ""
+              ) {
+                this.estudiante.apellidos = response.data.paterno.trim();
+              }
+              if (
+                response.data.materno &&
+                response.data.materno != null &&
+                response.data.materno != ""
+              ) {
+                this.estudiante.apellidos = (
+                  this.estudiante.apellidos +
+                  " " +
+                  response.data.materno
+                ).trim();
+              }
               this.checkResponse(this.estudiante.codigo_rude);
             } else {
               this.toast("info", "Registro no encontrado");
@@ -298,7 +319,7 @@ export default {
             this.toast("success", response.data.message);
             this.estado = "";
             this.estudiante.correo = "";
-            this.estudiante.departamento_id = "";
+            this.estudiante.departamento = "";
           } else if (response.status === 200) {
             this.toast("info", response.data.message);
           }

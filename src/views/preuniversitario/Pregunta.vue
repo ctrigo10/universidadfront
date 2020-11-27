@@ -196,7 +196,6 @@
       timeout="2500"
     >
       {{ snack.text }}
-      <!-- <v-btn dark text @click="snack.state = false">Cerrar</v-btn> -->
     </v-snackbar>
   </div>
 </template>
@@ -216,7 +215,6 @@ export default {
       loading: false,
       btn_loading: false,
       headers: [
-        // { text: "#", value: "id", align: "left", sortable: false },
         { text: "Descripción ", value: "descripcion" },
         { text: "Imagen ", value: "imagen" },
         { text: "Estado ", value: "estado" },
@@ -246,17 +244,24 @@ export default {
     };
   },
   mounted() {
-    // if (Service.getUser()) {
-    this.serve = Service.getServe();
-    this.estados = Service.getEstado();
-    this.tipos = [
-      { id: 1, descripcion: "Texto" },
-      { id: 2, descripcion: "Texto e imagen" },
-    ];
-    this.getCategorias();
-    // }
+    let user = Service.getUser();
+    let role_id = user
+      ? user.roles.findIndex(
+          (item) => item.rol_tipo_id == Service.rolePreuniversitario()
+        )
+      : -1;
+    if (user && role_id >= 0) {
+      this.serve = Service.getServe();
+      this.estados = Service.getEstado();
+      this.tipos = [
+        { id: 1, descripcion: "Texto" },
+        { id: 2, descripcion: "Texto e imagen" },
+      ];
+      this.getCategorias();
+    } else {
+      this.$router.replace({ name: "pre-escritorio" });
+    }
   },
-  computed: {},
   methods: {
     getCategorias() {
       axios
@@ -297,6 +302,7 @@ export default {
         this.pregunta.imagen = "";
         this.pregunta.tipo = "";
         this.pregunta.estado = true;
+        if (this.$refs.form) this.$refs.form.resetValidation();
         this.mode = true;
         this.mdialog = true;
       }
