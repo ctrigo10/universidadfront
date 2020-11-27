@@ -7,13 +7,14 @@
           <v-card>
             <v-card-text>
               Ingrese código RUDE.
-              <v-form ref="sform">
+              <v-form ref="sform" v-on:submit.prevent="searchStudent">
                 <v-row>
                   <v-col cols="12" sm="8" class="py-0">
                     <v-text-field
                       label="Código RUDE"
                       v-model="estudiante.codigo_rude"
                       :rules="[(v) => !!v || 'Campo requerido']"
+                      autocomplete="off"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="4">
@@ -37,19 +38,10 @@
                     hide-details
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" sm="6" md="4">
+                <v-col cols="12" sm="8" md="8">
                   <v-text-field
-                    v-model="estudiante.paterno"
-                    label="Apellido paterno"
-                    filled
-                    disabled
-                    hide-details
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" sm="6" md="4">
-                  <v-text-field
-                    v-model="estudiante.materno"
-                    label="Apellido materno"
+                    v-model="estudiante.apellido"
+                    label="Apellidos"
                     filled
                     disabled
                     hide-details
@@ -100,34 +92,43 @@
               </div>
               <div v-else-if="estado == 'tabla'">
                 <h3 class="teal--text my-2">Resultado de la Prueba</h3>
-                <v-data-table
-                  :headers="headers"
-                  :items="respuestas"
-                  :loading="loading"
-                  calculate-widths
-                  no-data-text="No existen registros"
-                  no-results-text="Sin resultados"
-                  item-key="name"
-                  class="elevation-1"
-                  v-cloak
-                >
-                  <template v-slot:item.estado="{ item }">
-                    <td>
-                      <span
-                        v-if="
-                          item.estado == 1 ||
-                          item.estado == true ||
-                          item.estado == 'true'
-                        "
-                      >
-                        <v-chip small color="green lighten-4">activo</v-chip>
-                      </span>
-                      <span v-else>
-                        <v-chip small color="red lighten-4">inactivo</v-chip>
-                      </span>
-                    </td>
+                <v-simple-table>
+                  <template v-slot:default>
+                    <thead>
+                      <tr>
+                        <th class="text-left">Nombre completo</th>
+                        <th class="text-center">Aciertos (#)</th>
+                        <th class="text-center">Porcentaje (%)</th>
+                        <th class="text-left">Estado</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="(item, index) in respuestas" :key="index">
+                        <td>{{ item.nombre }}</td>
+                        <td class="text-center">{{ item.acierto }}</td>
+                        <td class="text-center">{{ item.porcentaje }}</td>
+                        <td>
+                          <span
+                            v-if="
+                              item.estado == 1 ||
+                              item.estado == true ||
+                              item.estado == 'true'
+                            "
+                          >
+                            <v-chip small color="green lighten-4"
+                              >activo</v-chip
+                            >
+                          </span>
+                          <span v-else>
+                            <v-chip small color="red lighten-4"
+                              >inactivo</v-chip
+                            >
+                          </span>
+                        </td>
+                      </tr>
+                    </tbody>
                   </template>
-                </v-data-table>
+                </v-simple-table>
               </div>
               <div v-else-if="data_loading" class="text-center">
                 <v-progress-circular indeterminate></v-progress-circular>
@@ -216,21 +217,12 @@ export default {
     btn_loading: false,
     server: "",
     estado: "",
-    headers: [
-      { text: "Nombre ", value: "nombre" },
-      { text: "Paterno ", value: "paterno" },
-      { text: "Materno ", value: "materno" },
-      { text: "Aciertos (#) ", value: "acierto", align: "center" },
-      { text: "Porcentaje (%) ", value: "porcentaje", align: "center" },
-      { text: "Estado ", value: "estado" },
-    ],
     respuestas: [],
     estudiante: {
       id: "",
       codigo_rude: "",
       nombre: "",
-      paterno: "",
-      materno: "",
+      apellido: "",
       preguntas: [],
       acierto: 0,
       porcentaje: 0,
@@ -266,6 +258,7 @@ export default {
       if (this.$refs.sform.validate()) {
         this.btn_loading = true;
         this.estado = "";
+        this.estudiante.apellido = "";
         this.estudiante.preguntas = [];
         axios
           .post(
@@ -278,8 +271,24 @@ export default {
             if (response.data.id > 0) {
               this.estudiante.id = response.data.id;
               this.estudiante.nombre = response.data.nombre;
-              this.estudiante.paterno = response.data.paterno;
-              this.estudiante.materno = response.data.materno;
+              if (
+                response.data.paterno &&
+                response.data.paterno != null &&
+                response.data.paterno != ""
+              ) {
+                this.estudiante.apellido = response.data.paterno.trim();
+              }
+              if (
+                response.data.materno &&
+                response.data.materno != null &&
+                response.data.materno != ""
+              ) {
+                this.estudiante.apellido = (
+                  this.estudiante.apellido +
+                  " " +
+                  response.data.materno
+                ).trim();
+              }
               this.checkResponse(this.estudiante.codigo_rude, this.cateory_id);
             } else {
               this.toast("info", "Registro no encontrado");
@@ -388,7 +397,8 @@ export default {
 };
 </script>
 <style lang="css">
-.v-data-table .v-data-table-header {
+.v-data-table .v-data-table-header,
+table thead {
   background-color: #f5f5f5;
 }
 </style>

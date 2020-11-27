@@ -120,7 +120,7 @@ export default {
         rols: [57,48]
       },
       {
-        title: 'Administración', 
+        title: 'Universidades', 
         href: 'universidades-admin-home', 
         icon: 'mdi-domain',
         rols: [51,48]
@@ -129,8 +129,26 @@ export default {
         title: 'Trámites', 
         href: 'universidades-tramites', 
         icon: 'mdi-domain',
+        rols: [48,51]
+      },
+      {
+        title: 'Formularios', 
+        href: 'formularios', 
+        icon: 'mdi-domain',
         rols: [48]
       },
+      {
+        title: 'Buscar estudiante', 
+        href: 'estudiante-buscar', 
+        icon: 'mdi-domain',
+        rols: [48]
+      },
+      // {
+      //   title: 'Formularios', 
+      //   href: 'universidades-formularios', 
+      //   icon: 'mdi-domain',
+      //   rols: [48,51]
+      // },
       // {
       //   title: 'Carreras', 
       //   href: 'universidades-carreras', 

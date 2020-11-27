@@ -16,13 +16,14 @@
                 <v-card-text>
                   <v-layout row wrap>
                     <v-flex xs12 sm8 class="py-1">
-                      <v-text-field type="text" label="Buscar por nombre" v-model="busqueda.nombre"></v-text-field>
+                      <v-text-field type="text" label="Buscar por nombre" v-model="search"></v-text-field>
+                      <!-- <v-text-field type="text" label="Buscar por nombre" v-model="busqueda.nombre"></v-text-field> -->
                     </v-flex>
-                    <v-flex xs12 sm4 class="py-1">
+                    <!-- <v-flex xs12 sm4 class="py-1">
                       <v-btn color="primary" dark @click="searchUniversidad(1)">
                         <v-icon>mdi-magnify</v-icon>Buscar
                       </v-btn>
-                    </v-flex>
+                    </v-flex> -->
                   </v-layout>
                 </v-card-text>
               </v-card>
@@ -35,22 +36,30 @@
                       <v-select
                         :items="departamentos"
                         label="Buscar por departamentos"
+                        item-text="descripcion"
+                        item-value="id"
+                        v-model="search"
+                        required
+                      ></v-select>
+                      <!-- <v-select
+                        :items="departamentos"
+                        label="Buscar por departamentos"
                         item-text="lugar"
                         item-value="id"
                         v-model="busqueda.departamento"
                         required
-                      ></v-select>
+                      ></v-select> -->
                     </v-flex>
-                    <v-flex xs12 sm4 class="py-1">
+                    <!-- <v-flex xs12 sm4 class="py-1">
                       <v-btn color="primary" dark @click="searchUniversidad(2)">
                         <v-icon>mdi-magnify</v-icon>Buscar
                       </v-btn>
-                    </v-flex>
+                    </v-flex> -->
                   </v-layout>
                 </v-card-text>
               </v-card>
             </v-tab-item>
-            <v-tab-item key="area">
+            <!-- <v-tab-item key="area">
               <v-card flat>
                 <v-card-text>
                   <v-layout row wrap>
@@ -73,38 +82,29 @@
                   </v-layout>
                 </v-card-text>
               </v-card>
-            </v-tab-item>
+            </v-tab-item> -->
           </v-tabs>
           <v-data-table
             :loading="loadingUniv"
             :headers="headersUniversidad"
             :items="universidades"
+            :search="search"
             class="elevation-1"
             no-data-text="Sin registros"
             hide-actions-footer
           >
-            <template v-slot:items="props">
-              <td>{{ props.index + 1 }}</td>
-              <td>{{ props.item.id }}</td>
-              <td>{{ props.item.institucioneducativa }}</td>
-              <td>{{ props.item.fecha_creacion }}</td>
+            <template v-slot:item.num="{ item }">
               <td>
-                <v-tooltip bottom>
-                  <template v-slot:activator="{on}">
-                    <v-btn
-                      v-on="on"
-                      dark
-                      icon
-                      small
-                      depressed
-                      color="primary"
-                      @click="showDetail(props.item.id)"
-                    >
-                      <v-icon small>send</v-icon>
-                    </v-btn>
-                  </template>
-                  <span>Ver detalle</span>
-                </v-tooltip>
+                {{ universidades.indexOf(item) + 1 }}
+              </td>
+            </template>
+            <template v-slot:item.accion="{ item }">
+              <td>
+                <v-btn
+                  @click="showDetail(item)"
+                >
+                  Carreras
+                </v-btn>
               </td>
             </template>
           </v-data-table>
@@ -119,93 +119,82 @@
       scrollable
     >
       <v-card tile>
-        <v-toolbar card dark color="primary">
-          <v-toolbar-title>Código: {{ codigo_univ }}</v-toolbar-title>
+        <v-toolbar
+          flat
+          dark
+          color="primary"
+        >
+          <v-btn
+            icon
+            dark
+            @click="dialogDetail = false"
+          >
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+          <v-toolbar-title>Información</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
-            <v-btn dark flat @click="dialogDetail = false">Cerrar</v-btn>
+            <v-btn
+              dark
+              text
+              @click="dialogDetail = false"
+            >
+              Cerrar
+            </v-btn>
           </v-toolbar-items>
         </v-toolbar>
         <v-card-text>
-          <v-progress-linear v-if="loadingDetail" :indeterminate="true"></v-progress-linear>
-          <v-container grid-list-lg fluid class="pa-0">
-            <v-layout row wrap>
-              <v-flex xs12 sm8>
-                <v-card>
-                  <v-card-text>
-                    <h4 class="grey--text text--darken-2">Datos de la universidad</h4>
-                  </v-card-text>
-                  <v-divider></v-divider>
-                  <v-card-text>
-                    <v-list subheader class="py-0">
-                      <v-list-item>
-                        <v-list-item-content>
-                          <v-list-item-title>Nombre</v-list-item-title>
-                          <v-list-item-sub-title>{{ universidad.institucioneducativa }}</v-list-item-sub-title>
-                        </v-list-item-content>
-                      </v-list-item>
-                      <v-list-item>
-                        <v-list-item-content>
-                          <v-list-item-title>Sigla</v-list-item-title>
-                          <v-list-item-sub-title>{{ universidad.obs_rue2 ? universidad.obs_rue2 : 's/n' }}</v-list-item-sub-title>
-                        </v-list-item-content>
-                      </v-list-item>
-                      <v-list-item>
-                        <v-list-item-content>
-                          <v-list-item-title>Dirección</v-list-item-title>
-                          <v-list-item-sub-title>{{ universidad.jurisdiccion_geografica.direccion }}</v-list-item-sub-title>
-                        </v-list-item-content>
-                      </v-list-item>
-                      <v-list-item>
-                        <v-list-item-content>
-                          <v-list-item-title>Zona</v-list-item-title>
-                          <v-list-item-sub-title>{{ universidad.jurisdiccion_geografica.zona }}</v-list-item-sub-title>
-                        </v-list-item-content>
-                      </v-list-item>
-                    </v-list>
-                  </v-card-text>
-                </v-card>
-                <br />
-                <v-card>
-                  <v-card-text>
-                    <h4 class="grey--text text--darken-2">Carreras</h4>
-                  </v-card-text>
-                  <v-divider></v-divider>
-                  <v-data-table
-                    :loading="loadingUniv"
-                    :headers="headersCurso"
-                    :items="cursos"
-                    class="elevation-1"
-                    no-data-text="Sin registros"
-                    hide-actions-footer
-                  >
-                    <template v-slot:items="props">
-                      <td>{{ props.index + 1 }}</td>
-                      <td>{{ props.item.codigo }}</td>
-                      <td>{{ props.item.curso }}</td>
-                      <td>{{ props.item.carga_horaria }}</td>
-                      <td>{{ props.item.tiempo_estudio }}</td>
-                    </template>
-                  </v-data-table>
-                </v-card>
-              </v-flex>
-              <v-flex xs12 sm4>
-                <v-card>
-                  <v-card-title>
-                    <h4 class="grey--text text--darken-2">Localización</h4>
-                  </v-card-title>
-                  <v-divider></v-divider>
-                  <v-card-text>
-                    <p>
-                      <b>Coordenada:</b>
-                      [{{universidad.jurisdiccion_geografica.cordx}}, {{universidad.jurisdiccion_geografica.cordy}}]
-                    </p>
-                    <img src="/mapa.png" alt="Localización de la universidad" width="100%" />
-                  </v-card-text>
-                </v-card>
-              </v-flex>
-            </v-layout>
-          </v-container>
+          <v-list
+            three-line
+            subheader
+          >
+            <v-subheader>Datos de la Universidad</v-subheader>
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title>Nombre: {{ universidad.nombre }}</v-list-item-title>
+                <v-list-item-subtitle>Dirección: {{ universidad.direccion }}</v-list-item-subtitle>
+                <v-list-item-subtitle>Zona: {{ universidad.zona }}</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+          <v-divider></v-divider>
+          <v-list
+            three-line
+            subheader
+          >
+            <v-subheader>Listado de carreras</v-subheader>
+            <v-list-item>
+              <v-list-item-content>
+                <v-simple-table>
+                  <template v-slot:default>
+                    <thead style="background: #E0E0E0">
+                      <tr>
+                        <th class="text-left">
+                          Denominación
+                        </th>
+                        <th class="text-left">
+                          Regimen de estudio
+                        </th>
+                        <th class="text-left">
+                          Nivel
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr
+                        v-for="(item, index) in carreras"
+                        :key="index"
+                      >
+                        <td>{{ item.denominacion }}</td>
+                        <td>{{ item.regimen_estudio }}</td>
+                        <td>{{ item.nivel }}</td>
+                      </tr>
+                    </tbody>
+                  </template>
+                </v-simple-table>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
         </v-card-text>
         <div style="flex: 1 1 auto;"></div>
       </v-card>
@@ -234,25 +223,28 @@ export default {
     loading: false,
     loadingUniv: false,
     loadingDetail: false,
+    search: "",
     active: null,
     headersUniversidad: [
-      { text: "Nro", align: "left", sortable: false },
-      { text: "Código ", value: "id" },
-      { text: "Nombre ", value: "universidad" },
+      { text: "Nro", align: "left", value: "num", sortable: false },
+      // { text: "Código ", value: "id" },
+      { text: "Nombre ", value: "institucioneducativa" },
+      { text: "Resolución ", value: "nro_resolucion" },
       { text: "Fecha Creación ", value: "fecha_creacion" },
-      { text: "Acción", sortable: false },
+      { text: "Departamento ", value: "departamento" },
+      { text: "Acción", value: "accion", sortable: false },
     ],
-    headersCurso: [
+    headersCarrera: [
       { text: "Nro", align: "left", sortable: false },
       { text: "Código ", sortable: false },
-      { text: "Curso ", sortable: false },
+      { text: "Carrera ", sortable: false },
       { text: "Carga Horaria ", sortable: false },
       { text: "Tiempo (1 mes) ", sortable: false },
     ],
     busquedas_tipo: [
       { tipo: "Nombre", llave: "nombre" },
       { tipo: "Departamento", llave: "departamento" },
-      { tipo: "Área", llave: "area" },
+      // { tipo: "Área", llave: "area" },
     ],
     busqueda: {
       nombre: "",
@@ -261,12 +253,12 @@ export default {
     },
     codigo_univ: "",
     universidad: {
-      jurisdiccion_geografica: {},
+      nombre: "",
     },
     universidades: [],
     departamentos: [],
     areas: [],
-    cursos: [],
+    carreras: [],
     dialogDetail: false,
     snack: {
       state: false,
@@ -279,12 +271,25 @@ export default {
   }),
   mounted() {
     // this.getDepartamentos(1);
+    this.departamentos = [
+      { id: "Chuquisaca", descripcion: "Chuquisaca" },
+      { id: "La Paz", descripcion: "La Paz" },
+      { id: "Cochabamba", descripcion: "Cochabamba" },
+      { id: "Oruro", descripcion: "Oruro" },
+      { id: "Potosí", descripcion: "Potosí" },
+      { id: "Tarija", descripcion: "Tarija" },
+      { id: "Santa Cruz", descripcion: "Santa Cruz" },
+      { id: "Beni", descripcion: "Beni" },
+      { id: "Pando", descripcion: "Pando" },
+    ];
     // this.getAreas();
+    this.getUniversidades();
   },
   methods: {
     changePage(page) {
       console.log(page);
-      this.universidades = [];
+      // this.universidades = [];
+      this.search = "";
       this.busqueda = {
         nombre: "",
         departamento: "",
@@ -352,17 +357,31 @@ export default {
           console.error("Error al cargar datos", error);
         });
     },
-    showDetail(codigo) {
-      this.codigo_univ = codigo;
+    getUniversidades() {
+      this.loadingUniv = true;
+      axios
+        .get(Service.getBasePre() + "lista/universidades")
+        .then((response) => {
+          this.loadingUniv = false;
+          this.universidades = response.data;
+        })
+        .catch((error) => {
+          this.loadingUniv = false;
+          console.error("Error al cargar datos", error);
+        });
+    },
+    showDetail(universidad) {
+      this.codigo_univ = universidad.id;
+      this.universidad.nombre = universidad.institucioneducativa;
+      this.universidad.direccion = universidad.direccion;
+      this.universidad.zona = universidad.zona;
       this.dialogDetail = true;
       this.loadingDetail = true;
       axios
-        .get(Service.getServe() + "out/detalle/universidad/" + codigo)
+        .get(Service.getBasePre() + "lista/carreras/" + universidad.id)
         .then((response) => {
-          this.universidad = response.data.universidad;
-          console.log(response.data);
-          this.cursos = response.data.cursos;
           this.loadingDetail = false;
+          this.carreras = response.data;
         })
         .catch((error) => {
           this.loadingDetail = false;

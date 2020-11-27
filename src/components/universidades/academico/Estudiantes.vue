@@ -39,9 +39,16 @@
     <v-row>
       <v-col>
         <v-card>
+          <v-card-title primary-title>
+            <h5>Estudiantes registrados</h5>
+            <v-spacer></v-spacer>
+          </v-card-title>
           <v-card-text>
-            <h4>Estudiantes</h4>
-            <v-list>
+            <v-text-field
+              v-model="search"
+              label="Buscar estudiante"
+            ></v-text-field>
+            <!-- <v-list>
               <v-list-item-group v-model="itemSeleccionado" color="primary">
                 <v-list-item
                   v-for="(item, i) in estudiantes"
@@ -58,7 +65,20 @@
                 </v-list-item>
               </v-list-item-group>
             </v-list>
-            <div v-if="estudiantes.length == 0">Sin resultados</div>
+            <div v-if="estudiantes.length == 0">Sin resultados</div> -->
+
+            <v-data-table
+              :headers="headers"
+              :items="estudiantes"
+              :search="search"
+              locales="es"
+            >
+              <template v-slot:[`item.acciones`]="{ item }">
+                <v-btn @click="getRecordAcademico(item)" x-small color="secondary">
+                  <v-icon x-small>mdi-file</v-icon> Record Académico
+                </v-btn>
+              </template>
+            </v-data-table>
           </v-card-text>
         </v-card>
         <input type="hidden" :value="idUniversidad">
@@ -72,7 +92,7 @@
       transition="dialog-transition"
     >
     
-      <RecordAcademico :record="recordAcademico"/>
+      <RecordAcademico :records="recordAcademico" :estudiante="estudianteSeleccionado"/>
     </v-dialog>
   </div>
 </template>
@@ -80,7 +100,9 @@
 <script>
 import axios from 'axios'
 import Servicio from '@/services/general'
+import UniversidadesServicio from '@/services/universidadesService'
 import RecordAcademico from '../../../components/universidades/academico/RecordAcademico'
+import { mapMutations } from 'vuex'
 export default {
   name: 'estudiantes',
   components: {
@@ -89,14 +111,18 @@ export default {
   props: ['idUniversidad'],
   data: () => ({
     headers: [
+      { text: 'Nro. Carnet', value: 'carnet_identidad'},
+      { text: 'Complemento', value: 'complemento'},
       { text: 'Nombre', value: 'nombre'},
       { text: 'Paterno', value: 'paterno'},
       { text: 'Materno', value: 'materno'},
+      { text: 'Acciones', value: 'acciones'},
     ],
+    search: '',
     dialogRecord: false,
     itemSeleccionado: '',
     gestion: new Date().getFullYear(),
-    periodo: 1,
+    periodo: 0,
     carrera: '',
     estudianteSeleccionado: '',
     recordAcademico: '',
@@ -123,9 +149,14 @@ export default {
       console.log('actualizando estudiantes')
     }
   },
+  // watch: {
+  //   idUniversidad: function() {
+  //     this.getEstudiantes();
+  //   }
+  // },
   methods: {
+    ...mapMutations(['uniAlert']),
     async getEstudiantes(){
-      this.docenteSeleccionado = '';
       this.materias = [];
       try {
         let response = await axios.get(`${Servicio.getServe()}informe/listaEstudiantePeriodo/${this.idUniversidad}/${this.gestion}/${this.periodo}/${this.carrera}`);
@@ -176,11 +207,14 @@ export default {
     },
     async getRecordAcademico(estudiante){
       try {
-        console.log('asdfasd', estudiante)
-        this.estudianteSeleccionado = estudiante.id;
-        let response = await axios.get(`${Servicio.getServe()}informe/listaRecordsEstudiante/${this.carrera}/${estudiante.id}`);
-        let data = await response.data;
-        this.recordAcademico = data.data;
+        this.estudianteSeleccionado = estudiante;
+        let datos = await UniversidadesServicio.getRecordAcademico(estudiante.id, this.carrera)
+        // console.log('datos',datos);
+        if (datos.length == 0) {
+          this.uniAlert({color: 'warning', text: 'El estudiante no cuenta con un record académico'})
+          return;
+        }
+        this.recordAcademico = datos;
         this.dialogRecord = true;
 
       } catch (error) {

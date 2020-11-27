@@ -37,11 +37,13 @@ export default{
   async createUniversidad(data){
     return await axios.post(`${general.getServe()}universidad`, data);
   },
+  // actualizar universidad
   async updateUniversidad(id, data){
     return await axios.put(`${general.getServe()}universidad/${id}`, data);
   },
 
   // FUNCIONES PARA LA PARTE PUBLICA //
+
   // obtener universidades activas para la parte publica solo SEDES
   async getUniversidadesActivas(){
     return await axios.get(`${general.getServe()}universidad/lista/universidades/publicas`);
@@ -52,7 +54,9 @@ export default{
   },
   
   // FUNCIONES PARA LA PARTE DE USUARIOS LOGUEADOS //
+
   // obtener universidades en base a token solo SEDES
+  // y tambien sedes de las subsedes de las que tiene permisos
   async getUniversidades(){
     console.log('asdfasdfsadf')
     return await axios.get(`${general.getServe()}universidad`, general.getHeader());
@@ -64,7 +68,7 @@ export default{
 
 
 
-  // ver datos unievrsidad
+  // ver datos universidad
   async getDatosUniversidad(sie){
     if (sie) {
       return await axios.get(`${general.getServe()}universidad/${sie}`);
@@ -78,6 +82,14 @@ export default{
   // obtener sub sedes
   async getSubsedes(sede){
     return await axios.get(`${general.getServe()}universidad/lista/Subsedes/${sede}`);
+  },
+  // obtener sedes y subsedes de una universidad
+  async getSedesSubsedesUniversidad(idUniversidad){
+    return await axios.get(`${general.getServe()}universidad/sedesSubsedes/${idUniversidad}`, general.getHeader());
+  },
+  // obtener todas las sedes y subsedes regsitradas - para asignacion de permisos
+  async getTodasSedesSubsedes(){
+    return await axios.get(`${general.getServe()}universidad/sedesSubsedes`, general.getHeader());
   },
 
 
@@ -130,6 +142,88 @@ export default{
   async getCarrerasUniversidad(sie){
     return await axios.get(`${general.getServe()}carreraUni/carreraUniversidad/${sie}`);
   },
+  
+  
+  //------------------------------ USUARIOS --------------------------------*//
+  
+  async getRecordAcademicoCarnet(carnet=null, carrera_autorizada_id=null, estudiante_id=null){
+
+    let params = '?';
+    if (carnet != null) {
+      params += `carnet=${carnet}`
+    }
+    if (carrera_autorizada_id != null) {
+      params += `carrera_autorizada_id=${carrera_autorizada_id}&estudiante_id=${estudiante_id}`
+    }
+
+    // let response = await axios.get(`${general.getServe()}informe/listaEstudianteCarnet/${carnet}`);
+    let response = await axios.get(`${general.getServe()}informe/listaRecordsEstudiante${params}`);
+    let data = response.data
+    if (data.status == 'success') {
+      let datos = data.data
+      let records = []
+      datos.universidades.map(universidad => {
+        universidad.carreras.map(carrera => {
+          records.push({
+            universidad: universidad.nombre,
+            carrera: carrera.nombre,
+            estudiante: `${datos.nombre} ${datos.paterno} ${datos.materno}`,
+            carnet: `${datos.carnet} ${datos.complemento}`,
+            materias: []// carrera.materias.length > 0 ? carrera.materias : []
+          })
+        })
+      })
+      return records
+    }
+
+    return []
+  },
+
+//------------------------------ ESTUDIANTE --------------------------------*//
+  // buscar estudiante
+  async getEstudiante(carnet, complemento){
+    if (complemento != '') {
+      return await axios.get(`${general.getServe()}informe/estudiante?carnet=${carnet}&complemento=${complemento}`);
+    }
+    return await axios.get(`${general.getServe()}informe/estudiante?carnet=${carnet}`);
+  },
+
+  // obtener recors academicos
+  async getRecordAcademico(estudiante_id = null, carrera_autorizada_id = null, carnet = null){
+    let url;
+    if (carnet === null || carnet == undefined) {
+      url = `${general.getServe()}informe/listaRecordsEstudiante?carrera_autorizada_id=${carrera_autorizada_id}&estudiante_id=${estudiante_id}`
+    }else{
+      url = `${general.getServe()}informe/listaRecordsEstudiante?carnet=${carnet}`
+    }
+    let response = await axios.get(url);
+    let data = response.data
+    console.log('dfasdfadsf', data)
+    if (data.status == 'success') {
+      let datos = data.data
+      let records = []
+      datos.universidades.map(universidad => {
+        universidad.carreras.map(carrera => {
+          records.push({
+            universidad: universidad.nombre,
+            carrera: carrera.nombre,
+            estudiante: `${datos.nombre} ${datos.paterno} ${datos.materno}`,
+            paterno: datos.paterno,
+            materno: datos.materno,
+            nombre: datos.nombre,
+            carnet: `${datos.carnet} ${datos.complemento}`,
+            materias: carrera.materias.length > 0 ? carrera.materias : []
+          })
+        })
+      })
+      return records
+    }
+
+    return []
+  },
+
+
+
 
   //------------------------------ USUARIOS --------------------------------*//
   // obtener usuarios
@@ -234,6 +328,63 @@ export default{
       }
     }
     return false
-  }
+  },
+
+  //////////////////////////////////// FORMULARIOS ///////////////////////////////////////////////////////
+  // Formulario 1
+  async getListForm1(idUniversidad){
+    if (idUniversidad !== 'ninguno') {
+      return await axios.get(`${general.getServe()}formulario?universidad=${idUniversidad}`);
+    }
+    return await axios.get(`${general.getServe()}formulario`);
+  },
+  async createForm1(data){
+    return await axios.post(`${general.getServe()}formulario`, data, general.getHeader());
+  },
+  async updateForm1(id, data){
+    return await axios.put(`${general.getServe()}formulario/${id}`, data);
+  },
+  async deleteForm1(id){
+    return await axios.delete(`${general.getServe()}formulario/${id}`);
+  },
   
+  // Formulario 3
+  async getListForm3(idUniversidad){
+    if (idUniversidad !== 'ninguno') {
+      return await axios.get(`${general.getServe()}formulario/form3?universidad=${idUniversidad}`);
+    }
+    return await axios.get(`${general.getServe()}formulario/form3`);
+  },
+  async getForm3(id){
+    return await axios.get(`${general.getServe()}formulario/form3/${id}`);
+  },
+  async createForm3(data){
+    return await axios.post(`${general.getServe()}formulario/form3`, data);
+  },
+  async updateForm3(id, data){
+    return await axios.put(`${general.getServe()}formulario/form3/${id}`, data);
+  },
+  async deleteForm3(id){
+    return await axios.delete(`${general.getServe()}formulario/form3/${id}`);
+  },
+  
+  // Formulario 5
+  async getListForm5(idUniversidad){
+    if (idUniversidad !== 'ninguno') {
+      return await axios.get(`${general.getServe()}formulario/form5?universidad=${idUniversidad}`);
+    }
+    return await axios.get(`${general.getServe()}formulario/form5`);
+  },
+  async getForm5(id){
+    return await axios.get(`${general.getServe()}formulario/form5/${id}`);
+  },
+  async createForm5(data){
+    return await axios.post(`${general.getServe()}formulario/form5`, data);
+  },
+  async updateForm5(id, data){
+    return await axios.put(`${general.getServe()}formulario/form5/${id}`, data);
+  },
+  async deleteForm5(id){
+    return await axios.delete(`${general.getServe()}formulario/form5/${id}`);
+  },
 }

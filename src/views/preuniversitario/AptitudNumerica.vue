@@ -7,13 +7,14 @@
           <v-card>
             <v-card-text>
               Ingrese código RUDE.
-              <v-form ref="sform">
+              <v-form ref="sform" v-on:submit.prevent="searchStudent">
                 <v-row>
                   <v-col cols="12" sm="8" class="py-0">
                     <v-text-field
                       label="Código RUDE"
                       v-model="estudiante.codigo_rude"
                       :rules="[(v) => !!v || 'Campo requerido']"
+                      autocomplete="off"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="4">
@@ -37,19 +38,10 @@
                     hide-details
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" sm="6" md="4">
+                <v-col cols="12" sm="8" md="8">
                   <v-text-field
-                    v-model="estudiante.paterno"
-                    label="Apellido paterno"
-                    filled
-                    disabled
-                    hide-details
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" sm="6" md="4">
-                  <v-text-field
-                    v-model="estudiante.materno"
-                    label="Apellido materno"
+                    v-model="estudiante.apellido"
+                    label="Apellidos"
                     filled
                     disabled
                     hide-details
@@ -99,9 +91,7 @@
                   <template v-slot:default>
                     <thead>
                       <tr>
-                        <th class="text-left">Nombre</th>
-                        <th class="text-left">Paterno</th>
-                        <th class="text-left">Materno</th>
+                        <th class="text-left">Nombre completo</th>
                         <th class="text-center">Aciertos (#)</th>
                         <th class="text-center">Porcentaje (%)</th>
                         <th class="text-left">Estado</th>
@@ -112,8 +102,6 @@
                         v-for="(item, index) in respuestas" :key="index"
                       >
                         <td>{{ item.nombre }}</td>
-                        <td>{{ item.paterno }}</td>
-                        <td>{{ item.materno }}</td>
                         <td class="text-center">{{ item.acierto }}</td>
                         <td class="text-center">{{ item.porcentaje }}</td>
                         <td>
@@ -149,7 +137,7 @@
           <v-row>
             <v-col cols="12" sm="6">
               <p class="pt-4">
-                <b>Ejemplo 1.</b> 4 + 7 + 3
+                <b>Ejemplo</b> 4 + 7 + 3
                 <ul>
                   <li>A. 12</li>
                   <li>B. 13</li>
@@ -161,7 +149,7 @@
             </v-col>
             <v-col cols="12" sm="6">
               <p class="pt-4">
-                <b>Ejemplo 2.</b> 24 / 6 + 3
+                <b>Ejemplo</b> 24 / 6 + 3
                 <ul>
                   <li><b>A. 7</b> (respuesta)</li>
                   <li>B. 8</li>
@@ -175,7 +163,7 @@
           <v-row>
             <v-col cols="12" sm="6">
               <p class="pt-4">
-                <b>Ejemplo 3.</b> 11 + 7 / 3
+                <b>Ejemplo</b> 11 + 7 / 3
                 <ul>
                   <li>A. 2</li>
                   <li>B. 3</li>
@@ -187,7 +175,7 @@
             </v-col>
             <v-col cols="12" sm="6">
               <p class="pt-4">
-                <b>Ejemplo 4.</b> 3 + 4 * 2
+                <b>Ejemplo</b> 3 + 4 * 2
                 <ul>
                   <li><b>A. 14</b> (respuesta)</li>
                   <li>B. 15</li>
@@ -264,8 +252,7 @@ export default {
       id: "",
       codigo_rude: "",
       nombre: "",
-      paterno: "",
-      materno: "",
+      apellido: "",
       preguntas: [],
       acierto: 0,
       porcentaje: 0,
@@ -301,6 +288,7 @@ export default {
       if (this.$refs.sform.validate()) {
         this.btn_loading = true;
         this.estado = "";
+        this.estudiante.apellido = "";
         this.estudiante.preguntas = [];
         axios
           .post(
@@ -313,8 +301,24 @@ export default {
             if (response.data.id > 0) {
               this.estudiante.id = response.data.id;
               this.estudiante.nombre = response.data.nombre;
-              this.estudiante.paterno = response.data.paterno;
-              this.estudiante.materno = response.data.materno;
+              if (
+                response.data.paterno &&
+                response.data.paterno != null &&
+                response.data.paterno != ""
+              ) {
+                this.estudiante.apellido = response.data.paterno.trim();
+              }
+              if (
+                response.data.materno &&
+                response.data.materno != null &&
+                response.data.materno != ""
+              ) {
+                this.estudiante.apellido = (
+                  this.estudiante.apellido +
+                  " " +
+                  response.data.materno
+                ).trim();
+              }
               this.checkResponse(this.estudiante.codigo_rude, this.cateory_id);
             } else {
               this.toast("info", "Registro no encontrado");
@@ -422,8 +426,3 @@ export default {
   },
 };
 </script>
-<style lang="css">
-/* .v-data-table .v-data-table-header {
-  background-color: #f5f5f5;
-} */
-</style>

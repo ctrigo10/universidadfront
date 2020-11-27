@@ -10,16 +10,18 @@
         </transition>
       </v-container>
       <v-footer height="auto" class="white pa-3 app--footer">
-        <span
-          class="caption"
-        >{{ new Date().getFullYear() }} &copy; Universidades, Todos los derechos reservados</span>
+        <span class="caption"
+          >{{ new Date().getFullYear() }} &copy; Universidades, Todos los
+          derechos reservados</span
+        >
         <v-spacer></v-spacer>
         <span class="caption mr-1">
           <a
             href="//minedu.gob.bo/"
             target="_blank"
             style="text-decoration: none"
-          >Ministerio de Educación, Deportes y Culturas</a>
+            >Ministerio de Educación, Deportes y Culturas</a
+          >
         </span>
       </v-footer>
     </v-main>
@@ -27,31 +29,16 @@
 </template>
 
 <script>
-import Toolbar from "@/components/Toolbar";
-import Drawer from "@/components/Drawer";
+import Toolbar from "@/components/preuniversitario/Toolbar";
+import Drawer from "@/components/preuniversitario/Drawer";
 
 export default {
-  name: "universidad-view",
+  name: "preuniversitario-inicio",
   components: {
     Toolbar,
     Drawer,
   },
-  data: () => ({
-    items: [
-      { header: "Menú" },
-      { icon: "fas fa-map", title: "Inicio", path: "/prefacultad" },
-      {
-        icon: "fas fa-list",
-        title: "Orientación Vocacional",
-        path: "/prefacultad/orientacion/vocacional",
-      },
-      {
-        icon: "fas fa-home",
-        title: "Universidades",
-        path: "/prefacultad/universidades",
-      },
-    ],
-  }),
+  data: () => ({}),
   created() {
     // window.getApp = this;
   },

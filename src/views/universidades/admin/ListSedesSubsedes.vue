@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div v-cloak>
     <Breadcrumbs :items="breadItems"/>
-    <UniversidadHeader :universidadId="universidad.id" :universidad="universidad.institucioneducativa"/>
+    <UniversidadHeader :universidadId="universidad.id" :universidad="universidad.institucioneducativa" :imagen="universidad.imagen"/>
     <v-card>
       <v-card-title primary-title>
         Sedes / Subsedes
@@ -59,7 +59,7 @@ export default {
     this.idUniversidad = sessionStorage.getItem('ids');
     this.sedesSubsedes = []
     this.getDatosSede()
-    this.getSubsedes()
+    this.getSedesSubsedes()
   },
   methods: {
     verificarPermiso(rol) {
@@ -68,36 +68,36 @@ export default {
     actualizar(){
       this.sedesSubsedes = []
       this.getDatosSede()
-      this.getSubsedes()
+      this.getSedesSubsedes()
     },
     async getDatosSede() {
       try {
         let response = await UniversidadesService.getDatosUniversidad(this.idUniversidad);
         let data = await response.data.data;
         this.universidad = data;
-        this.sedesSubsedes.push({
-          id: data.id,
-          institucioneducativa: data.institucioneducativa,
-          nombre_sede_subsede: data.nombre_sede_subsede,
-          nro_resolucion: data.nro_resolucion,
-          departamento: data.deparmento
-        })
+        // this.sedesSubsedes.push({
+        //   id: data.id,
+        //   institucioneducativa: data.institucioneducativa,
+        //   nombre_sede_subsede: data.nombre_sede_subsede,
+        //   nro_resolucion: data.nro_resolucion,
+        //   departamento: data.deparmento
+        // })
       } catch (error) {
         console.log(error)
       }
     },
-    async getSubsedes() {
+    async getSedesSubsedes() {
       try {
-        let response = await UniversidadesService.getSubsedes(this.idUniversidad);
+        let response = await UniversidadesService.getSedesSubsedesUniversidad(this.idUniversidad);
         let data = await response.data.data;
         console.log(data)
         data.forEach(item => {
           this.sedesSubsedes.push({
             id: item.id,
             institucioneducativa: item.institucioneducativa,
-            nombre_sede_subsede: 'completar serv-subsedes.........',
+            nombre_sede_subsede: item.nombre_sede_subsede,
             nro_resolucion: item.nro_resolucion,
-            departamento: item.departamento.depa
+            departamento: item.deparmento
           })
         })
       } catch (error) {
@@ -113,5 +113,7 @@ export default {
 </script>
 
 <style>
-
-</style>
+  [v-cloak] {
+    display: none;
+  }
+</style>  

@@ -119,11 +119,11 @@ export default {
         this.tramites = []
         let response = await UniversidadesService.getListaTramites(this.tipoLista, this.idUniversidad)
         let data = response.data.data
-        if (this.tipoLista == 'CONCLUIDOS') {
-          this.tramites = data[0];
-        }else{
+        // if (this.tipoLista == 'CONCLUIDOS') {
+        //   this.tramites = data[0];
+        // }else{
           this.tramites = data;
-        }
+        // }
         console.log(data)
       } catch (error) {
         console.log(error)

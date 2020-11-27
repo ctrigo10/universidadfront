@@ -12,7 +12,11 @@
         <tr v-for="(item, i) in tiposTramites" :key="i">
           <td>{{item.id}}</td>
           <td>{{item.tramite_tipo}}</td>
-          <td> <v-icon @click="seleccionarTipo(item.id)">mdi-eye</v-icon> </td>
+          <td>
+            <v-btn @click="seleccionarTipo(item.id)" x-small color="secondary">
+              <v-icon small class="mr-1">mdi-eye</v-icon> Iniciar trámite
+            </v-btn>
+          </td>
         </tr>
       </tbody>
     </v-simple-table>

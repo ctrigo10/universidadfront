@@ -78,47 +78,54 @@
             cols="12"
             sm="8"
           >
+            <v-card>
+              <v-card-title primary-title>
+                Permisos
+              </v-card-title>
+              <v-card-text>
+                <p v-if="usuarioSeleccionado == ''">Debe seleccionar un usuario ...</p>
+                <div v-if="usuarioSeleccionado != ''">
+                  <v-alert
+                    outlined
+                    type="success"
+                    text
+                    v-if="usuarioSeleccionado.rol_tipo_id != 51"
+                  >
+                    El usuario seleccionado tiene permisos sobre todas las Universidades.
+                  </v-alert>
+                  <div v-else>
+                    <h4 class="titulo-user">
+                      <v-icon color="white">mdi-account</v-icon> {{usuarioSeleccionado.nombre}} {{usuarioSeleccionado.paterno}} {{usuarioSeleccionado.materno}}
+                    </h4>
+                    <br>
+                    <!-- <v-chip
+                      v-for="(item, index) in universidadesPermiso" :key="index"
+                      class="ma-2"
+                      color="grey"
+                      text-color="white"
+                    >
+                      {{ item.institucioneducativa }}
+                    </v-chip> -->
 
-            <h3 class="text-center">Permisos</h3>
-            <p v-if="usuarioSeleccionado == ''">Debe seleccionar un usuario ...</p>
-            <div v-if="usuarioSeleccionado != ''">
-              <v-alert
-                outlined
-                type="success"
-                text
-                v-if="usuarioSeleccionado.rol_tipo_id != 51"
-              >
-                El usuario seleccionado tiene permisos sobre todas las Universidades.
-              </v-alert>
-              <div v-else>
-                <h5 class="text-center">{{usuarioSeleccionado.nombre}} {{usuarioSeleccionado.paterno}} {{usuarioSeleccionado.materno}}</h5>
-                <br>
-                <!-- <v-chip
-                  v-for="(item, index) in universidadesPermiso" :key="index"
-                  class="ma-2"
-                  color="grey"
-                  text-color="white"
-                >
-                  {{ item.institucioneducativa }}
-                </v-chip> -->
+                    <v-data-table
+                      :headers="headers"
+                      :items="universidadesPermiso"
+                      hide-default-footer
+                    >
+                      <template v-slot:[`item.acciones`]="{ item }">
+                        <v-icon v-if="item" color="blue">mdi-checkbox-marked</v-icon>
+                      </template>
+                    </v-data-table>
+                    
+                    <div class="text-right">
+                      <br>
+                      <v-btn color="primary" @click="editPermisos">Actualizar permisos</v-btn>
+                    </div>
 
-                <v-data-table
-                  :headers="headers"
-                  :items="universidadesPermiso"
-                  hide-default-footer
-                >
-                  <template v-slot:[`item.acciones`]="{ item }">
-                    <v-icon v-if="item" color="blue">mdi-checkbox-marked</v-icon>
-                  </template>
-                </v-data-table>
-                
-                <div class="text-right">
-                  <br>
-                  <v-btn color="primary" @click="editPermisos">Actualizar permisos</v-btn>
+                  </div>
                 </div>
-
-              </div>
-            </div>
+              </v-card-text>
+            </v-card>
           </v-col>
         </v-row>
       </v-card-text>
@@ -188,7 +195,7 @@ export default {
       // { text: '#', sortable: false, value: 'id'},
       { text: '', value: 'acciones', sortable: false, align: 'end'},
       { text: 'Universidad', value: 'institucioneducativa'},
-      { text: 'Departamento', value: 'departamento.depa'},
+      { text: 'Sede/Sub sede', value: 'nombre_sede_subsede'},
       { text: 'Dependencia', value: 'dependencia'},
     ],
     search: '',
@@ -196,7 +203,7 @@ export default {
   }),
   mounted(){
     this.obtenerUsuarios();
-    this.obtenerUniversidadesActivas();
+    this.obtenerUniversidadesSedesSubsedes();
   },
   methods: {
     ...mapMutations(['uniAlert']),
@@ -255,9 +262,10 @@ export default {
     editPermisos(){
       this.dialogPermisos = true;
     },
-    async obtenerUniversidadesActivas(){
+    async obtenerUniversidadesSedesSubsedes(){
       try {
-        let response = await UniversidadesService.getUniversidadesActivas();
+        // let response = await UniversidadesService.getUniversidadesActivas();
+        let response = await UniversidadesService.getTodasSedesSubsedes();
         let data = await response.data;
         this.universidades = data.data;
         console.log('activas', this.universidades)
@@ -311,5 +319,15 @@ export default {
     /* color: red; */
     /* text-decoration: line-through; */
     /* opacity: 0.4; */
+  }
+  .titulo-user {
+    /* text-align: center; */
+    color: white;
+    font-size: 17px;
+    font-weight: 400;
+    /* background-color: #7F59B0; */
+    background-color: #009688;
+    padding: 10px;
+    border-radius: 5px;
   }
 </style>

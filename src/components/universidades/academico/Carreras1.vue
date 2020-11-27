@@ -1,7 +1,7 @@
 <template>
   <div>
     <h3>Carreras</h3>
-    <template v-if="carreras.length > 0">
+    <!-- <template v-if="carreras.length > 0">
       <v-expansion-panels focusable>
         <v-expansion-panel
           v-for="(item,i) in carreras"
@@ -21,7 +21,6 @@
                 <v-col
                   cols="12" lg="9" md="9" sm="8" xs="12"
                 >
-                  <!-- <h4>Pensums</h4> -->
                   <v-row>
                     <v-col
                       v-for="(pensum, index2) in denominacion.pensums" :key="index2"
@@ -43,14 +42,69 @@
         </v-expansion-panel>
       </v-expansion-panels>
     </template>
-    <span v-else>Sin resultados</span>
+    <span v-else>Sin resultados</span> -->
+    <v-card>
+      <v-card-text>
+        <v-text-field
+          v-model="search"
+          label="Buscar carrera"
+        ></v-text-field>
+        <v-data-table
+          :headers="headers"
+          :items="formatData"
+          :search="search"
+          locales="es"
+        >
+          <template v-slot:[`item.grados_academicos`]="{ item }">
+            <!-- {{item.grados_academicos}} -->
+            <div v-for="(denominacion, index) in item.grados_academicos" :key="index">
+              {{ denominacion.nivel_tipo }}
+              <span v-for="(pensum, index2) in denominacion.pensums" :key="index2">
+                <v-chip x-small color="info">{{ pensum.resolucion_administrativa }}</v-chip>
+              </span>
+            </div>
+            <!-- <table v-for="(denominacion, index) in item.grados_academicos" :key="index">
+              <tr>
+                <th>GRado</th>
+                <th>RM</th>
+              </tr>
+              <tr>
+                <td>adsfasdf</td>
+                <td>ad</td>
+              </tr>
+            </table> -->
+          </template>
+        </v-data-table>
+      </v-card-text>
+    </v-card>
   </div>
 </template>
 
 <script>
 export default {
   name: 'carreras-1',
-  props: ['carreras']
+  props: ['carreras'],
+  data: () => ({
+    headers: [
+      { text: 'Código', value: 'codigo'},
+      { text: 'Carrera', value: 'nombre'},
+      { text: 'Grado académico', value: 'grados_academicos'},
+    ],
+    search: '',
+  }),
+  computed: {
+    formatData() {
+      let newData = []
+      this.carreras.map(carrera => {
+        newData.push({
+          codigo: carrera.codigo,
+          nombre: carrera.nombre,
+          grados_academicos: carrera.denominaciones
+        })
+      })
+      return newData
+    }
+  }
 }
 </script>
 

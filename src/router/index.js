@@ -49,6 +49,13 @@ let paths = [
         component: () => import(`@/views/preuniversitario/Inscripcion.vue`),
       },
       {
+        path: "inscripciones",
+        meta: { public: true },
+        name: "pre-inscripciones",
+        component: () =>
+          import(`@/views/preuniversitario/ListaInscripcion.vue`),
+      },
+      {
         path: "aptitud/numerica",
         meta: { public: true },
         name: "pre-aptitud-numerica",
@@ -98,6 +105,36 @@ let paths = [
         meta: { public: true },
         name: "pre-resultado-prueba",
         component: () => import(`@/views/preuniversitario/ResultadoPrueba.vue`),
+      },
+      {
+        path: "reporte/prueba",
+        meta: { public: true },
+        name: "pre-reporte-prueba",
+        component: () => import(`@/views/preuniversitario/ReportePrueba.vue`),
+      },
+      {
+        path: "habilitar/curso",
+        meta: { public: true },
+        name: "pre-habilitar-curso",
+        component: () => import(`@/views/preuniversitario/HabilitarCurso.vue`),
+      },
+      {
+        path: "categoria",
+        meta: { public: true },
+        name: "pre-categoria",
+        component: () => import(`@/views/preuniversitario/Categoria.vue`),
+      },
+      {
+        path: "pregunta",
+        meta: { public: true },
+        name: "pre-pregunta",
+        component: () => import(`@/views/preuniversitario/Pregunta.vue`),
+      },
+      {
+        path: "respuesta",
+        meta: { public: true },
+        name: "pre-respuesta",
+        component: () => import(`@/views/preuniversitario/Opcion.vue`),
       },
     ],
   },
@@ -178,6 +215,40 @@ let paths = [
         meta: { requiresAuth: true },
         component: () => import(`@/views/universidades/Tramites.vue`),
       },
+      {
+        path: "formularios",
+        name: "formularios",
+        meta: { requiresAuth: true },
+        component: () => import(`@/views/universidades/Formularios.vue`),
+      },
+      {
+        path: "buscar-estudiante",
+        name: "estudiante-buscar",
+        meta: { requiresAuth: true },
+        component: () => import(`@/views/universidades/estudiante/BuscarEstudiante.vue`),
+      },
+      // {
+      //   path: "formularios",
+      //   name: "universidades-formularios",
+      //   meta: { requiresAuth: true },
+      //   component: () => import(`@/views/universidades/formularios/Formularios.vue`),
+      //   redirect: { name: "universidades-form1" },
+      //   children: [
+      //     {
+      //       path: "form1",
+      //       name: 'universidades-form1',
+      //       component: () => import(`@/views/universidades/formularios/Form1.vue`),
+      //     },{
+      //       path: "form3",
+      //       name: 'universidades-form3',
+      //       component: () => import(`@/views/universidades/formularios/Form3.vue`),
+      //     },{
+      //       path: "form5",
+      //       name: 'universidades-form5',
+      //       component: () => import(`@/views/universidades/formularios/Form5.vue`),
+      //     },
+      //   ]
+      // },
       {
         path: "usuarios-permisos",
         name: "universidades-usuarios-permisos",

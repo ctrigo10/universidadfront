@@ -6,7 +6,7 @@
     <!-- <v-img class="logo-maximizado" :src="path"></v-img> -->
     <!-- <v-img v-if="path != ''" class="logo-maximizado" :src="path"></v-img> -->
     <br>
-    <v-btn color="primary" v-if="!actualizar" @click="actualizar = true"> <v-icon>mdi-pencil</v-icon> </v-btn>
+    <v-btn color="primary" v-if="!actualizar" @click="actualizar = true"> <v-icon>mdi-pencil</v-icon> Editar </v-btn>
     <div v-if="actualizar">
       <v-form
         ref="form1"
