@@ -48,6 +48,7 @@ export default {
                     if(dato.institucioneducativa_dato){
                         universidad.imagen = dato.institucioneducativa_dato.imagen;
                         universidad.pathImage = dato.institucioneducativa_dato.pathImage;
+                        universidad.nombre_sede_subsede = dato.institucioneducativa_dato.nombre_sede_subsede;
                     }else{
                         universidad.imagen = null;
                         universidad.pathImage = null;

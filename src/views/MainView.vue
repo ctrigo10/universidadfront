@@ -21,7 +21,7 @@
                     align="end"
                   >
                     <v-col xs="6" md="4" order="2" order-md="1">
-                      <v-card color="teal lighten-4" class="elevation-2">
+                      <v-card color="#019cde" class="elevation-2">
                         <v-card-text class="layout column align-center ma-0">
                           <v-img
                             v-bind:src="require('../assets/prefa.svg')"
@@ -32,7 +32,7 @@
                         <v-divider></v-divider>
                         <v-card-actions class="ma-0 pa-0">
                           <v-btn
-                            color="purple"
+                            color="#1a578d"
                             to="/preuniversitario"
                             tile
                             block
@@ -44,7 +44,7 @@
                       </v-card>
                     </v-col>
                     <v-col sm="12" md="4" order-sm="1" order-md="2">
-                      <v-card color="teal lighten-4" class="elevation-2">
+                      <v-card color="#019cde" class="elevation-2">
                         <v-card-text class="layout column align-center ma-0">
                           <v-img
                             v-bind:src="require('../assets/universidad.png')"
@@ -55,7 +55,7 @@
                         <v-divider></v-divider>
                         <v-card-actions class="ma-0 pa-0">
                           <v-btn
-                            color="purple"
+                            color="#1a578d"
                             to="/universidades"
                             tile
                             block
@@ -67,7 +67,7 @@
                       </v-card>
                     </v-col>
                     <v-col xs="6" md="4" order="3">
-                      <v-card color="teal lighten-4" class="elevation-2">
+                      <v-card color="#019cde" class="elevation-2">
                         <v-card-text class="layout column align-center ma-0">
                           <v-img
                             v-bind:src="require('../assets/beca.svg')"
@@ -78,7 +78,7 @@
                         <v-divider></v-divider>
                         <v-card-actions class="ma-0 pa-0">
                           <v-btn
-                            color="purple"
+                            color="#1a578d"
                             to="/becas"
                             tile
                             block

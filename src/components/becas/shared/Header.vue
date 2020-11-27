@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-app-bar height="55" color="secondary lighten-2" outline dark>
+    <v-app-bar height="55" color="secondary" outline dark>
       <!-- <v-toolbar-title>{{ getCapitalize(titulo) }}</v-toolbar-title> -->
       <v-toolbar-title v-if="getDisplayGrande">{{ titulo }}</v-toolbar-title>
       <v-toolbar-title v-else class="body-2">{{ titulo }}<br><div class="caption">{{ subTituloUno }}<br>{{ subTituloDos }}</div></v-toolbar-title>

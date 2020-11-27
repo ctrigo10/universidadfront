@@ -6,7 +6,7 @@
         <div class="caption child-flex">
           <v-row>
              <v-col cols="12" sm="12" md="4" lg="4">
-              <strong class="secondary--text">Departamento:</strong> {{ getUniversidad.datos.depa }}
+              <strong class="secondary--text">Lugar:</strong> {{getUniversidad.datos.nombre_sede_subsede}} ({{ getUniversidad.datos.depa }})
             </v-col>
             <v-col cols="12" sm="12" md="4" lg="4">
               <strong class="secondary--text">Titulo:</strong> {{ getCarreraSolicitudes.titulo }}

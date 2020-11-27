@@ -5,8 +5,8 @@
         <div class="caption">
           <v-row class="ma-0">
             <v-col cols="12" sm="6" md="4" lg="4" class="mt-n2">
-              <strong class="secondary--text">Departamento: </strong
-              >{{ universidad.depa }}
+              <strong class="secondary--text">Lugar: </strong
+              >{{ universidad.nombre_sede_subsede }} ({{ universidad.depa }})
             </v-col>
             <v-col cols="12" sm="6" md="4" lg="4" class="mt-n2">
               <strong class="secondary--text">Nro de resolución: </strong

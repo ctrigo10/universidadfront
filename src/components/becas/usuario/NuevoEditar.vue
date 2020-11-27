@@ -12,7 +12,7 @@
               dense
               chips
               small-chips
-              item-text="institucioneducativa"
+              :item-text="text"
               item-value="id"
               label="Universidades (escriba para filtrar)"
               multiple
@@ -81,6 +81,7 @@ export default {
 
   methods: {
     ...mapActions(["agregarUniversidadesUsuario", "alert"]),
+    text: item => (item.institucioneducativa_dato)? item.institucioneducativa + ' — ' + item.institucioneducativa_dato.nombre_sede_subsede: item.institucioneducativa,
     close() {
       this.dialog = false;
     },
