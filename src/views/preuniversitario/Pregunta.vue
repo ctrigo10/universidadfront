@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-container grid-list-xl fluid>
-      <header-title title="Preguntas"></header-title>
+      <header-title title="Test Preguntas"></header-title>
       <v-card-title>
         <v-flex xs12 sm3>
           <v-select

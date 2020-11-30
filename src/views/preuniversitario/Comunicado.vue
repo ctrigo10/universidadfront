@@ -1,28 +1,8 @@
 <template>
   <div>
     <v-container grid-list-xl fluid>
-      <header-title title="Test Respuestas"></header-title>
+      <header-title title="Comunicados"></header-title>
       <v-card-title>
-        <v-flex xs12 sm3>
-          <v-select
-            label="Seleccione categoría"
-            :items="categorias"
-            v-model="categoria_id"
-            item-text="descripcion"
-            item-value="id"
-            @change="getPreguntas(categoria_id)"
-          ></v-select>
-        </v-flex>
-        <v-flex xs12 sm3>
-          <v-autocomplete
-            label="Seleccione pregunta"
-            :items="preguntas"
-            v-model="opcion.pregunta_id"
-            item-text="descripcion"
-            item-value="id"
-            @change="getOpciones(opcion.pregunta_id)"
-          ></v-autocomplete>
-        </v-flex>
         <v-text-field
           v-model="search"
           append-icon="mdi-magnify"
@@ -36,7 +16,7 @@
       </v-card-title>
       <v-data-table
         :headers="headers"
-        :items="opciones"
+        :items="comunicados"
         :loading="loading"
         :search="search"
         calculate-widths
@@ -46,20 +26,6 @@
         class="elevation-1"
         v-cloak
       >
-        <template v-slot:item.respuesta_correcta="{ item }">
-          <td>
-            <span
-              v-if="
-                item.respuesta_correcta == 1 ||
-                item.respuesta_correcta == true ||
-                item.respuesta_correcta == 'true'
-              "
-            >
-              Si
-            </span>
-            <span v-else> No </span>
-          </td>
-        </template>
         <template v-slot:item.estado="{ item }">
           <td>
             <span
@@ -113,7 +79,7 @@
       <v-form ref="form">
         <v-card>
           <v-card-title class="headline grey lighten-3" primary-title>
-            <span class="headline">Respuesta</span>
+            <span class="headline">Comunicado</span>
           </v-card-title>
           <v-divider></v-divider>
           <v-card-text>
@@ -124,29 +90,24 @@
             <v-container grid-list-md>
               <v-layout wrap>
                 <v-flex xs12>
-                  <v-text-field
-                    type="text"
+                  <v-textarea
                     label="Descripción *"
-                    v-model="opcion.opcion"
-                    :rules="[(v) => !!v || 'El campo es requerido']"
-                    autocomplete="off"
+                    :counter="200"
+                    auto-grow
+                    v-model="comunicado.descripcion"
+                    :rules="[
+                      (v) => !!v || 'El campo es requerido',
+                      (v) =>
+                        v.length <= 200 || 'No debe superar 200 caracteres',
+                    ]"
                     required
-                  ></v-text-field>
-                </v-flex>
-                <v-flex xs12>
-                  <v-select
-                    label="Respuesta correcta"
-                    :items="respuetas"
-                    v-model="opcion.respuesta_correcta"
-                    item-text="descripcion"
-                    item-value="id"
-                  ></v-select>
+                  ></v-textarea>
                 </v-flex>
                 <v-flex xs12>
                   <v-select
                     label="Estado"
                     :items="estados"
-                    v-model="opcion.estado"
+                    v-model="comunicado.estado"
                     item-text="descripcion"
                     item-value="id"
                   ></v-select>
@@ -162,7 +123,7 @@
               :loading="btn_loading"
               text
               v-show="mode"
-              @click.native="createOpcion()"
+              @click.native="createComunicado()"
               >Guardar</v-btn
             >
             <v-btn
@@ -170,7 +131,7 @@
               :loading="btn_loading"
               text
               v-show="!mode"
-              @click.native="updateOpcion()"
+              @click.native="updateComunicado()"
               >Actualizar</v-btn
             >
             <v-btn color="red" text @click.native="mdialog = false"
@@ -220,7 +181,7 @@ import HeaderTitle from "@/components/HeaderTitle";
 import Service from "../../services/general";
 import axios from "axios";
 export default {
-  name: "opcion",
+  name: "comunicado",
   components: {
     HeaderTitle,
   },
@@ -230,24 +191,17 @@ export default {
       loading: false,
       btn_loading: false,
       headers: [
-        // { text: "#", value: "id", align: "left", sortable: false },
-        { text: "Opción ", value: "opcion" },
-        { text: "Respuesta correcta ", value: "respuesta_correcta" },
+        { text: "#", value: "id", align: "left", sortable: false },
+        { text: "Descripción ", value: "descripcion" },
         { text: "Estado ", value: "estado" },
         { text: "Acciones", value: "accion", sortable: false, width: "18%" },
       ],
-      categorias: [],
-      preguntas: [],
-      opciones: [],
-      categoria_id: "",
-      opcion: {
+      comunicados: [],
+      comunicado: {
         id: "",
-        pregunta_id: "",
-        opcion: "",
-        respuesta_correcta: "",
+        descripcion: "",
         estado: "",
       },
-      respuetas: [],
       estados: [],
       mdialog: false,
       mconfirm: false,
@@ -268,52 +222,20 @@ export default {
       : -1;
     if (user && role_id >= 0) {
       this.estados = Service.getEstado();
-      this.respuetas = [
-        { id: true, descripcion: "Si" },
-        { id: false, descripcion: "No" },
-      ];
-      this.getCategorias();
+      this.getComunicados();
     } else {
       this.$router.replace({ name: "pre-escritorio" });
     }
   },
   computed: {},
   methods: {
-    getCategorias() {
-      axios
-        .get(Service.getBasePre() + "categorias/activo", Service.getHeader())
-        .then((response) => {
-          this.categorias = response.data;
-        })
-        .catch((error) => {
-          console.error("Error al cargar registros", error);
-        });
-    },
-    getPreguntas(categoria_id) {
-      this.preguntas = [];
-      this.opciones = [];
-      axios
-        .get(
-          Service.getBasePre() + "preguntasc/activo/" + categoria_id,
-          Service.getHeader()
-        )
-        .then((response) => {
-          this.preguntas = response.data;
-        })
-        .catch((error) => {
-          console.error("Error al cargar registros", error);
-        });
-    },
-    getOpciones(pregunta_id) {
+    getComunicados() {
       this.loading = true;
       axios
-        .get(
-          Service.getBasePre() + "opciones/" + pregunta_id,
-          Service.getHeader()
-        )
+        .get(Service.getBasePre() + "comunicados", Service.getHeader())
         .then((response) => {
           this.loading = false;
-          this.opciones = response.data;
+          this.comunicados = response.data;
         })
         .catch((error) => {
           this.loading = false;
@@ -321,34 +243,29 @@ export default {
         });
     },
     showDialog() {
-      if (this.categoria_id == "") {
-        this.toast("warning", "Seleccione la categoría");
-      } else if (this.opcion.pregunta_id == "") {
-        this.toast("warning", "Seleccione la pregunta");
-      } else {
-        this.opcion.id = "";
-        this.opcion.opcion = "";
-        this.opcion.estado = true;
-        this.opcion.respuesta_correcta = false;
-        if (this.$refs.form) this.$refs.form.resetValidation();
-        this.mode = true;
-        this.mdialog = true;
-      }
+      this.comunicado = {
+        id: "",
+        descripcion: "",
+        estado: true,
+      };
+      if (this.$refs.form) this.$refs.form.resetValidation();
+      this.mode = true;
+      this.mdialog = true;
     },
-    createOpcion() {
+    createComunicado() {
       if (this.$refs.form.validate()) {
         this.btn_loading = true;
         axios
           .post(
-            Service.getBasePre() + "opcion",
-            this.opcion,
+            Service.getBasePre() + "comunicado",
+            this.comunicado,
             Service.getHeader()
           )
           .then(() => {
             this.btn_loading = false;
             this.toast("success", "Registro guardado");
             this.mdialog = false;
-            this.getOpciones(this.opcion.pregunta_id);
+            this.getComunicados();
           })
           .catch(() => {
             this.btn_loading = false;
@@ -358,25 +275,25 @@ export default {
     },
 
     editItem(data) {
-      this.opcion = data;
+      this.comunicado = data;
       this.mode = false;
       this.mdialog = true;
     },
 
-    updateOpcion() {
+    updateComunicado() {
       if (this.$refs.form.validate()) {
         this.btn_loading = true;
         axios
           .put(
-            Service.getBasePre() + "opcion/" + this.opcion.id,
-            this.opcion,
+            Service.getBasePre() + "comunicado/" + this.comunicado.id,
+            this.comunicado,
             Service.getHeader()
           )
           .then(() => {
             this.btn_loading = false;
             this.toast("success", "Registro actualizado");
             this.mdialog = false;
-            this.getOpciones(this.opcion.pregunta_id);
+            this.getComunicados();
           })
           .catch(() => {
             this.btn_loading = false;
@@ -386,7 +303,7 @@ export default {
     },
 
     confirmItem(id) {
-      this.opcion.id = id;
+      this.comunicado.id = id;
       this.mconfirm = true;
     },
 
@@ -394,14 +311,14 @@ export default {
       this.btn_loading = true;
       axios
         .delete(
-          Service.getBasePre() + "opcion/" + this.opcion.id,
+          Service.getBasePre() + "comunicado/" + this.comunicado.id,
           Service.getHeader()
         )
         .then(() => {
           this.btn_loading = false;
           this.toast("success", "Registro eliminado");
           this.mconfirm = false;
-          this.getOpciones(this.opcion.pregunta_id);
+          this.getComunicados();
         })
         .catch(() => {
           this.btn_loading = false;

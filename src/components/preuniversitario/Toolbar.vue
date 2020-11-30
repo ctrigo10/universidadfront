@@ -1,13 +1,13 @@
 <template>
   <div>
-    <v-app-bar color="purple darken-1" fixed dark app>
+    <v-app-bar color="secondary darken-1" fixed dark app>
       <v-app-bar-nav-icon @click.stop="drawerToggle"></v-app-bar-nav-icon>
       <v-toolbar-title>PREUNIVERSITARIO</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn icon @click="fullScreen()">
         <v-icon>{{ icon_fs }}</v-icon>
       </v-btn>
-      <v-btn v-if="!isAuth" color="purple" dark @click="showDialogLoggin">
+      <v-btn v-if="!isAuth" color="primary" dark @click="showDialogLoggin">
         <v-icon>mdi-user</v-icon>Ingresar
       </v-btn>
       <v-menu

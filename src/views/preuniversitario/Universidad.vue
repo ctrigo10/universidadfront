@@ -16,7 +16,7 @@
                 <v-card-text>
                   <v-layout row wrap>
                     <v-flex xs12 sm8 class="py-1">
-                      <v-text-field type="text" label="Buscar por nombre" v-model="search"></v-text-field>
+                      <v-text-field type="text" clearable label="Buscar por nombre" v-model="search"></v-text-field>
                       <!-- <v-text-field type="text" label="Buscar por nombre" v-model="busqueda.nombre"></v-text-field> -->
                     </v-flex>
                     <!-- <v-flex xs12 sm4 class="py-1">

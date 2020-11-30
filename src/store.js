@@ -18,7 +18,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     status: "",
-    token: sessionStorage.getItem("token") || "", //sessionStorage.getItem("token") Service.getToken()
+    token: sessionStorage.getItem("token") || "",
   },
   mutations: {
     authSuccess(state, token) {

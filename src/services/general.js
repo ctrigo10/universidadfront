@@ -1,7 +1,7 @@
 export default {
   getServe() {
     if (process.env.NODE_ENV === "production") {
-      return "http://51.161.10.36:5000/";
+      return "http://100.0.101.33:4000/";
     } else {
       return "http://localhost:3000/";
     }

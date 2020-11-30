@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-container grid-list-xl fluid>
-      <header-title title="Categorías"></header-title>
+      <header-title title="Test Categorías"></header-title>
       <v-card-title>
         <v-text-field
           v-model="search"

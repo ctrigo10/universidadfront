@@ -16,7 +16,7 @@
         <v-spacer></v-spacer>
         <v-icon @click.stop="draweMini" color="teal">{{ icon_mini }}</v-icon>
       </v-subheader>
-      <div v-for="(link, i) in (isAuth && 1 ? auth_menu : public_menu)" :key="i">
+      <div v-for="(link, i) in isAuth && 1 ? auth_menu : public_menu" :key="i">
         <v-list-item
           v-if="!link.submenu"
           :to="link.path"
@@ -138,7 +138,7 @@ export default {
         ],
       },
       {
-        text: "Configuración",
+        text: "Administración",
         icon: "mdi-cog",
         submenu: [
           {
@@ -147,17 +147,22 @@ export default {
             icon: "mdi-check",
           },
           {
-            text: "Categorías",
+            text: "Comunicados",
+            path: "/preuniversitario/comunicado",
+            icon: "mdi-check",
+          },
+          {
+            text: "Test Categorías",
             path: "/preuniversitario/categoria",
             icon: "mdi-check",
           },
           {
-            text: "Preguntas",
+            text: "Test Preguntas",
             path: "/preuniversitario/pregunta",
             icon: "mdi-check",
           },
           {
-            text: "Respuestas",
+            text: "Test Respuestas",
             path: "/preuniversitario/respuesta",
             icon: "mdi-check",
           },

@@ -11,7 +11,7 @@
       </v-container>
       <v-footer height="auto" class="white pa-3 app--footer">
         <span class="caption"
-          >{{ new Date().getFullYear() }} &copy; Universidades, Todos los
+          >{{ new Date().getFullYear() }} &copy; DGESU, Todos los
           derechos reservados</span
         >
         <v-spacer></v-spacer>
@@ -20,7 +20,7 @@
             href="//minedu.gob.bo/"
             target="_blank"
             style="text-decoration: none"
-            >Ministerio de Educación, Deportes y Culturas</a
+            >Ministerio de Educación</a
           >
         </span>
       </v-footer>
