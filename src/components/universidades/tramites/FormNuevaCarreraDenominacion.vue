@@ -1,51 +1,83 @@
 <template>
   <div>
     <v-card>
-      <v-form>
+      <v-form ref="form">
         <v-card-text>
-          <div v-if="idTramiteTipo == 56">
-            <h4>Formulario de Solicitud de Nueva Carrera</h4>
-            <v-row>
-              <v-col cols="12" sm="6">
-                <v-text-field
-                  v-model="datos.nombre"
-                  label="Carrera"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="6">
-                <v-text-field
-                  v-model="datos.cod_carrera"
-                  label="Código de carrera"
-                ></v-text-field>
-              </v-col>
-            </v-row>
-          </div>
-          <div v-if="idTramiteTipo == 57">
-            <h4>Formulario de Solicitud de Nueva Denominación</h4>
-            <v-row>
-              <v-col cols="12" sm="6">
-                <v-select
-                  :items="carreras"
-                  item-value="carreraautorizada_id"
-                  item-text="nombre"
-                  v-model="datos.carreraAutorizada_id"
-                  label="Carrera"
-                  @change="seleccionarCarrera"
-                ></v-select>
-              </v-col>
-            </v-row>
-          </div>
+          <h2 class="form-title">Formulario de Solicitud</h2>
+          <h3 class="form-title" v-text="idTramiteTipo == 56 ? 'Nueva Carrera' : 'Nueva Denominación'"></h3>
+          <v-row>
+            <v-col cols="12" sm="6">
+              <v-select
+                :items="universidades"
+                item-value="id"
+                item-text="institucioneducativa"
+                v-model="universidad"
+                label="Universidad"
+                :rules="[v => !!v || 'El campo es requerido']"
+                @change="cargarSedeSubsede"
+              ></v-select>
+            </v-col>
+            <v-col cols="12" sm="6">
+              <v-select
+                :items="sedesSubsedes"
+                item-value="id"
+                item-text="nombre_sede_subsede"
+                v-model="datos.universidad_id"
+                label="Sede/Subsede"
+                :rules="[v => !!v || 'El campo es requerido']"
+                @change="getCarreras"
+              ></v-select>
+            </v-col>
+          </v-row>
+
+          <!-- Nueva carrera -->
+          <v-row v-if="idTramiteTipo == 56">
+            <v-col cols="12" sm="6">
+              <v-text-field
+                v-model="datos.nombre"
+                label="Carrera"
+                :rules="[v => !!v || 'El campo es requerido']"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12" sm="6">
+              <v-text-field
+                v-model="datos.cod_carrera"
+                label="Código de carrera"
+                :rules="[v => !!v || 'El campo es requerido']"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          
+          <!-- Nueva denominacion -->
+          <v-row v-if="idTramiteTipo == 57">
+            <v-col cols="12" sm="6">
+              <v-select
+                :items="carreras"
+                item-value="carreraautorizada_id"
+                item-text="nombre"
+                v-model="datos.carreraAutorizada_id"
+                label="Carrera"
+                :rules="[v => !!v || 'El campo es requerido']"
+                @change="seleccionarCarrera"
+              ></v-select>
+            </v-col>
+          </v-row>
+
+          <!-- /////////////////////////// -->
+          
           <v-row>
             <v-col cols="12" sm="4">
               <v-text-field
                 v-model="datos.denominacion"
                 label="Denominación del Título Profesional"
+                :rules="[v => !!v || 'El campo es requerido']"
               ></v-text-field>
             </v-col>
             <v-col cols="12" sm="4">
               <v-text-field
                 v-model="datos.mencion"
                 label="Mension"
+                :rules="[v => !!v || 'El campo es requerido']"
               ></v-text-field>
             </v-col>
             <v-col cols="12" sm="4">
@@ -55,18 +87,21 @@
                 item-text="nivel"
                 v-model="datos.nivel_tipo_id"
                 label="Grado Académico"
+                :rules="[v => !!v || 'El campo es requerido']"
               ></v-select>
             </v-col>
             <v-col cols="12" sm="4">
               <v-text-field
                 v-model="datos.resolucion_administrativa"
                 label="Resolución Administrativa"
+                :rules="[v => !!v || 'El campo es requerido']"
               ></v-text-field>
             </v-col>
             <v-col cols="12" sm="4">
               <v-text-field
                 v-model="datos.tiempo_estudio"
                 label="Tiempo de estudio"
+                :rules="[v => !!v || 'El campo es requerido']"
               ></v-text-field>
             </v-col>
             <v-col cols="12" sm="4">
@@ -76,6 +111,7 @@
                 item-text="regimen_estudio"
                 v-model="datos.ttec_regimen_estudio_tipo_id"
                 label="Régimen de estudio"
+                :rules="[v => !!v || 'El campo es requerido']"
               ></v-select>
             </v-col>
           </v-row>
@@ -98,35 +134,41 @@
                     item-text="periodo"
                     v-model="datos.materias[i].ttec_periodo_tipo_id"
                     label="Semestre"
+                    :rules="[v => !!v || 'El campo es requerido']"
                   ></v-select>
                 </td>
                 <td>
                   <v-text-field
                     v-model="datos.materias[i].materia"
                     label="Materia"
+                    :rules="[v => !!v || 'El campo es requerido']"
                   ></v-text-field>
                 </td>
                 <td>
                   <v-text-field
                     v-model="datos.materias[i].codigo"
                     label="Código"
+                    :rules="[v => !!v || 'El campo es requerido']"
                   ></v-text-field>
                 </td>
                 <td>
                   <v-tooltip top>
                     <template v-slot:activator="{ on, attrs }">
-                      <v-btn color="secondary" x-small v-bind="attrs" v-on="on"> <v-icon x-small @click="eliminarMateria(i)">mdi-delete-outline</v-icon> </v-btn>
+                      <v-btn color="grey" dark x-small v-bind="attrs" v-on="on" @click="eliminarMateria(i)">
+                        <v-icon x-small class="mr-1">mdi-delete-outline</v-icon> Quitar 
+                      </v-btn>
                     </template>
-                    <span>Eliminar</span>
+                    <span>Quitar materia</span>
                   </v-tooltip>
                 </td>
               </tr>
             </tbody>
           </v-simple-table>
-          <v-btn color="success" @click="agregarMateria" x-small> <v-icon x-small>mdi-plus</v-icon> Agregar materia</v-btn>
+          <v-btn color="info" @click="agregarMateria" small> <v-icon small class="mr-1">mdi-file-plus</v-icon> Agregar materia</v-btn>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
+          <v-btn color="secondary" @click="cancelar">Cancelar</v-btn>
           <v-btn color="primary" @click="enviarSolicitud">Enviar solicitud</v-btn>
         </v-card-actions>
       </v-form>
@@ -140,7 +182,7 @@ import UniversidadesService from '@/services/universidadesService'
 import { mapMutations } from 'vuex'
 export default {
   name: 'tramite-form-nueva-carrera-denominacion',
-  props: ['idUniversidad','idTramiteTipo'],
+  props: ['idTramiteTipo'],
   data: () => ({
     datos: {
       carreraAutorizada_id:'',
@@ -156,6 +198,9 @@ export default {
       ttec_regimen_estudio_tipo_id:'',
       materias:[]
     },
+    universidad: '',
+    universidades: [],
+    sedesSubsedes: [],
     carreras: [],
     niveles: [],
     regimenes: [],
@@ -164,18 +209,37 @@ export default {
   }),
   mounted() {
     this.datos.carrera_id = '';
-    this.datos.universidad_id = this.idUniversidad;
-    this.getCarreras();
-    this.getNiveles();
-    this.getRegimenes();
-    this.getPeriodosMateria();
+    this.getUniversidades();
     this.usuarioLogueado = Service.getUser();
+    console.log('montando')
   },
   methods: {
     ...mapMutations(['uniAlert']),
+    async getUniversidades() {
+      try {
+        let response = await UniversidadesService.getUniversidades()
+        let data = response.data.data
+        this.universidades = data;
+        console.log('data', data)
+        this.getNiveles();
+        this.getRegimenes();
+        this.getPeriodosMateria();
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    async cargarSedeSubsede() {
+      try {
+        let response = await UniversidadesService.getSedesSubsedesUniversidad(this.universidad)
+        let data = await response.data.data
+        this.sedesSubsedes = data;
+      } catch (error) {
+        console.log(error)
+      }
+    },
     async getCarreras() {
       try {
-        let response = await UniversidadesService.getCarrerasUniversidad(this.idUniversidad)
+        let response = await UniversidadesService.getCarrerasUniversidad(this.datos.universidad_id)
         let data = await response.data.data
         this.carreras = data;
         console.log(this.carreras)
@@ -228,24 +292,35 @@ export default {
     },
     async enviarSolicitud() {
       try {
-        let datos = {
-          tipotramite_id: this.idTramiteTipo,
-          universidad_id: this.idUniversidad,
-          tramite_id: '',
-          valor_evaluacion: '',
-          observacion: '',
-          datos: this.datos
-        }
-        let response = await UniversidadesService.enviarFormularioInicioTramite(datos)
-        let data = await response.data
-        if (data.status == 'success') {
-          this.uniAlert({color: 'success', text: 'Solicitud enviada correctamente'})
+        if (this.$refs.form.validate()) {
+          if (this.datos.materias.length > 0) {
+            // console.log('asdf')
+            let datos = {
+              tipotramite_id: this.idTramiteTipo,
+              universidad_id: this.datos.universidad_id,
+              tramite_id: '',
+              valor_evaluacion: '',
+              observacion: '',
+              datos: this.datos
+            }
+            let response = await UniversidadesService.enviarFormularioInicioTramite(datos)
+            let data = await response.data
+            if (data.status == 'success') {
+              this.uniAlert({color: 'success', text: 'Solicitud enviada correctamente'})
+              this.$emit('solicitud_enviada', true);
+            }
+          }else{
+            this.uniAlert({color: 'warning', text: 'Debe agregar materias'})
+          }
         }
       } catch (error) {
         console.log(error)
         this.uniAlert({color: 'error', text: 'Ocurrio un error al enviar la solicitud'})
       }
     },
+    cancelar() {
+      this.$emit('cancelar', true);
+    }
   }
 }
 </script>
@@ -253,5 +328,9 @@ export default {
 <style>
   .control-periodo-materia {
     max-width: 200px;
+  }
+  .form-title {
+    text-align: center !important;
+    font-weight: 400;
   }
 </style>

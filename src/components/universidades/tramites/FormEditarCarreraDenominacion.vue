@@ -195,7 +195,7 @@ import UniversidadesService from '@/services/universidadesService'
 import { mapMutations } from 'vuex'
 export default {
   name: 'tramite-form-editar-carrera-denominacion',
-  props: ['tramite'],
+  props: ['tramite','datos'],
   data: () => ({
     idTramiteTipo: 56,
     idUniversidad: '',
@@ -227,7 +227,7 @@ export default {
     // this.datos.carrera_id = '';
     // this.datos.universidad_id = this.idUniversidad;
     // this.getCarreras();
-    this.idUniversidad = this.tramite.tramite_id
+    this.idUniversidad = this.tramite.tramite.institucioneducativa_id
     this.idTramiteTipo = this.tramite.tramiteTipo.id
     this.getNiveles();
     this.getRegimenes();

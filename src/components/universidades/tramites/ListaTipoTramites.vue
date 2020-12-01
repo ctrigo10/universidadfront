@@ -14,7 +14,7 @@
           <td>{{item.tramite_tipo}}</td>
           <td>
             <v-btn @click="seleccionarTipo(item.id)" x-small color="secondary">
-              <v-icon small class="mr-1">mdi-eye</v-icon> Iniciar trámite
+              <v-icon x-small class="mr-1">mdi-file</v-icon> Iniciar trámite
             </v-btn>
           </td>
         </tr>

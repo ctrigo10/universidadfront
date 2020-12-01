@@ -19,7 +19,7 @@
                 type="info"
                 v-if="verificarPermiso('universidad')"
               >
-                La modificación de datos es restringida
+                La modificación de datos es restringida por usuario
               </v-alert>
               <h4>1.- Datos Generales</h4>
               <v-row>

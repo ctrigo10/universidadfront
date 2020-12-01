@@ -1,36 +1,123 @@
 <template>
   <div>
     <v-card elevation="0">
-      <v-card-title primary-title>
-        <h4>Trámite Nro: {{tramite.tramite_id}}</h4>
+      <v-toolbar
+        dark
+        color="primary"
+      >
+        <v-toolbar-title>Procesar Trámite</v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-toolbar-items>
+          <!-- <v-btn
+            dark
+            text
+            @click="dialog = false"
+          >
+            Save
+          </v-btn> -->
+        </v-toolbar-items>
+      </v-toolbar>
+      <v-card-title primary-title class="titulo-procesar">
+        <h4>Trámite Nro: {{tramite.tramite_id}} <br> <small>{{tramite.tramite.tramiteTipo.tramite_tipo}} </small> </h4>
       </v-card-title>
       <v-card-text>
-        <v-simple-table>
-          <tr><th>Nro. Tramite</th> {{tramite.tramite_id}}<td></td></tr>
-          <tr><th>Tipo de trámite</th> {{tramite.tramite.tramiteTipo.tramite_tipo}}<td></td></tr>
-          <tr><th>Universidad</th> {{tramite.tramite.institucioneducativa.institucioneducativa}}<td></td></tr>
-          <tr><th>Fecha de solicitud</th> {{tramite.fecha_envio}}<td></td></tr>
+        <v-simple-table class="tabla-procesar">
+          <tr><th>Universidad:</th><td> {{universidad.institucioneducativa}}</td></tr>
+          <tr><th>Sede / Subsede:</th><td> {{universidad.nombre_sede_subsede}}</td></tr>
+          <tr><th>Fecha de solicitud:</th><td> {{tramite.tramite.fecha_tramite}}</td></tr>
         </v-simple-table>
-        <FormEditarCarreraDenominacion :tramite="tramite"/>
+
+        <DetalleTramite :tramite="tramite" :datos="datos"/>
+        
+        <FormProcesarTecnico :tramite="tramite" :datos="datos"/>
+
+        <!-- <FormEditarCarreraDenominacion :tramite="tramite" :datos="datos"/> -->
       </v-card-text>
     </v-card>
   </div>
 </template>
 
 <script>
-import FormEditarCarreraDenominacion from '@/components/universidades/tramites/FormEditarCarreraDenominacion'
+import ServicioUniversidades from '@/services/universidadesService'
+import DetalleTramite from '@/components/universidades/tramites/DetalleTramite'
+import FormProcesarTecnico from '@/components/universidades/tramites/FormProcesarTecnico'
+// import FormEditarCarreraDenominacion from '@/components/universidades/tramites/FormEditarCarreraDenominacion'
 export default {
   name: 'tramite-procesar',
   components: {
-    FormEditarCarreraDenominacion
+    // FormEditarCarreraDenominacion,
+    DetalleTramite,
+    FormProcesarTecnico
   },
   props: ['tramite'],
   data: () => ({
+    bitacora: '',
+    datos: '',
+    universidad: ''
+  }),
+  mounted() {
+    console.log('datos del tramite', this.tramite)
+    this.getBitacora()
+    this.getDatosUniversidad()
+  },
+  methods: {
+    async getBitacora() {
+      try {
+        let response = await ServicioUniversidades.getBitacoraTramite(this.tramite.tramite.id)
+        let data = response.data
+        if (data.status == 'success') {
+          this.bitacora = data.data
+          this.bitacora.map(item => {
+            if (item.datos != '') {
+              this.datos = item.datos
+            }
+          })
 
-  })
+          console.log('bitacora', this.bitacora)
+          console.log('datos', this.datos)
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    async getDatosUniversidad() {
+      try {
+        let response = await ServicioUniversidades.getDatosUniversidad(this.tramite.tramite.institucioneducativa_id)
+        let data = response.data
+        if (data.status == 'success') {
+          this.universidad = data.data
+          console.log('universidad', this.universidad)
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    },
+  }
 }
 </script>
 
 <style>
+  .titulo-procesar {
+    color: #03558b;
+    justify-content: center;
+  }
+  .titulo-procesar h4{
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .tabla-procesar th {
+    width: 200px;
+    border-right: none !important;
+  }
+  .tabla-procesar th, .tabla-procesar td {
+    text-align: left;
+    border: 1px solid #e6e6e6;
+    padding: 4px 7px;
+  }
 
+  @media only screen and (max-width: 600px) {
+    .tabla-procesar th {
+      width: 100px;
+    }
+  }
 </style>
