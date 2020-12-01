@@ -7,7 +7,7 @@
       <LoggedUser/>
     </v-app-bar>
     <v-navigation-drawer app v-model="expanded" class="drawerstyle">
-      <img src="@/assets/logo_minedu.jpg" alt="" class="pa-6" align="center" height="" width="100%">
+      <img src="@/assets/logo_minedu.jpg" alt="" class="pa-8 mt-n4" align="center" height="" width="100%">
       <v-list dense>
         <div v-for="item in menuItems" :key="item.title">
           <v-list-item
