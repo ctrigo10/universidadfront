@@ -108,8 +108,8 @@ export default {
     loading: false,
     message: "",
     user: {
-      username: "7171712",
-      password: "123456",
+      username: "",
+      password: "",
     },
     vrules: {
       required: (value) => !!value || "Requerido",
