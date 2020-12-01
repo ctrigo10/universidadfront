@@ -31,6 +31,7 @@ export default {
                 universidad.datos.sitio_web = dato.institucioneducativa.institucioneducativa_dato.sitio_web;
                 universidad.datos.telefonos = dato.institucioneducativa.institucioneducativa_dato.telefonos;
                 universidad.datos.decreto_supremo = dato.institucioneducativa.institucioneducativa_dato.decreto_supremo;
+                universidad.datos.nombre_sede_subsede = dato.institucioneducativa.institucioneducativa_dato.nombre_sede_subs;
             }else{
                 universidad.datos.pathImage = universidad.datos.email = universidad.datos.fax = universidad.datos.imagen = universidad.datos.sitio_web = universidad.datos.telefonos = universidad.datos.decreto_supremo = "";
             }

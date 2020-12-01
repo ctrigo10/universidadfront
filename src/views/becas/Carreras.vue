@@ -85,13 +85,13 @@ export default {
                 align: "center",
             },
             {
-                text: "Modalidad",
+                text: "Duración",
                 value: "modalidad",
                 class: "subtitle-2 deep-purple lighten-5",
                 align: "center",
             },
             {
-                text: "Cantidad Modalidad",
+                text: "Cantidad Duración",
                 value: "tiempo",
                 class: "subtitle-2 deep-purple lighten-5",
                 align: "center",

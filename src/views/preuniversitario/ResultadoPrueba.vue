@@ -6,14 +6,15 @@
         <v-col cols="12" sm="12">
           <v-card>
             <v-card-text>
-              Ingrese código RUDE o CI.
-              <v-form ref="sform">
+              Ingrese código RUDE.
+              <v-form ref="sform" v-on:submit.prevent="searchStudent">
                 <v-row>
                   <v-col cols="12" sm="8" class="py-0">
                     <v-text-field
-                      label="Código RUDE/CI"
+                      label="Código RUDE"
                       v-model="estudiante.codigo_rude"
                       :rules="[(v) => !!v || 'Campo requerido']"
+                      autocomplete="off"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="4">
@@ -37,19 +38,10 @@
                     hide-details
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" sm="6" md="4">
+                <v-col cols="12" sm="8" md="8">
                   <v-text-field
-                    v-model="estudiante.paterno"
-                    label="Apellido paterno"
-                    filled
-                    disabled
-                    hide-details
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" sm="6" md="4">
-                  <v-text-field
-                    v-model="estudiante.materno"
-                    label="Apellido materno"
+                    v-model="estudiante.apellido"
+                    label="Apellidos"
                     filled
                     disabled
                     hide-details
@@ -57,13 +49,37 @@
                 </v-col>
               </v-row>
               <v-row>
-                <v-col cols="12" v-if="estudiante.aptitudes > 0">
+                <v-col cols="12" class="mb-5" v-if="estudiante.aptitudes > 0">
                   <highcharts
                     class="chart"
                     :options="chartAptitudes"
                   ></highcharts>
+                  <p>
+                    A continación algunos parámetros y recomendaciones sobre los
+                    resultados, aplica a cada uno de las Aptitudes.
+                  </p>
+                  <table class="custom-table">
+                    <th>Porcentaje (%)</th>
+                    <th>Recomendación</th>
+                    <tr>
+                      <td class="text-center">76 - 100</td>
+                      <td class="text-center">Potencializar</td>
+                    </tr>
+                    <tr>
+                      <td class="text-center">51 - 75</td>
+                      <td class="text-center">Fortalecer</td>
+                    </tr>
+                    <tr>
+                      <td class="text-center">26 - 50</td>
+                      <td class="text-center">Reforzar</td>
+                    </tr>
+                    <tr>
+                      <td class="text-center">0 - 25</td>
+                      <td class="text-center">Desarrollar</td>
+                    </tr>
+                  </table>
                 </v-col>
-                <v-col cols="12" v-if="estudiante.intereses > 0">
+                <v-col cols="12" class="mb-5" v-if="estudiante.intereses > 0">
                   <highcharts
                     class="chart"
                     :options="chartIntereses"
@@ -81,16 +97,87 @@
                   <v-container fill-height fluid>
                     <v-row align="center">
                       <v-col>
-                        <ul class="text-left">
+                        <ul class="text-left mb-3">
                           <li v-for="(_, il) in estilos.labels" :key="il">
                             {{ estilos.labels[il] }}
                             <b>{{ estilos.values[il] }}</b>
                           </li>
                         </ul>
+                        <p class="text-left">
+                          A continación algunos parámetros y recomendaciones
+                          sobre los resultados, aplica a los 4 resultados de
+                          estilos de aprendizaje.
+                        </p>
+                        <table class="custom-table">
+                          <th>Porcentaje (%)</th>
+                          <th>Recomendación</th>
+                          <tr>
+                            <td class="text-center">37 - 48</td>
+                            <td class="text-center">Potencializar</td>
+                          </tr>
+                          <tr>
+                            <td class="text-center">25 - 36</td>
+                            <td class="text-center">Fortalecer</td>
+                          </tr>
+                          <tr>
+                            <td class="text-center">13 - 24</td>
+                            <td class="text-center">Reforzar</td>
+                          </tr>
+                          <tr>
+                            <td class="text-center">0 - 12</td>
+                            <td class="text-center">Desarrollar</td>
+                          </tr>
+                        </table>
                       </v-col>
                     </v-row>
                   </v-container>
-                  <!--  -->
+                </v-col>
+                <v-col cols="12">
+                  <h2 class="py-3">Sinónimos</h2>
+                  <table class="custom-table">
+                    <tr>
+                      <td rowspan="2">
+                        <b>Experimentación Concreta(E.C.)</b>
+                      </td>
+                      <td>Capacidad de</td>
+                      <td>Manipular, Conocer y Ver.</td>
+                    </tr>
+                    <tr>
+                      <td>Habilidad de</td>
+                      <td>Percibir y Hacer.</td>
+                    </tr>
+                    <tr>
+                      <td rowspan="2"><b>Observación Reflexiva(O.R.)</b></td>
+                      <td>Capacidad de</td>
+                      <td>
+                        Analizar, Comprender, Observar, Examinar y Estudiar.
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Habilidad de</td>
+                      <td>Indagar</td>
+                    </tr>
+                    <tr>
+                      <td rowspan="2">
+                        <b>Conceptualización Abstracta(C.A.)</b>
+                      </td>
+                      <td>Capacidad de</td>
+                      <td>Entender, Abstraer y Razonar.</td>
+                    </tr>
+                    <tr>
+                      <td>Habilidad de</td>
+                      <td>Resolver y Solucionar.</td>
+                    </tr>
+                    <tr>
+                      <td rowspan="2"><b>Experimentación Activa(E.A.)</b></td>
+                      <td>Capacidad de</td>
+                      <td>Practicar, Aplicar y Realizar.</td>
+                    </tr>
+                    <tr>
+                      <td>Habilidad de</td>
+                      <td>Ejecutar y Producir.</td>
+                    </tr>
+                  </table>
                 </v-col>
               </v-row>
               <div v-if="data_loading" class="text-center">
@@ -136,10 +223,9 @@ export default {
     respuestas: [],
     estudiante: {
       id: "",
-      codigo_rude: "819813412008154",
+      codigo_rude: "",
       nombre: "",
-      paterno: "",
-      materno: "",
+      apellido: "",
       aptitudes: 0,
       intereses: 0,
       estilos: 0,
@@ -171,8 +257,10 @@ export default {
       if (this.$refs.sform.validate()) {
         this.btn_loading = true;
         this.estado = "";
+        this.estudiante.apellido = "";
         this.estudiante.aptitudes = 0;
         this.estudiante.intereses = 0;
+        this.estudiante.estilos = 0;
         axios
           .post(
             Service.getBasePre() + "busca/estudiante",
@@ -184,8 +272,24 @@ export default {
             if (response.data.id > 0) {
               this.estudiante.id = response.data.id;
               this.estudiante.nombre = response.data.nombre;
-              this.estudiante.paterno = response.data.paterno;
-              this.estudiante.materno = response.data.materno;
+              if (
+                response.data.paterno &&
+                response.data.paterno != null &&
+                response.data.paterno != ""
+              ) {
+                this.estudiante.apellido = response.data.paterno.trim();
+              }
+              if (
+                response.data.materno &&
+                response.data.materno != null &&
+                response.data.materno != ""
+              ) {
+                this.estudiante.apellido = (
+                  this.estudiante.apellido +
+                  " " +
+                  response.data.materno
+                ).trim();
+              }
               this.getReportAptitudes(
                 this.codigo_rude,
                 this.cateory_init,
@@ -366,7 +470,7 @@ export default {
             },
             subtitle: {
               text:
-                "El valor porcentaje con mayor valor es la(s) carrera(s) tentativa(s)",
+                "El valor porcentaje con mayor valor es la carrera tentativa <b>(Profesiografía)</b>",
             },
             xAxis: {
               categories: labels,
@@ -594,3 +698,15 @@ export default {
   },
 };
 </script>
+<style lang="css" scoped>
+.custom-table {
+  border-collapse: collapse;
+}
+
+.custom-table,
+.custom-table th,
+.custom-table td {
+  border: 1px solid #e0e0e0;
+  padding: 2px 10px;
+}
+</style>

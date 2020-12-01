@@ -142,7 +142,7 @@ export default {
         {
           text: "Universidad",
           class: "deep-purple lighten-5",
-          value: "institucioneducativa",
+          value: "universidad",
         },
         {
           text: "Becas",
@@ -265,7 +265,7 @@ export default {
         this.chartOptions.series[0].data = [];
         for (let dessert of this.desserts) {
           this.chartOptions.series[0].data.push({
-            name: dessert.institucioneducativa,
+            name: dessert.universidad,
             y: dessert.cantidad_becas,
           });
         }

@@ -25,7 +25,7 @@ export default {
                     for (let universidad of dato.roles) {
                         uni.push({
                             "id": universidad.institucioneducativa.id,
-                            "institucioneducativa": universidad.institucioneducativa.institucioneducativa,
+                            "institucioneducativa": `${universidad.institucioneducativa.institucioneducativa} - ${universidad.institucioneducativa.nro_resolucion}`,
                         });
                     }
                     usuario.universidades = uni;
@@ -36,6 +36,7 @@ export default {
         agregarUniversidadesUsuario(state, resp) {
             let dato = resp[0];
             let usuario = {};
+            console.log(dato)
             usuario.usuario_id = dato.usuario.id;
             usuario.usuario_rol_id = dato.id;
             usuario.username = dato.usuario.username;
@@ -46,10 +47,16 @@ export default {
             let uni = [];
             if (dato.roles) {
                 for (let universidad of dato.roles) {
-                    uni.push({
-                        "id": universidad.institucioneducativa.id,
-                        "institucioneducativa": universidad.institucioneducativa.institucioneducativa,
-                    });
+                    if(universidad.institucioneducativa.institucioneducativa_dato)
+                        uni.push({
+                            "id": universidad.institucioneducativa.id,
+                            "institucioneducativa": `${universidad.institucioneducativa.institucioneducativa} - ${universidad.institucioneducativa.institucioneducativa_dato.nombre_sed}`,
+                        });
+                    else
+                        uni.push({
+                            "id": universidad.institucioneducativa.id,
+                            "institucioneducativa": `${universidad.institucioneducativa.institucioneducativa}`,
+                        });
                 }
                 usuario.universidades = uni;
             }

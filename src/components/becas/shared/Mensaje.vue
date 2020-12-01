@@ -1,8 +1,8 @@
 <template>
-  <v-card class="mx-auto" color="secondary lighten-2" dark>
+  <v-card class="mx-auto" color="primary" dark>
     <v-card-title v-if="from=='seguimiento'">
       <v-icon large left>mdi-message</v-icon>
-      <span class="title font-weight-light">BECAS SOCIALES</span>
+      <span class="title font-weight-light"><strong>BECAS SOCIALES</strong></span>
     </v-card-title>
     <v-card-text class="white--text">
     <p class="body-1 text-justify">{{ mensaje }}</p>

@@ -58,7 +58,7 @@
         </div>
         <v-list-item-subtitle
           class="caption"
-        >Lugar: {{ universidad.departamento}} - ({{universidad.cantidad_becas}}{{ textBeca }})</v-list-item-subtitle>
+        >{{ universidad.nombre_sede_subsede }} ({{ universidad.departamento}}) - {{universidad.cantidad_becas}}{{ textBeca }}</v-list-item-subtitle>
         <span class="caption" :id="fondo" v-if="fondo=='fondoMal' && isAuthenticated">Falta registrar {{ universidad.cantidad_becas  - this.universidad.cantidadBecasRegistradas}} beca(s) <v-icon x-small>mdi-alert</v-icon></span>
       </v-list-item-content>
       <v-list-item-avatar tile size="50" color="grey">

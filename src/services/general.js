@@ -1,7 +1,7 @@
 export default {
   getServe() {
     if (process.env.NODE_ENV === "production") {
-      return "http://100.0.100.200:4000/";
+      return "http://100.0.101.33:4000/";
     } else {
       return "http://localhost:3000/";
     }
@@ -50,5 +50,20 @@ export default {
         Authorization: this.getToken(),
       },
     };
+  },
+  rolePreuniversitario() {
+    // 49 Universidad Tecnico Preuniversitario Nacional
+    // 52 Universidad Responsable Preuniversitario
+    let rol_id = 0;
+    if (this.getUser()) {
+      rol_id = 48; //52;
+    }
+    return rol_id;
+  },
+  getEstado() {
+    return [
+      { id: true, descripcion: "activo" },
+      { id: false, descripcion: "inactivo" },
+    ];
   },
 };

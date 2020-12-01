@@ -76,14 +76,14 @@ export default {
             ],
           },
         },{
-          canvas: [ { type: 'line', x1: 50, y1: 0, x2: 595-2*20, y2: 0, lineWidth: 1, lineColor: '#7F59B0' }],
+          canvas: [ { type: 'line', x1: 50, y1: 0, x2: 595-2*20, y2: 0, lineWidth: 1, lineColor: '#1a578d' }],
         }],
         content: content,
         footer: function (currentPage, pageCount) {
           return [
             {
               margin: 5,
-            canvas: [ { type: 'line', x1: 50, y1: 10, x2: 595-2*20, y2: 10, lineWidth: 1, lineColor: '#7F59B0' }],
+            canvas: [ { type: 'line', x1: 50, y1: 10, x2: 595-2*20, y2: 10, lineWidth: 1, lineColor: '#1a578d' }],
           },{
             columns: [
               {
@@ -130,7 +130,7 @@ export default {
             fontSice: 10,
           },
           cabecera_3: {
-            fillColor: "#008080",
+            fillColor: "#1a578d",
             color: "#ffffff",
           },
         },
@@ -152,7 +152,12 @@ export default {
 
       let content = [];
       let resp = await becasService.getSolicitudesPdf(datos);
+
       for (let res of resp.data.data) {
+        //<sede sub sede>
+      let nombre_sede_subsede = '';
+      if (res.institucioneducativa_dato)if(res.institucioneducativa_dato.nombre_sede_subsede!=null)nombre_sede_subsede=res.institucioneducativa_dato.nombre_sede_subsede;
+      //</>
         let universidad_ = {
           columns: [
             {
@@ -174,7 +179,13 @@ export default {
           });
           */
         content.push(universidad_);
-
+        content.push({
+          text: nombre_sede_subsede,
+          fontSize: 14,
+          bold: true,
+          alignment: 'center',
+          margin:[0,-10,0,15]
+        })
          ////<RESUMEN>
          content.push({
            text: 'Validado (VA), Rechazado (RE), En Proceso (PR), Cancelado (CA)',

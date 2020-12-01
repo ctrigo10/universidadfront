@@ -122,7 +122,7 @@ export default {
                 x2: 595 - 2 * 20,
                 y2: 0,
                 lineWidth: 1,
-                lineColor: "#7F59B0",
+                lineColor: "#1a578d",
               },
             ],
           },
@@ -140,7 +140,7 @@ export default {
                   x2: 595 - 2 * 20,
                   y2: 10,
                   lineWidth: 1,
-                  lineColor: "#7F59B0",
+                  lineColor: "#1a578d",
                 },
               ],
             },
@@ -192,7 +192,7 @@ export default {
             fontSice: 10,
           },
           cabecera_3: {
-            fillColor: "#008080",
+            fillColor: "#1a578d",
             color: "#ffffff",
           },
         },
@@ -243,6 +243,7 @@ export default {
       content.push({ text: "", margin: 15 });
       //Mensaje
       let fecha = new Date(this.datos.fecha);
+      if(!this.datos.universidad.nombre_sede_subsede)this.datos.universidad.nombre_sede_subsede = '';
       content.push({
         text: [
           `Con C.I. `,
@@ -263,6 +264,8 @@ export default {
           },
           ` en la `,
           { text: this.datos.universidad.nombre.toUpperCase(), bold: true },
+          ` `,
+          { text: this.datos.universidad.nombre_sede_subsede.toUpperCase(), bold: true },
           ` de la ciudad de `,
           {
             text: this.datos.universidad.ciudad.departa.toUpperCase(),
@@ -320,7 +323,7 @@ export default {
             archivo = {
               text: "Ver",
               link: `${this.host}${consulta.pathFile}`,
-              color: "#008080",
+              color: "#1a578d",
               decoration: "underline",
               target: "_blank",
             };
@@ -354,7 +357,7 @@ export default {
                 {
                   text: "Ver",
                   link: `${this.host}${condicion.pathFile}`,
-                  color: "#008080",
+                  color: "#1a578d",
                   decoration: "underline",
                   target: "_blank",
                 },

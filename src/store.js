@@ -1,14 +1,14 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import Convocatorias from "@/store/becas/Convocatorias";
-import Universidades from '@/store/becas/Universidades'
-import Carreras from '@/store/becas/Carreras'
+import Universidades from "@/store/becas/Universidades";
+import Carreras from "@/store/becas/Carreras";
 import BecasUtils from "@/store/becas/BecasUtils";
 import Usuarios from "@/store/becas/Usuarios";
 import Solicitudes from "@/store/becas/Solicitudes";
-import Cuestionario from "@/store/becas/Cuestionario";
+// import Cuestionario from "@/store/becas/Cuestionario";
 
-import UniUtils from '@/store/universidades/UniUtils.js';
+import UniUtils from "@/store/universidades/UniUtils.js";
 
 import axios from "axios";
 import Service from "./services/general";
@@ -46,11 +46,13 @@ export default new Vuex.Store({
             let token = response.data.token;
             Service.setUser(response.data.data);
             commit("authSuccess", token);
-            resolve({ status: "success", msg: response.data.message, nombre: response.data.data.nombre });
-            // evaluar cualquier condicion
+            resolve({
+              status: "success",
+              msg: response.data.message,
+              nombre: response.data.data.nombre,
+            });
           })
           .catch((err) => {
-            console.log(err)
             Service.removeUser();
             commit("authError", "Error en autenticación");
             reject({ status: "error", msg: err.response.data }); //revisar si viene en data
@@ -79,6 +81,5 @@ export default new Vuex.Store({
     Usuarios,
     Solicitudes,
     UniUtils,
-    Cuestionario
   },
 });
