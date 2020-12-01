@@ -50,12 +50,12 @@
           <v-simple-table dense :class="tamano">
             <thead>
               <tr>
-                <th class="text-center teal lighten-3" v-if="getDisplayGrande">Respuesta</th>
-                <th class="text-center teal lighten-3" v-else>Resp.</th>
-                <th class="text-center teal lighten-3">Archivo</th>
-                <th class="text-center teal lighten-3" v-if="getDisplayGrande">Puntaje</th>
-                <th class="text-center teal lighten-3" v-else>Pts.</th>
-                <th class="text-center teal lighten-3">Acciones
+                <th class="text-center secondary" v-if="getDisplayGrande">Respuesta</th>
+                <th class="text-center secondary" v-else>Resp.</th>
+                <th class="text-center secondary">Archivo</th>
+                <th class="text-center secondary" v-if="getDisplayGrande">Puntaje</th>
+                <th class="text-center secondary" v-else>Pts.</th>
+                <th class="text-center secondary">Acciones
                   <v-tooltip top>
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn  v-bind="attrs" v-on="on" class="mx-2" fab dark x-small color="secondary" @click="nuevaRespuesta(item)">
