@@ -131,12 +131,12 @@ export default {
         icon: 'mdi-domain',
         rols: [48,51]
       },
-      {
-        title: 'Formularios', 
-        href: 'formularios', 
-        icon: 'mdi-domain',
-        rols: [48]
-      },
+      // {
+      //   title: 'Formularios', 
+      //   href: 'formularios', 
+      //   icon: 'mdi-domain',
+      //   rols: [48]
+      // },
       {
         title: 'Buscar estudiante', 
         href: 'estudiante-buscar', 

@@ -3,8 +3,8 @@
     <v-card>
       <ListaTipoTramites v-if="tipo == ''" :tiposTramites="tiposTramites" @seleccionarTipo="seleccionarTipo"/>
     </v-card>
-    <FormNuevaCarreraDenominacion v-if="tipo == '56' || tipo == '57'" :idUniversidad="idUniversidad" :idTramiteTipo="tipo"/>
-    <FormSolicitudToken v-if="tipo == '58'" :idUniversidad="idUniversidad" :idTramiteTipo="tipo"/>
+    <FormNuevaCarreraDenominacion v-if="tipo == '56' || tipo == '57'" :idTramiteTipo="tipo" @cancelar="cancelar" @solicitud_enviada="solicitud_enviada"/>
+    <FormSolicitudToken v-if="tipo == '58'" :idTramiteTipo="tipo" @cancelar="cancelar"/>
   </div>
 </template>
 
@@ -20,7 +20,6 @@ export default {
     FormNuevaCarreraDenominacion,
     FormSolicitudToken
   },
-  props: ['idUniversidad'],
   data: () => ({
     tiposTramites: [],
     tipo: ''
@@ -42,6 +41,12 @@ export default {
     seleccionarTipo(id){
       this.tipo = id
       console.log(this.tipo)
+    },
+    cancelar() {
+      this.tipo = ''
+    },
+    solicitud_enviada() {
+      this.$emit('solicitud_enviada', true);
     }
   }
 }

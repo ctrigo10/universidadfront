@@ -58,7 +58,6 @@ export default{
   // obtener universidades en base a token solo SEDES
   // y tambien sedes de las subsedes de las que tiene permisos
   async getUniversidades(){
-    console.log('asdfasdfsadf')
     return await axios.get(`${general.getServe()}universidad`, general.getHeader());
   },
   // buscar universidad por nombre
@@ -225,7 +224,10 @@ export default{
 
 
 
-  //------------------------------ USUARIOS --------------------------------*//
+  //---------------------------------------------------- -------- ----------------------------------------------------------*//
+  //---------------------------------------------------- USUARIOS ----------------------------------------------------------*//
+  //---------------------------------------------------- -------- ----------------------------------------------------------*//
+
   // obtener usuarios
   async getUsuarios(){
     return await axios.get(`${general.getServe()}universidad/lista/roles/usuario`);
@@ -250,20 +252,32 @@ export default{
     return await axios.get(`${general.getServe()}universidad/lista/periodos`);
   },
 
+  //------------------------------------------------- END USUARIOS ----------------------------------------------------------*//
 
-  //------------------------------ TRAMITES --------------------------------*//
+
+  //---------------------------------------------------- -------- ----------------------------------------------------------*//
+  //---------------------------------------------------- TRAMITES ----------------------------------------------------------*//
+  //---------------------------------------------------- -------- ----------------------------------------------------------*//
+
+  // listar tipos de tramites
+  async getTramite(idTramite){
+    return await axios.get(`${general.getServe()}tramite/${idTramite}`);
+  },
+
   // listar tipos de tramites
   async getTiposTramites(){
     return await axios.get(`${general.getServe()}tramite/tramiteTipos`);
   },
+
   // listar tramites segun el tipo
-  async getListaTramites(tipo, idUniversidad){
+  async getListaTramites(tipo){
     let usuario = general.getUser();
     let rol = usuario.roles[0].rol_tipo_id
     if(rol == 48) {
-      idUniversidad = 'TODOS'
+      return await axios.get(`${general.getServe()}tramite/${tipo}/TODOS`, general.getHeader());
     }
-    return await axios.get(`${general.getServe()}tramite/${tipo}/${idUniversidad}`, general.getHeader());
+    // return await axios.get(`${general.getServe()}tramite/${tipo}/${idUniversidad}`, general.getHeader());
+    return await axios.get(`${general.getServe()}tramite/${tipo}/UNIVERSIDAD`, general.getHeader());
   },
   // Obtener la bitacora del tramite
   async getBitacoraTramite(idTramite){
@@ -305,11 +319,21 @@ export default{
   async createNuevaDenominacion(data){
     return await axios.post(`${general.getServe()}universidad/agregarDenominacion/Carrera`, data, general.getHeader());
   },
+  // Registrar datos del tramite nueva denominacion
+  async createNuevoToken(data){
+    return await axios.post(`${general.getServe()}universidad/tokenUniversidad`, data, general.getHeader());
+  },
+
+
+  //------------------------------------------------ END TRAMITES ----------------------------------------------------------*//
 
 
   
 
-  //////////////////////////////////// UTILIDADES ///////////////////////////////////////////////////////}
+  //---------------------------------------------------- -------- ----------------------------------------------------------*//
+  //---------------------------------------------------- UTILIDADES ---------------------------------------------------------*//
+  //---------------------------------------------------- -------- ----------------------------------------------------------*//
+
   verificarPermisoRol(rol){
     let idRol = null;
     switch (rol) {
@@ -330,7 +354,12 @@ export default{
     return false
   },
 
-  //////////////////////////////////// FORMULARIOS ///////////////////////////////////////////////////////
+  //--------------------------------------------------END UTILIDADES ---------------------------------------------------------*//
+
+  //---------------------------------------------------- -------- ----------------------------------------------------------*//
+  //-------------------------------------------------- FORMULARIOS ---------------------------------------------------------*//
+  //---------------------------------------------------- -------- ----------------------------------------------------------*//
+
   // Formulario 1
   async getListForm1(idUniversidad){
     if (idUniversidad !== 'ninguno') {
@@ -387,4 +416,6 @@ export default{
   async deleteForm5(id){
     return await axios.delete(`${general.getServe()}formulario/form5/${id}`);
   },
+
+  //----------------------------------------------- END FORMULARIOS ---------------------------------------------------------*//
 }

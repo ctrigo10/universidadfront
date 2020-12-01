@@ -18,15 +18,44 @@
         </v-row>
       </v-card-text>
     </v-card>
+    <Bitacora />
   </div>
 </template>
 
 <script>
+import UniversidadesService from '@/services/universidadesService'
+import Bitacora from '@/components/universidades/tramites/Bitacora'
 export default {
   name: 'tramite-seguimiento',
+  components: {
+    Bitacora
+  },
   data: () => ({
-    nroTramite: ''
-  })
+    nroTramite: '',
+    tramite: ''
+  }),
+  methods: {
+    async obtenerTramite() {
+      try {
+        let response = await UniversidadesService.getTramite(this.nroTramite)
+        let data = response.data
+        console.log(data)
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    async getBitacora() {
+      try {
+        let response = await UniversidadesService.getBitacoraTramite(this.tramite.id)
+        let data = response.data
+        if (data.status == 'success') {
+          this.bitacora = data.data
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    },
+  }
 }
 </script>
 

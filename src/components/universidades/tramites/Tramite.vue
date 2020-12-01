@@ -25,14 +25,14 @@
       <v-tab @click="seleccionarLista('CONCLUIDOS')">
         Concluidos
       </v-tab>
-      <v-tab @click="seleccionarSeguimiento()">
+      <!-- <v-tab @click="seleccionarSeguimiento()">
         Seguimiento
-      </v-tab>
+      </v-tab> -->
     </v-tabs>
 
-    <Nuevo v-if="componente == 'Nuevo' && usuario.roles[0].rol_tipo_id == 51" :idUniversidad="idUniversidad"/>
+    <Nuevo v-if="componente == 'Nuevo' && usuario.roles[0].rol_tipo_id == 51" @solicitud_enviada="solicitud_enviada"/>
 
-    <ListaTramites v-if="componente == 'Lista'" :tipoLista="tipoLista" :idUniversidad="idUniversidad"/>
+    <ListaTramites v-if="componente == 'Lista'" :tipoLista="tipoLista" />
 
     <Seguimiento  v-if="componente == 'Seguimiento'" />
 
@@ -51,7 +51,6 @@ export default {
     ListaTramites,
     Seguimiento
   },
-  props: ['idUniversidad'],
   data: () => ({
     toggle_exclusive: 0,
     componente: '',
@@ -79,6 +78,9 @@ export default {
     seleccionarSeguimiento() {
       this.componente = 'Seguimiento'
       this.tipoLista = ''
+    },
+    solicitud_enviada() {
+      this.seleccionarLista('ENVIADOS');
     }
   }
 }

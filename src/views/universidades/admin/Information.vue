@@ -125,12 +125,11 @@ export default {
         icon: "mdi-account-multiple",
         text: "Estudiantes",
       },
-      // {component: 'Tramite', icon: 'mdi-stack-overflow', text: 'Solicitudes'},
-      {
-        component: "Formularios",
-        icon: "mdi-file-multiple",
-        text: "Formularios",
-      },
+      // {
+      //   component: "Formularios",
+      //   icon: "mdi-file-multiple",
+      //   text: "Formularios",
+      // },
     ],
     menusTecnico: [
       {

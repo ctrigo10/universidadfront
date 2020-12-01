@@ -29,7 +29,7 @@
           </template>
           <template v-slot:[`item.acciones`]="{ item }">
             <v-btn v-if="tipoLista == 'RECIBIDOS'" color="primary" x-small @click="recepcionarTramite(item.tramite_id)">Recepcionar</v-btn>
-            <v-btn v-if="tipoLista == 'ENVIADOS' || tipoLista == 'CONCLUIDOS'" color="secondary" x-small @click="verTramite(item.tramite_id)">Ver</v-btn>
+            <!-- <v-btn v-if="tipoLista == 'ENVIADOS' || tipoLista == 'CONCLUIDOS'" color="secondary" x-small @click="verTramite(item.tramite_id)">Ver</v-btn> -->
             <v-btn v-if="tipoLista == 'PENDIENTES'" color="secondary" x-small @click="procesarTramite(item)">Procesar</v-btn>
           </template>
         </v-data-table>
@@ -38,19 +38,42 @@
 
     <v-dialog
       v-model="dialogVer"
-      scrollable fullscreen 
-      max-width="500px"
+      scrollable 
+      max-width="900px"
       transition="dialog-transition"
     >
       <v-card>
+        <v-toolbar
+        dark
+        color="primary"
+      >
+        <v-btn
+          icon
+          dark
+          @click="cerrar()"
+        >
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+        <v-toolbar-title>Datos del Trámite</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-toolbar-items>
+            <!-- <v-btn
+              dark
+              text
+              @click="dialog = false"
+            >
+              Save
+            </v-btn> -->
+          </v-toolbar-items>
+        </v-toolbar>
         <Bitacora v-if="dialogVer" :idTramite="idTramite" @cerrarDialog="cerrarDialogVer"/>
       </v-card>
     </v-dialog>
     
     <v-dialog
       v-model="dialogProcesar"
-      scrollable fullscreen
-      max-width="500px"
+      scrollable
+      max-width="800px"
       transition="dialog-transition"
     >
       <v-card>
@@ -67,7 +90,7 @@ import UniversidadesService from '@/services/universidadesService'
 import Bitacora from '@/components/universidades/tramites/Bitacora'
 import Procesar from '@/components/universidades/tramites/Procesar'
 export default {
-  props: ['tipoLista','idUniversidad'],
+  props: ['tipoLista'],
   components: {
     Bitacora,
     Procesar
