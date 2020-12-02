@@ -167,7 +167,7 @@ let paths = [
       {
         path: "dashboard",
         name: "universidades-dashboard",
-        // meta: { requiresAuth: true },
+        meta: { requiresAuth: true },
         component: () => import(`@/views/universidades/Dashboard.vue`),
       },
       {
@@ -187,13 +187,6 @@ let paths = [
         name: "universidades-admin-home",
         meta: { requiresAuth: true },
         component: () => import(`@/views/universidades/admin/Home.vue`),
-        // children: [
-        //   {
-        //     path: "asdfadsf/:sie",
-        //     name: 'universidades-admin-information',
-        //     component: () => import(`@/views/universidades/admin/Information.vue`),
-        //   },
-        // ]
       },
       {
         path: "admin/sedes-subsedes",
@@ -225,40 +218,12 @@ let paths = [
         component: () => import(`@/views/universidades/Tramites.vue`),
       },
       {
-        path: "formularios",
-        name: "formularios",
-        meta: { requiresAuth: true },
-        component: () => import(`@/views/universidades/Formularios.vue`),
-      },
-      {
         path: "buscar-estudiante",
         name: "estudiante-buscar",
         meta: { requiresAuth: true },
         component: () =>
           import(`@/views/universidades/estudiante/BuscarEstudiante.vue`),
       },
-      // {
-      //   path: "formularios",
-      //   name: "universidades-formularios",
-      //   meta: { requiresAuth: true },
-      //   component: () => import(`@/views/universidades/formularios/Formularios.vue`),
-      //   redirect: { name: "universidades-form1" },
-      //   children: [
-      //     {
-      //       path: "form1",
-      //       name: 'universidades-form1',
-      //       component: () => import(`@/views/universidades/formularios/Form1.vue`),
-      //     },{
-      //       path: "form3",
-      //       name: 'universidades-form3',
-      //       component: () => import(`@/views/universidades/formularios/Form3.vue`),
-      //     },{
-      //       path: "form5",
-      //       name: 'universidades-form5',
-      //       component: () => import(`@/views/universidades/formularios/Form5.vue`),
-      //     },
-      //   ]
-      // },
       {
         path: "usuarios-permisos",
         name: "universidades-usuarios-permisos",

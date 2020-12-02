@@ -18,7 +18,12 @@
           append-icon="mdi-magnify"
           @keyup="searchUniversity"
         ></v-text-field>
-        <UniversidadCardList :universidades="universidades" @seleccionar="seleccionar"/>
+        <v-progress-circular
+          indeterminate
+          color="primary"
+          v-if="cargando"
+        ></v-progress-circular>
+        <UniversidadCardList v-if="!cargando" :universidades="universidades" @seleccionar="seleccionar"/>
       </v-card-text>
     </v-card>
   </div>
@@ -47,6 +52,7 @@ export default {
     universidadId: '',
     dialogUniversidad: false,
     search: '',
+    cargando: false
   }),
   mounted(){
     this.usuario = Service.getUser();
@@ -59,9 +65,11 @@ export default {
     },
     async obtenerUniversidades(){
       try {
+        this.cargando = true
         let response = await UniversidadesService.getUniversidades();
         let data = await response.data;
         this.universidades = data.data;
+        this.cargando = false
       } catch (error) {
         console.log(error);
       }

@@ -2,6 +2,12 @@
   <div class="bitacora">
     <v-card>
       <v-card-text>
+         <v-simple-table class="tabla-procesar">
+          <tr><th>Universidad:</th><td> {{tramite.institucioneducativa ? tramite.institucioneducativa.institucioneducativa : ''}}</td></tr>
+          <tr><th>Sede / Subsede:</th><td> {{tramite.institucioneducativa ? tramite.institucioneducativa.rue_ue.nombre_sede_subsede : ''}}</td></tr>
+          <tr><th>Fecha de solicitud:</th><td> {{tramite.fecha_tramite}}</td></tr>
+        </v-simple-table>
+
         <v-progress-circular
           indeterminate
           color="info"
@@ -21,9 +27,9 @@
               full-dot
             >
               <v-card
-                
+                class="card-animated"
               >
-                <v-card-title class="title">
+                <v-card-title class="title title-card-popup">
                   <!-- {{ item.tramite_estado }} -->
                   {{ item.flujo_proceso }}
                   <v-spacer></v-spacer>
@@ -31,7 +37,7 @@
                 <v-card-text class="white text--primary">
                   <v-chip
                     class="ma-0 mb-2"
-                    color="primary"
+                    color="secondary"
                     dark
                   >
                     {{ item.fecha_registro | fecha }}
@@ -64,14 +70,91 @@
                   <p>Fecha registro: {{ item.fecha_registro | fecha }}</p>
                   <p>Fecha envio: {{item.fecha_envio | fecha }}</p>
                   <p>Fecha recepcion: {{item.fecha_recepcion | fecha }}</p> -->
-                  <v-btn
-                    color="secondary"
-                    class="mx-0"
-                    outlined
-                  >
-                    Ver detalle
-                  </v-btn>
+
                 </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-menu
+                    v-if="item.datos != '' && item.flujo_proceso_id == 157"
+                    :v-model="menu[i]"
+                    :close-on-content-click="false"
+                    :nudge-width="200"
+                    offset-x
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                        color="primary"
+                        v-bind="attrs"
+                        v-on="on"
+                      >
+                        Ver Datos
+                      </v-btn>
+                    </template>
+                    <v-card>
+                      <v-card-text>
+                        <v-card class="tramite-detalle-pophover" elevation="0">
+                          <v-card-title primary-title>
+                            <h5>Datos de la solicitud</h5>
+                          </v-card-title>
+
+                          <!-- DETALLE DE NUEVA CARRERA Y NUEVA DENOMINACION -->
+                          <v-card-text>
+                            <v-row v-if="item.tramite_tipo == 'Solicitud de nueva carrera'">
+                              <v-col cols="12" lg="5">
+                                <Dato label="Carrera" :value="item.datos.nombre" />
+                              </v-col>
+                              <v-col cols="12" lg="5">
+                                <Dato label="Código" :value="item.datos.cod_carrera" />
+                              </v-col>
+                            </v-row>
+                            <v-row>
+                              <v-col cols="12" lg="4">
+                                <Dato label="Denominación del título profesional" :value="item.datos.denominacion" />
+                              </v-col>
+                              <v-col cols="12" lg="4">
+                                <Dato label="Mensión" :value="item.datos.mencion" />
+                              </v-col>
+                              <v-col cols="12" lg="4">
+                                <Dato label="Grado académico" :value="item.datos.denominacion" />
+                              </v-col>
+                            </v-row>
+                            <v-row>
+                              <v-col cols="12" lg="4">
+                                <Dato label="Resolución administrativa" :value="item.datos.resolucion_administrativa" />
+                              </v-col>
+                              <v-col cols="12" lg="4">
+                                <Dato label="Tiempo de estudio" :value="item.datos.tiempo_estudio" />
+                              </v-col>
+                            </v-row>
+
+                            <br>
+                            <Dato label="Materias" value=""/>
+
+                            <v-data-table
+                              :headers="headers"
+                              :items="item.datos.materias"
+                              class="elevation-0"
+                              dense
+                              hide-default-footer
+                            >
+                              
+                            </v-data-table>
+
+                          </v-card-text>
+
+                          <!-- DETALLE DE TOKEN -->
+                          <v-card-text v-if="item.tramite_tipo == 'Solicitud token'">
+                            <v-row>
+                              <v-col cols="12" lg="12">
+                                <Dato label="Observación" :value="item.datos.observacion" />
+                              </v-col>
+                            </v-row>
+                          </v-card-text>
+                        </v-card>
+                      </v-card-text>
+                    </v-card>
+                  </v-menu>
+                </v-card-actions>
               </v-card>
             </v-timeline-item>
           </v-timeline>
@@ -83,9 +166,16 @@
 
 <script>
 import UniversidadesService from '@/services/universidadesService'
+// import DetalleTramite from '@/components/universidades/tramites/DetalleTramite'
+import Dato from '@/components/universidades/universidad/Dato'
 export default {
   props: ['idTramite'],
+  components: {
+    // DetalleTramite,
+    Dato
+  },
   data: () => ({
+    menu: [],
     tramite: '',
     items: [
         {
@@ -106,7 +196,12 @@ export default {
         },
     ],
     bitacora: '',
-    cargando: false
+    cargando: false,
+    headers: [
+      { text: 'Periodo', value: 'ttec_periodo_tipo_id', sortable: false, },
+      { text: 'Materia', value: 'materia', sortable: false, },
+      { text: 'Código', value: 'codigo', sortable: false, },
+    ]
   }),
   filters: {
     fecha(fecha) {
@@ -121,15 +216,29 @@ export default {
     }
   },
   mounted(){
+    this.getTramite()
     this.obtenerBitacora()
   },
   watch: {
     idTramite: function() {
       console.log(this.idTramite)
+      this.getTramite()
       this.obtenerBitacora()
     }
   },
   methods: {
+    async getTramite() {
+      try {
+        this.tramite = ''
+        let response = await UniversidadesService.getTramite(this.idTramite)
+        let data = await response.data
+        if (data.status == 'success') {
+          this.tramite = data.data
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    },
     async obtenerBitacora() {
       try {
         this.bitacora = ''
@@ -145,6 +254,10 @@ export default {
           console.log('filtrado', filtrado)
 
           this.bitacora = filtrado.sort((a,b) =>  a.id-b.id );
+
+          this.bitacora.map((item, index) => {
+            this.menu.push(index)
+          })
         }
         this.cargando = false
       } catch (error) {
@@ -169,10 +282,28 @@ export default {
   }
   .list-item-label {
     font-weight: 500;
-    color: grey;
+    color: rgb(46, 116, 173);
     /* min-width: 100px; */
   }
   .list-item-text {
 
+  }
+  .tramite-detalle-pophover {
+    background-color: #eef8fd !important;
+  }
+
+  .card-animated {
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2) !important;
+    transition: 0.3s;
+    width: 100%;
+  }
+
+  .card-animated:hover {
+      box-shadow: 0 10px 20px 0 rgba(0,0,0,0.2) !important;
+  }
+
+  .title-card-popup {
+    /* color: #1a578d; */
+    color: #019cde;
   }
 </style>

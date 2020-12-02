@@ -24,8 +24,14 @@
             <!-- <v-btn color="primary" @click="buscarUniversidad"> <v-icon>mdi-magnify</v-icon> Buscar</v-btn> -->
           </v-col>
         </v-row>
+        
+        <v-progress-circular
+          indeterminate
+          color="primary"
+          v-if="cargando"
+        ></v-progress-circular>
 
-        <v-row>
+        <v-row v-if="!cargando">
           <v-col
             v-for="(universidad, key) in universidades"
             :key="key"
@@ -40,10 +46,11 @@
                 <v-img
                   class="imagen-universidad"
                   height="110px"
-                  :src=" universidad.imagen !== 'universidades/imagen/null' ? 'http://localhost:3000/' + universidad.imagen : '../../assets/not-image.jpg'"
+                  :src=" universidad.imagen != 'universidades/imagen/null' ? 'http://localhost:3000/'+universidad.imagen : require(`../../../assets/not-image.jpg`)"
                   aspect-ratio="1"
                   contain
                 ></v-img>
+                <!-- <v-img :src=" item.imagen != 'universidades/imagen/null' ? 'http://localhost:3000/'+item.imagen : require(`../../../assets/not-image.jpg`)" width="100px"></v-img> -->
               </v-card-text>
               <v-card-title class="pb-3 nombre-universidad">{{ formatearNombre(universidad.institucioneducativa) }}</v-card-title>
             </v-card>
@@ -60,6 +67,7 @@ export default {
   data: () => ({
     buscar: '',
     universidades: [],
+    cargando: false
   }),
   mounted(){
     this.getUniversidades();
@@ -73,9 +81,11 @@ export default {
     },
     async getUniversidades(){
       try {
+        this.cargando = true
         let response = await UniversidadesService.getUniversidadesActivas();
         let data = await response.data;
         this.universidades = data.data;
+        this.cargando = false
       } catch (error) {
         console.log(error);
       }

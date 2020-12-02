@@ -56,7 +56,6 @@ export default {
     universidad: ''
   }),
   mounted() {
-    console.log('datos del tramite', this.tramite)
     this.getBitacora()
     this.getDatosUniversidad()
   },
@@ -72,9 +71,6 @@ export default {
               this.datos = item.datos
             }
           })
-
-          console.log('bitacora', this.bitacora)
-          console.log('datos', this.datos)
         }
       } catch (error) {
         console.log(error)
@@ -86,7 +82,6 @@ export default {
         let data = response.data
         if (data.status == 'success') {
           this.universidad = data.data
-          console.log('universidad', this.universidad)
         }
       } catch (error) {
         console.log(error)

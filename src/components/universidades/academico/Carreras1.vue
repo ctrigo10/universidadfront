@@ -60,7 +60,7 @@
             <div v-for="(denominacion, index) in item.grados_academicos" :key="index">
               {{ denominacion.nivel_tipo }}
               <span v-for="(pensum, index2) in denominacion.pensums" :key="index2">
-                <v-chip x-small color="info">{{ pensum.resolucion_administrativa }}</v-chip>
+                <v-chip x-small color="info" outlined class="ml-2">{{ pensum.resolucion_administrativa }}</v-chip>
               </span>
             </div>
             <!-- <table v-for="(denominacion, index) in item.grados_academicos" :key="index">

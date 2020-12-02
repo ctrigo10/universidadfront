@@ -261,7 +261,7 @@ export default{
 
   // listar tipos de tramites
   async getTramite(idTramite){
-    return await axios.get(`${general.getServe()}tramite/${idTramite}`);
+    return await axios.get(`${general.getServe()}tramite/buscar/${idTramite}`);
   },
 
   // listar tipos de tramites
