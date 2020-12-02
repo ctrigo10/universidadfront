@@ -14,9 +14,17 @@
       </v-card-title>
       <v-card-text>
         <v-data-table
+          item-key="name"
+          class="elevation-1"
+          loading
+          loading-text="Cargando... Espere por favor"
+          v-if="buscando"
+        ></v-data-table>
+        <v-data-table
           :headers="headers"
           :items="tramites"
           :search="search"
+          v-if="!buscando"
         >
           <template v-slot:[`item.tramite.id`]="{ item }">
             <v-chip
@@ -29,7 +37,7 @@
           </template>
           <template v-slot:[`item.acciones`]="{ item }">
             <v-btn v-if="tipoLista == 'RECIBIDOS'" color="primary" x-small @click="recepcionarTramite(item.tramite_id)">Recepcionar</v-btn>
-            <!-- <v-btn v-if="tipoLista == 'ENVIADOS' || tipoLista == 'CONCLUIDOS'" color="secondary" x-small @click="verTramite(item.tramite_id)">Ver</v-btn> -->
+            <v-btn v-if="tipoLista == 'ENVIADOS' || tipoLista == 'CONCLUIDOS'" color="secondary" x-small @click="verTramite(item.tramite_id)">Ver</v-btn>
             <v-btn v-if="tipoLista == 'PENDIENTES'" color="secondary" x-small @click="procesarTramite(item)">Procesar</v-btn>
           </template>
         </v-data-table>
@@ -47,15 +55,15 @@
         dark
         color="primary"
       >
-        <v-btn
-          icon
-          dark
-          @click="cerrar()"
-        >
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
         <v-toolbar-title>Datos del Trámite</v-toolbar-title>
           <v-spacer></v-spacer>
+            <v-btn
+            icon
+            dark
+            @click="cerrar()"
+          >
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
           <v-toolbar-items>
             <!-- <v-btn
               dark
@@ -110,6 +118,7 @@ export default {
       { text: 'Fecha de envio', value: 'fecha_envio' },
       { text: 'Acciones', value: 'acciones' },
     ],
+    buscando: false,
     tramites:[],
     search: '',
     idTramite: '',
@@ -140,12 +149,14 @@ export default {
     async obtenerTramites(){
       try {
         this.tramites = []
+        this.buscando = true
         let response = await UniversidadesService.getListaTramites(this.tipoLista, this.idUniversidad)
         let data = response.data.data
         // if (this.tipoLista == 'CONCLUIDOS') {
         //   this.tramites = data[0];
         // }else{
           this.tramites = data;
+          this.buscando = false
         // }
         console.log(data)
       } catch (error) {
@@ -179,6 +190,9 @@ export default {
       this.dialogProcesar = true
     },
     cerrarDialogVer() {
+      this.dialogVer = false
+    },
+    cerrar() {
       this.dialogVer = false
     }
   }

@@ -3,7 +3,7 @@
     <Breadcrumbs :items="breadItems"/>
     <v-card>
       <v-card-title primary-title>
-        Administración
+        Administración de Universidades
         <v-spacer></v-spacer>
       </v-card-title>
       <v-card-text>
@@ -88,6 +88,6 @@ export default {
 </script>
 
 <style>
-
+  
 
 </style>

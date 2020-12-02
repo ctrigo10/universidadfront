@@ -114,7 +114,7 @@ export default {
         href: 'universidades-publico', 
         icon: 'mdi-map',
       },{
-        title: 'Dashboard', 
+        title: 'Principal', 
         href: 'universidades-dashboard', 
         icon: 'mdi-home',
         rols: [57,48]
@@ -171,7 +171,7 @@ export default {
         rols: [57,48],
         submenus: [
           {
-            title: 'Permisos', 
+            title: 'Autorización de usuarios', 
             href: 'universidades-usuarios-permisos', 
             icon: 'mdi-account-cog',
           },{

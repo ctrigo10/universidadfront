@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3>Trámites</h3>
+    <Breadcrumbs :items="breadItems"/>
 
     <v-tabs
       v-model="tab"
@@ -41,17 +41,22 @@
 
 <script>
 import Service from '@/services/general'
+import Breadcrumbs from '@/components/universidades/utils/Breadcrumbs'
 import Nuevo from '@/components/universidades/tramites/Nuevo'
 import ListaTramites from '@/components/universidades/tramites/ListaTramites'
 import Seguimiento from '@/components/universidades/tramites/Seguimiento'
 export default {
   name: 'tramite',
   components: {
+    Breadcrumbs,
     Nuevo,
     ListaTramites,
     Seguimiento
   },
   data: () => ({
+    breadItems: [
+      { text: 'Trámites', disabled: true }
+    ],
     toggle_exclusive: 0,
     componente: '',
     tipoLista: '',

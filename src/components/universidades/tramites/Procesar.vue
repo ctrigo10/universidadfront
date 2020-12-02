@@ -3,7 +3,7 @@
     <v-card elevation="0">
       <v-toolbar
         dark
-        color="primary"
+        color="secondary"
       >
         <v-toolbar-title>Procesar Trámite</v-toolbar-title>
         <v-spacer></v-spacer>
