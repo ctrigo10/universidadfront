@@ -29,7 +29,7 @@
       width="220"
     >
       <div class="logo">
-        <img src="../../../assets/minedu.png" alt="" class="logo">
+        <img to="/" src="../../../assets/minedu.png" alt="" class="logo">
       </div>
       <v-divider></v-divider>
       <template>

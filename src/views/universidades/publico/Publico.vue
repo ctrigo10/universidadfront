@@ -30,12 +30,12 @@
             v-for="(universidad, key) in universidades"
             :key="key"
             cols="12"
-            lg="3"
+            lg="4"
             md="4"
             sm="6"
             xs="6"
           >
-            <v-card class="card-universidad" @click="seleccionar(universidad.id)" elevation="10">
+            <v-card class="card-universidad card-animated" @click="seleccionar(universidad.id)">
               <v-card-text>  
                 <v-img
                   class="imagen-universidad"
@@ -109,10 +109,20 @@ export default {
     padding: 10px;
   }
   .card-universidad > .v-card__title{
-    color: purple;
+    color: rgb(18, 81, 153);
     font-size: 1em;
   }
   .nombre-universidad {
     justify-content: center;
+  }
+
+  .card-animated {
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2) !important;
+    transition: 0.3s;
+    width: 100%;
+  }
+
+  .card-animated:hover {
+      box-shadow: 0 10px 20px 0 rgba(0,0,0,0.2) !important;
   }
 </style>

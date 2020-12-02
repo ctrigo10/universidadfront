@@ -51,7 +51,7 @@ export default {
     font-size: 15px;
     text-align: center;
     font-weight: 300;
-    background-color: #009688;
+    background-color: #019cde;
     padding: 15px 10px;
     color:white;
     border-radius: 5px;
