@@ -7,9 +7,13 @@
     :mini-variant.sync="mini"
     :dark="$vuetify.dark"
   >
-    <v-toolbar @click="redirectTo" style="cursor: pointer">
+    <v-toolbar @click="redirectTo" class="pa-0" style="cursor: pointer">
       <v-img src="../../assets/logo-minedu.png" class="logo" />
     </v-toolbar>
+    <!-- <div class="logo">
+      <img src="../../assets/minedu.png" alt="" class="logo" />
+    </div> -->
+    <v-divider></v-divider>
     <v-list nav dense link class="mb-4">
       <v-subheader>
         <span v-show="!mini">Menú</span>
