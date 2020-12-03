@@ -14,9 +14,17 @@
       </v-card-title>
       <v-card-text>
         <v-data-table
+          item-key="name"
+          class="elevation-1"
+          loading
+          loading-text="Cargando... Espere por favor"
+          v-if="buscando"
+        ></v-data-table>
+        <v-data-table
           :headers="headers"
           :items="tramites"
           :search="search"
+          v-if="!buscando"
         >
           <template v-slot:[`item.tramite.id`]="{ item }">
             <v-chip
@@ -28,9 +36,9 @@
             </v-chip>
           </template>
           <template v-slot:[`item.acciones`]="{ item }">
-            <v-btn v-if="tipoLista == 'RECIBIDOS'" color="primary" x-small @click="recepcionarTramite(item.tramite_id)">Recepcionar</v-btn>
-            <!-- <v-btn v-if="tipoLista == 'ENVIADOS' || tipoLista == 'CONCLUIDOS'" color="secondary" x-small @click="verTramite(item.tramite_id)">Ver</v-btn> -->
-            <v-btn v-if="tipoLista == 'PENDIENTES'" color="secondary" x-small @click="procesarTramite(item)">Procesar</v-btn>
+            <v-btn v-if="tipoLista == 'RECIBIDOS'" color="primary" x-small @click="recepcionarTramite(item.tramite_id)"> <v-icon class="mr-1" small>mdi-check</v-icon> Recepcionar</v-btn>
+            <v-btn v-if="tipoLista == 'ENVIADOS' || tipoLista == 'CONCLUIDOS'" color="primary" x-small @click="verTramite(item.tramite_id)"> <v-icon class="mr-1" small>mdi-eye</v-icon> Ver detalle</v-btn>
+            <v-btn v-if="tipoLista == 'PENDIENTES'" color="primary" x-small @click="procesarTramite(item)"> <v-icon class="mr-1" small>mdi-file-document-edit-outline</v-icon> Procesar</v-btn>
           </template>
         </v-data-table>
       </v-card-text>
@@ -47,15 +55,15 @@
         dark
         color="primary"
       >
-        <v-btn
-          icon
-          dark
-          @click="cerrar()"
-        >
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
-        <v-toolbar-title>Datos del Trámite</v-toolbar-title>
+        <v-toolbar-title>Trámite Nro. {{idTramite}}</v-toolbar-title>
           <v-spacer></v-spacer>
+            <v-btn
+            icon
+            dark
+            @click="cerrar()"
+          >
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
           <v-toolbar-items>
             <!-- <v-btn
               dark
@@ -77,7 +85,7 @@
       transition="dialog-transition"
     >
       <v-card>
-        <Procesar v-if="dialogProcesar" :tramite="tramite"/>
+        <Procesar v-if="dialogProcesar" :tramite="tramite" @recargarLista="recargarLista"/>
       </v-card>
     </v-dialog>
 
@@ -110,6 +118,7 @@ export default {
       { text: 'Fecha de envio', value: 'fecha_envio' },
       { text: 'Acciones', value: 'acciones' },
     ],
+    buscando: false,
     tramites:[],
     search: '',
     idTramite: '',
@@ -140,14 +149,11 @@ export default {
     async obtenerTramites(){
       try {
         this.tramites = []
+        this.buscando = true
         let response = await UniversidadesService.getListaTramites(this.tipoLista, this.idUniversidad)
         let data = response.data.data
-        // if (this.tipoLista == 'CONCLUIDOS') {
-        //   this.tramites = data[0];
-        // }else{
-          this.tramites = data;
-        // }
-        console.log(data)
+        this.tramites = data;
+        this.buscando = false
       } catch (error) {
         console.log(error)
       }
@@ -165,6 +171,7 @@ export default {
         let response = await UniversidadesService.recepcionarTramite(datos)
         let data = response.data
         this.obtenerTramites()
+        this.recargarLista('PENDIENTES')
         console.log(data)
       } catch (error) {
         console.log(error)
@@ -180,6 +187,14 @@ export default {
     },
     cerrarDialogVer() {
       this.dialogVer = false
+    },
+    cerrar() {
+      this.dialogVer = false
+    },
+    // FUNCION PARA RECARGAR LA SIGUIENTE LISTA
+    recargarLista(tipoLista) {
+      this.dialogProcesar = false
+      this.$emit('recargarLista', tipoLista)
     }
   }
 }

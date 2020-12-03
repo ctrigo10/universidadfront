@@ -17,7 +17,7 @@
           hide-default-footer
         >
           <template v-slot:[`item.acciones`]="{ item }">
-            <v-btn @click="seleccionar(item)" color="secondary" x-small>
+            <v-btn @click="seleccionar(item)" color="primary" x-small>
               <v-icon x-small class="mr-1">mdi-eye</v-icon> Ingresar
             </v-btn>
           </template>

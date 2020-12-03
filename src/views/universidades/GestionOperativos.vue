@@ -1,8 +1,9 @@
 <template>
   <div>
+    <Breadcrumbs :items="breadItems"/>
     <v-card>
       <v-card-title primary-title>
-        Gestión de Operativos
+        Operativos
       </v-card-title>
       <v-card-text>
         <v-row>
@@ -22,10 +23,10 @@
           <tbody>
             <tr v-for="(operativo, i) in operativos" :key="i">
               <td>{{operativo.nombre_operativo}}</td>
-              <td>{{operativo.fecha_inicio}}</td>
-              <td>{{operativo.fecha_final}}</td>
+              <td>{{operativo.fecha_inicio | fecha}}</td>
+              <td>{{operativo.fecha_final | fecha}}</td>
               <td>
-                <v-btn color="primary" @click="editar(operativo)" x-small> <v-icon x-small>mdi-pencil</v-icon> Editar </v-btn>
+                <v-btn color="primary" @click="editar(operativo)" x-small> <v-icon x-small class="mr-1">mdi-pencil</v-icon> Actualizar fechas </v-btn>
                 <!-- <v-btn color="primary" @click="eliminar(operativo.id)" class="btn-accion"> <v-icon>mdi-delete</v-icon> </v-btn> -->
               </td>
             </tr>
@@ -40,7 +41,7 @@
     >
       <v-card>
         <v-card-title primary-title>
-          {{mode}} Operativo
+          {{mode}} Fechas del Operativo
         </v-card-title>
         <v-card-text>
           <v-form ref="form">
@@ -50,6 +51,7 @@
                   v-model="operativo.nombre_operativo"
                   label="Nombre del operativo"
                   :rules="[v => !!v || 'El nombre_operativo es requerido']"
+                  disabled
                 ></v-text-field>
               </v-col>
               <v-col sm="6">
@@ -119,10 +121,17 @@
 
 <script>
 import UniversidadesService from '@/services/universidadesService'
+import Breadcrumbs from '@/components/universidades/utils/Breadcrumbs'
 import { mapMutations } from 'vuex';
 export default {
   name: 'gestion-operativos',
+  components: {
+    Breadcrumbs
+  },
   data: () => ({
+    breadItems: [
+      { text: 'Gestión de Operativos', disabled: true }
+    ],
     dialogOperativo: false,
     operativos: [],
     operativo: {
@@ -135,6 +144,16 @@ export default {
     menu1: false,
     menu2: false
   }),
+  filters: {
+    fecha(fecha) {
+      let datos = fecha.split('-')
+      if (datos.length == 3) {
+        let nuevaFecha = `${datos[2]}-${datos[1]}-${datos[0]}`
+        return nuevaFecha
+      }
+      return fecha
+    }
+  },
   mounted() {
     this.getOperativos()
   },
@@ -144,7 +163,7 @@ export default {
       try {
         let response = await UniversidadesService.getOperativos();
         let data = response.data.data;
-        this.operativos = data;
+        this.operativos =  data.sort((a,b) =>  a.id-b.id );
       } catch (error) {
         console.log(error)
       }

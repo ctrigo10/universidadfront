@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3>Trámites</h3>
+    <Breadcrumbs :items="breadItems"/>
 
     <v-tabs
       v-model="tab"
@@ -32,7 +32,7 @@
 
     <Nuevo v-if="componente == 'Nuevo' && usuario.roles[0].rol_tipo_id == 51" @solicitud_enviada="solicitud_enviada"/>
 
-    <ListaTramites v-if="componente == 'Lista'" :tipoLista="tipoLista" />
+    <ListaTramites v-if="componente == 'Lista'" :tipoLista="tipoLista" @recargarLista="seleccionarLista"/>
 
     <Seguimiento  v-if="componente == 'Seguimiento'" />
 
@@ -41,17 +41,23 @@
 
 <script>
 import Service from '@/services/general'
+import UniversidadesService from '@/services/universidadesService'
+import Breadcrumbs from '@/components/universidades/utils/Breadcrumbs'
 import Nuevo from '@/components/universidades/tramites/Nuevo'
 import ListaTramites from '@/components/universidades/tramites/ListaTramites'
 import Seguimiento from '@/components/universidades/tramites/Seguimiento'
 export default {
   name: 'tramite',
   components: {
+    Breadcrumbs,
     Nuevo,
     ListaTramites,
     Seguimiento
   },
   data: () => ({
+    breadItems: [
+      { text: 'Trámites', disabled: true }
+    ],
     toggle_exclusive: 0,
     componente: '',
     tipoLista: '',
@@ -67,13 +73,23 @@ export default {
     }
   },
   methods: {
+    verificarPermiso(rol) {
+      return UniversidadesService.verificarPermisoRol(rol)
+    },
     seleccionarNuevo() {
       this.componente = 'Nuevo'
       this.tipoLista = ''
+      this.tab = 1
     },
     seleccionarLista(tipoLista) {
       this.componente = 'Lista'
       this.tipoLista = tipoLista
+      switch (this.tipoLista) {
+        case 'RECIBIDOS': this.tab = this.verificarPermiso('tecnico') == true ? 0: 1; break;
+        case 'ENVIADOS': this.tab = this.verificarPermiso('tecnico') == true ? 1: 2; break;
+        case 'PENDIENTES': this.tab = this.verificarPermiso('tecnico') == true ? 2: 3; break;
+        case 'CONCLUIDOS': this.tab = this.verificarPermiso('tecnico') == true ? 3: 4; break;
+      }
     },
     seleccionarSeguimiento() {
       this.componente = 'Seguimiento'
@@ -81,6 +97,7 @@ export default {
     },
     solicitud_enviada() {
       this.seleccionarLista('ENVIADOS');
+      this.tab = this.verificarPermiso('tecnico') == true ? 1: 2
     }
   }
 }

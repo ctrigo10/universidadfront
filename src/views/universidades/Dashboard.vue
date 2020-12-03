@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h4>Universidades a Nivel Nacional</h4>
     <v-row>
       <v-col
         cols="12"
@@ -8,7 +9,7 @@
         sm="6"
         xs="6"
         v-for="(item, index) in tipos" :key="index"
-      >
+      > 
         <v-card
           :color="getColor(item)"
           dark
@@ -104,13 +105,16 @@ export default {
           item.universidades.forEach(universidadTipo => {
             let index = datasets.findIndex(elemento => elemento.label == universidadTipo.dependencia)
             if (index < 0) {
+              let color = this.getColorBarra(universidadTipo.dependencia)
+              console.log(color)
               datasets.push({
                 label: universidadTipo.dependencia,
-                backgroundColor: ['#3e95cd'],
+                backgroundColor: [color],
                 data: [universidadTipo.total]
               })
             }else{
-              datasets[index].backgroundColor.push('#3e95cd')
+              let color = this.getColorBarra(datasets[index].label)
+              datasets[index].backgroundColor.push(color)
               datasets[index].data.push(universidadTipo.total)
             }
           })
@@ -139,14 +143,14 @@ export default {
     getColorBarra(tipo){
       let color = '#3e95cd'
       switch (tipo) {
-        case 'Público':
-            color = '#3e95cd'
+        case 'Privada':
+            color = 'purple'
             break;
-        case 'Regimen especial':
-            color = '#c45850'
+        case 'Regimen Especial':
+            color = '#1a65ac'
             break;
-        case 'Indígena':
-            color = '#e8c3b9'
+        case 'Indigena':
+            color = '#d4b609'
             break;
       }
       return color

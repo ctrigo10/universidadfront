@@ -1,8 +1,9 @@
 <template>
   <div>
+    <Breadcrumbs :items="breadItems"/>
     <v-card>
       <v-card-title primary-title>
-        Permisos de usuario
+        Seleccionar usuario
       </v-card-title>
       <v-card-text>
         <v-row>
@@ -94,9 +95,13 @@
                     El usuario seleccionado tiene permisos sobre todas las Universidades.
                   </v-alert>
                   <div v-else>
-                    <h4 class="titulo-user">
-                      <v-icon color="white">mdi-account</v-icon> {{usuarioSeleccionado.nombre}} {{usuarioSeleccionado.paterno}} {{usuarioSeleccionado.materno}}
-                    </h4>
+                    <v-alert
+                      dense
+                      type="info"
+                      outlined
+                    >
+                      El usuario <strong>{{usuarioSeleccionado.nombre}} {{usuarioSeleccionado.paterno}} {{usuarioSeleccionado.materno}}</strong> puede gestionar la información de las siguientes universidades
+                    </v-alert>
                     <br>
                     <!-- <v-chip
                       v-for="(item, index) in universidadesPermiso" :key="index"
@@ -180,10 +185,17 @@
 
 <script>
 import UniversidadesService from '@/services/universidadesService'
+import Breadcrumbs from '@/components/universidades/utils/Breadcrumbs'
 import { mapMutations } from 'vuex';
 export default {
   name: 'usuario-permiso',
+  components: {
+    Breadcrumbs
+  },
   data: () => ({
+    breadItems: [
+      { text: 'Autorización de Usuarios', disabled: true }
+    ],
     checked: true,
     nombreBuscar: '',
     usuarios: [],
@@ -326,7 +338,7 @@ export default {
     font-size: 17px;
     font-weight: 400;
     /* background-color: #7F59B0; */
-    background-color: #009688;
+    background-color: #3f88c4;
     padding: 10px;
     border-radius: 5px;
   }

@@ -50,79 +50,88 @@
           <v-card-text>  
             <div class="text-center">
               <h2>{{ seleccionado.institucioneducativa }}</h2>
+              <br>
             </div>
-            <h4>Datos de ubicación</h4>
-            <v-list>
-              <v-list-item class="pt-0 pb-0">
-                <v-list-item-icon class="pt-0 pb-0">
-                  <v-icon color="indigo">
-                    mdi-cellphone-android
-                  </v-icon>
-                </v-list-item-icon>
-                <v-list-item-content class="pt-0 pb-0">
-                  <v-list-item-title>{{ seleccionado.telefonos }}</v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-icon>
-                  <v-icon color="indigo">
-                    mdi-map-marker
-                  </v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>{{ seleccionado.direccion }}</v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-icon>
-                  <v-icon color="indigo">
-                    mdi-email
-                  </v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>{{ seleccionado.email }}</v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-icon>
-                  <v-icon color="indigo">
-                    mdi-web
-                  </v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>{{ seleccionado.sitio_web }}</v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
-
-            <div v-show="ofertaAcademica.length > 0 ">
-              <h4 class="mt-7 mb-3">Oferta académica</h4>
-              <v-simple-table>
-                <template v-slot:default>
-                  <thead>
-                    <tr>
-                      <th class="text-left">Carrera o Especialidad Académica</th>
-                      <th class="text-left">Grado Académico</th>
-                      <th class="text-left">Duración</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr
-                      v-for="item in ofertaAcademica"
-                      :key="item.name"
-                    >
-                      <td>{{ item.nombre }}</td>
-                      <td>{{ item.nivel }}</td>
-                      <td>
-                        {{ item.tiempo_estudio }}
-                        <span v-if="item.regimen_estudio == 'ANUAL'"> años</span>
-                        <span v-if="item.regimen_estudio == 'SEMESTRAL'"> semestres</span>
-                      </td>
-                    </tr>
-                  </tbody>
-                </template>
-              </v-simple-table>
-            </div>
+            <v-card elevation="1">
+              <v-card-text>
+                <h4>Datos de ubicación</h4>
+                <v-list>
+                  <v-list-item class="pt-0 pb-0">
+                    <v-list-item-icon class="pt-0 pb-0">
+                      <v-icon color="indigo">
+                        mdi-cellphone-android
+                      </v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content class="pt-0 pb-0">
+                      <v-list-item-title>{{ seleccionado.telefonos }}</v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                  <v-list-item>
+                    <v-list-item-icon>
+                      <v-icon color="indigo">
+                        mdi-map-marker
+                      </v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                      <v-list-item-title>{{ seleccionado.direccion }}</v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                  <v-list-item>
+                    <v-list-item-icon>
+                      <v-icon color="indigo">
+                        mdi-email
+                      </v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                      <v-list-item-title>{{ seleccionado.email }}</v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                  <v-list-item>
+                    <v-list-item-icon>
+                      <v-icon color="indigo">
+                        mdi-web
+                      </v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                      <v-list-item-title>{{ seleccionado.sitio_web }}</v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                </v-list>
+              </v-card-text>
+            </v-card>
+            <br>
+            <v-card elevation="1">
+              <v-card-text>
+                <div v-show="ofertaAcademica.length > 0 ">
+                  <h4 class="mt-7 mb-3">Oferta académica</h4>
+                  <v-simple-table>
+                    <template v-slot:default>
+                      <thead>
+                        <tr>
+                          <th class="text-left">Carrera o Especialidad Académica</th>
+                          <th class="text-left">Grado Académico</th>
+                          <th class="text-left">Duración</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr
+                          v-for="item in ofertaAcademica"
+                          :key="item.name"
+                        >
+                          <td>{{ item.nombre }}</td>
+                          <td>{{ item.nivel }}</td>
+                          <td>
+                            {{ item.tiempo_estudio }}
+                            <span v-if="item.regimen_estudio == 'ANUAL'"> años</span>
+                            <span v-if="item.regimen_estudio == 'SEMESTRAL'"> semestres</span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </template>
+                  </v-simple-table>
+                </div>
+              </v-card-text>
+            </v-card>
             <!-- <div v-show="ofertaAcademica.length == 0">Sin resultados</div> -->
 
           </v-card-text>

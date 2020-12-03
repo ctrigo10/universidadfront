@@ -44,8 +44,14 @@
         </ul>
       </div>
       <div class="admin-contenido">
+        <v-progress-circular
+          indeterminate
+          color="primary"
+          v-if="cargando"
+        ></v-progress-circular>
+
         <DatosGenerales
-          v-if="componente == 'DatosGenerales'"
+          v-if="componente == 'DatosGenerales' && !cargando"
           :idUniversidad="universidadId"
         />
         <Carreras v-if="componente == 'Carreras'" :carreras="carreras" />
@@ -59,10 +65,6 @@
         />
         <Tramite
           v-if="componente == 'Tramite'"
-          :idUniversidad="universidadId"
-        />
-        <Formularios
-          v-if="componente == 'Formularios'"
           :idUniversidad="universidadId"
         />
       </div>
@@ -79,7 +81,6 @@ import Carreras from "@/components/universidades/academico/Carreras1";
 import Docentes from "@/components/universidades/academico/Docentes";
 import Estudiantes from "@/components/universidades/academico/Estudiantes";
 import Tramite from "@/components/universidades/tramites/Tramite";
-import Formularios from "@/components/universidades/formularios/Formularios";
 export default {
   name: "admin-information",
   components: {
@@ -90,7 +91,6 @@ export default {
     Docentes,
     Estudiantes,
     Tramite,
-    Formularios,
   },
   props: [""],
   data: () => ({
@@ -125,11 +125,6 @@ export default {
         icon: "mdi-account-multiple",
         text: "Estudiantes",
       },
-      // {
-      //   component: "Formularios",
-      //   icon: "mdi-file-multiple",
-      //   text: "Formularios",
-      // },
     ],
     menusTecnico: [
       {
@@ -152,6 +147,7 @@ export default {
     componente: "DatosGenerales",
     universidad: {},
     carreras: [],
+    cargando: false
   }),
   mounted() {
     this.universidadId = sessionStorage.getItem("idss");
@@ -164,11 +160,13 @@ export default {
     },
     async verDatosUniversidad() {
       try {
+        this.cargando = true
         let response = await UniversidadesService.getDatosUniversidad(
           this.universidadId
         );
         let data = await response.data.data;
         this.universidad = data;
+        this.cargando = false
       } catch (error) {
         console.log(error);
       }
@@ -195,7 +193,7 @@ export default {
 }
 .admin-body {
   display: flex;
-  justify-content: start;
+  justify-content: space-between;
 }
 .admin-menu {
   width: 70px;

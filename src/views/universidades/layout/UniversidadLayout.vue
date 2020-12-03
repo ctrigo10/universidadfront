@@ -29,7 +29,7 @@
       width="220"
     >
       <div class="logo">
-        <img src="../../../assets/minedu.png" alt="" class="logo">
+        <img to="/" src="../../../assets/minedu.png" alt="" class="logo">
       </div>
       <v-divider></v-divider>
       <template>
@@ -87,7 +87,7 @@
         class="text-center"
         cols="12"
       >
-        {{ new Date().getFullYear() }} — <strong>Ministerio de Educación</strong>
+        © {{ new Date().getFullYear() }} — <strong>Dirección General de Universidades - Ministerio de Educación</strong>
       </v-col>
     </v-footer>
 
@@ -110,11 +110,11 @@ export default {
     usuarioLogueado: null,
     items: [
       {
-        title: 'Público', 
+        title: 'Universidades Autorizadas', 
         href: 'universidades-publico', 
-        icon: 'mdi-map',
+        icon: 'mdi-home-city',
       },{
-        title: 'Dashboard', 
+        title: 'Principal', 
         href: 'universidades-dashboard', 
         icon: 'mdi-home',
         rols: [57,48]
@@ -128,7 +128,7 @@ export default {
       {
         title: 'Trámites', 
         href: 'universidades-tramites', 
-        icon: 'mdi-domain',
+        icon: 'mdi-file-document',
         rols: [48,51]
       },
       // {
@@ -140,7 +140,7 @@ export default {
       {
         title: 'Buscar estudiante', 
         href: 'estudiante-buscar', 
-        icon: 'mdi-domain',
+        icon: 'mdi-magnify',
         rols: [48]
       },
       // {
@@ -171,7 +171,7 @@ export default {
         rols: [57,48],
         submenus: [
           {
-            title: 'Permisos', 
+            title: 'Autorización de usuarios', 
             href: 'universidades-usuarios-permisos', 
             icon: 'mdi-account-cog',
           },{

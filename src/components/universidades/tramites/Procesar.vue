@@ -3,7 +3,7 @@
     <v-card elevation="0">
       <v-toolbar
         dark
-        color="primary"
+        color="secondary"
       >
         <v-toolbar-title>Procesar Trámite</v-toolbar-title>
         <v-spacer></v-spacer>
@@ -26,11 +26,22 @@
           <tr><th>Sede / Subsede:</th><td> {{universidad.nombre_sede_subsede}}</td></tr>
           <tr><th>Fecha de solicitud:</th><td> {{tramite.tramite.fecha_tramite}}</td></tr>
         </v-simple-table>
+        
+
 
         <DetalleTramite :tramite="tramite" :datos="datos"/>
         
-        <FormProcesarTecnico :tramite="tramite" :datos="datos"/>
+        <FormProcesarTecnico v-if="verificarPermiso('tecnico')" :tramite="tramite" :datos="datos" @recargarLista="recargarLista"/>
 
+        <v-card v-if="verificarPermiso('universidad')">
+          <v-card-title primary-title>
+            <h5>Observación del Técnico</h5>
+          </v-card-title>
+          <v-card-text>
+            Observación
+            <v-btn color="success">Corregir</v-btn>
+          </v-card-text>
+        </v-card>
         <!-- <FormEditarCarreraDenominacion :tramite="tramite" :datos="datos"/> -->
       </v-card-text>
     </v-card>
@@ -56,11 +67,13 @@ export default {
     universidad: ''
   }),
   mounted() {
-    console.log('datos del tramite', this.tramite)
     this.getBitacora()
     this.getDatosUniversidad()
   },
   methods: {
+    verificarPermiso(rol) {
+      return ServicioUniversidades.verificarPermisoRol(rol)
+    },
     async getBitacora() {
       try {
         let response = await ServicioUniversidades.getBitacoraTramite(this.tramite.tramite.id)
@@ -72,9 +85,6 @@ export default {
               this.datos = item.datos
             }
           })
-
-          console.log('bitacora', this.bitacora)
-          console.log('datos', this.datos)
         }
       } catch (error) {
         console.log(error)
@@ -86,12 +96,15 @@ export default {
         let data = response.data
         if (data.status == 'success') {
           this.universidad = data.data
-          console.log('universidad', this.universidad)
         }
       } catch (error) {
         console.log(error)
       }
     },
+    // FUNCION PARA RECARGAR LA SIGUIENTE LISTA
+    recargarLista(tipoLista) {
+      this.$emit('seleccionar', tipoLista)
+    }
   }
 }
 </script>

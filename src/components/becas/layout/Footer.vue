@@ -14,7 +14,7 @@
               href="//minedu.gob.bo/"
               target="_blank"
             >
-              <strong>Ministerio de Educación, Deportes y Culturas</strong>
+              <strong>Ministerio de Educación</strong>
             </a>
           </span>
         </v-col>

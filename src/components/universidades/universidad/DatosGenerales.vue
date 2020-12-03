@@ -147,13 +147,17 @@ export default {
   },
   watch: {
     idUniversidad: function(){
-      this.obtenerDatosUniversidad()  
+      if (typeof this.idUniversidad !== 'undefined') {
+        this.obtenerDatosUniversidad()  
+      }
     }
   },
   mounted() {
     this.usuarioLogueado = Servicio.getUser()
     console.log('this', this.usuarioLogueado)
-    this.obtenerDatosUniversidad()
+    if (typeof this.idUniversidad !== 'undefined') {
+      this.obtenerDatosUniversidad()
+    }
   },
   methods: {
     async obtenerDatosUniversidad(){
