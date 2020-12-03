@@ -304,7 +304,8 @@ let paths = [
 Vue.use(Router);
 const router = new Router({
   base: "/",
-  mode: "hash",
+  //mode: "hash",
+  mode: "history",
   linkActiveClass: "active",
   routes: paths,
 });
