@@ -4,7 +4,7 @@
       <ListaTipoTramites v-if="tipo == ''" :tiposTramites="tiposTramites" @seleccionarTipo="seleccionarTipo"/>
     </v-card>
     <FormNuevaCarreraDenominacion v-if="tipo == '56' || tipo == '57'" :idTramiteTipo="tipo" @cancelar="cancelar" @solicitud_enviada="solicitud_enviada"/>
-    <FormSolicitudToken v-if="tipo == '58'" :idTramiteTipo="tipo" @cancelar="cancelar"/>
+    <FormSolicitudToken v-if="tipo == '58'" :idTramiteTipo="tipo" @cancelar="cancelar" @solicitud_enviada="solicitud_enviada"/>
   </div>
 </template>
 

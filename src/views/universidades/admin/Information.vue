@@ -67,10 +67,6 @@
           v-if="componente == 'Tramite'"
           :idUniversidad="universidadId"
         />
-        <Formularios
-          v-if="componente == 'Formularios'"
-          :idUniversidad="universidadId"
-        />
       </div>
     </div>
   </div>
@@ -197,7 +193,7 @@ export default {
 }
 .admin-body {
   display: flex;
-  justify-content: start;
+  justify-content: space-between;
 }
 .admin-menu {
   width: 70px;

@@ -17,7 +17,7 @@ export default {
           datasets: [
             {
               label: "Estudiantes a nivel Nacional",
-              backgroundColor: ["#3e95cd", "#8e5ea2"],
+              backgroundColor: ["#3e95cd", "#b859a0"],
               data: [2,6]
             }
           ]

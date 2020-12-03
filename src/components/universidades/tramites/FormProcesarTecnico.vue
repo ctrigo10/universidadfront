@@ -133,23 +133,6 @@ export default {
                 let data4 = await response4.data
                 console.log('response data registrar carrera', data4)
               }
-              // switch (tipo) {
-              //   case 56: // REGISTRO DE CARRERA
-              //     let response2 = await UniversidadesService.createNuevaCarrera(this.datos)
-              //     let data2 = await response2.data
-              //     console.log('response data registrar carrera', data2)
-              //     break;
-              //   case 57: // REGISTRO DE DENOMINACION
-              //     let response3 = await UniversidadesService.createNuevaDenominacion(this.datos)
-              //     let data3 = await response3.data
-              //     console.log('response data registrar carrera', data3)
-              //     break;
-              //   case 58: // REGISTRO DE DENOMINACION
-              //     let response4 = await UniversidadesService.createNuevaCarrera(this.datosJson)
-              //     let data4 = await response4.data
-              //     console.log('response data registrar carrera', data4)
-              //     break;
-              // }
               
               let datos2 = {
                 tipotramite_id: '',
@@ -159,6 +142,7 @@ export default {
                 observacion: '',
                 datos: ''
               }
+              
               let response5 = await UniversidadesService.enviarTramite(datos2)
               let data5 = await response5.data
               if (data5.status == 'success') {
@@ -176,6 +160,8 @@ export default {
                   this.uniAlert({color: 'success', text: 'Registro realizado correctamente'})
                 }
               }
+
+              this.recargarLista('CONCLUIDOS')
 
             }else{
               // SI EL TRÁMITE NO PROCEDE - ENVIAMOS EL TRAMITE A LA SIGUIENTE TAREA CON LA VARIABLE DE EVALUACION Y CON LA OBSERVACION
@@ -203,20 +189,29 @@ export default {
                     let response8 = await UniversidadesService.enviarTramite(datos8)
                     let data8 = await response8.data
                     if (data8.status == 'success') {
-                      
                       this.uniAlert({color: 'success', text: 'Registro realizado correctamente'})
                     }
+
+                    this.recargarLista('CONCLUIDOS')
+
                   }else{
                      this.uniAlert({color: 'success', text: 'Registro realizado correctamente'})
+
+                     this.recargarLista('ENVIADOS')
                   }
               }
             }
           }
+
+          
         }
       } catch (error) {
         console.log(error)
         this.uniAlert({color: 'error', text: 'Ocurrio un error al enviar la solicitud'})
       }
+    },
+    recargarLista(tipoLista) {
+      this.$emit('recargarLista', tipoLista)
     }
   }
 }

@@ -85,7 +85,7 @@
       transition="dialog-transition"
     >
       <v-card>
-        <Procesar v-if="dialogProcesar" :tramite="tramite"/>
+        <Procesar v-if="dialogProcesar" :tramite="tramite" @recargarLista="recargarLista"/>
       </v-card>
     </v-dialog>
 
@@ -171,6 +171,7 @@ export default {
         let response = await UniversidadesService.recepcionarTramite(datos)
         let data = response.data
         this.obtenerTramites()
+        this.recargarLista('PENDIENTES')
         console.log(data)
       } catch (error) {
         console.log(error)
@@ -189,6 +190,11 @@ export default {
     },
     cerrar() {
       this.dialogVer = false
+    },
+    // FUNCION PARA RECARGAR LA SIGUIENTE LISTA
+    recargarLista(tipoLista) {
+      this.dialogProcesar = false
+      this.$emit('recargarLista', tipoLista)
     }
   }
 }

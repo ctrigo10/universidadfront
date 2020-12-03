@@ -50,7 +50,8 @@
                     </div>
                     <div class="list-item">
                       <div class="list-item-label">Rol</div>
-                      <div class="list-item-text">{{item.usuario_remitente_rol}}</div>
+                      <!-- <div class="list-item-text">{{item.usuario_remitente_rol}}</div> -->
+                      <div class="list-item-text">{{item.usuario_remitente_rol_id == 51 ? 'Responsable Universidad': 'Técnico Nacional'}}</div>
                     </div>
                   </div>
                   <!-- destinatario -->
@@ -61,10 +62,15 @@
                     </div>
                     <div class="list-item">
                       <div class="list-item-label">Rol</div>
-                      <div class="list-item-text"> {{item.usuario_destinatario_rol ? item.usuario_destinatario_rol : ''}}</div>
+                      <!-- <div class="list-item-text"> {{item.usuario_destinatario_rol ? item.usuario_destinatario_rol : ''}}</div> -->
+                      <div class="list-item-text">{{item.usuario_destinatario_rol_id == 51 ? 'Responsable Universidad': 'Técnico Nacional'}}</div>
                     </div>
                   </div>
                   
+                  <div class="list-items" v-if="item.obs != ''">
+                    <div class="list-item-label">Observación</div>
+                    <div class="list-item-text"> {{item.obs}}</div>
+                  </div>
                   <!-- <p>Flujo proceso: {{ item.flujo_proceso }}</p>
                   
                   <p>Fecha registro: {{ item.fecha_registro | fecha }}</p>
@@ -98,7 +104,7 @@
                           </v-card-title>
 
                           <!-- DETALLE DE NUEVA CARRERA Y NUEVA DENOMINACION -->
-                          <v-card-text>
+                          <v-card-text v-if="item.tramite_tipo != 'Solicitud de actualizacón de token'">
                             <v-row v-if="item.tramite_tipo == 'Solicitud de nueva carrera'">
                               <v-col cols="12" lg="5">
                                 <Dato label="Carrera" :value="item.datos.nombre" />
@@ -143,10 +149,10 @@
                           </v-card-text>
 
                           <!-- DETALLE DE TOKEN -->
-                          <v-card-text v-if="item.tramite_tipo == 'Solicitud token'">
+                          <v-card-text v-if="item.tramite_tipo == 'Solicitud de actualizacón de token'">
                             <v-row>
                               <v-col cols="12" lg="12">
-                                <Dato label="Observación" :value="item.datos.observacion" />
+                                <Dato label="Justificación" :value="item.datos.observacion" />
                               </v-col>
                             </v-row>
                           </v-card-text>
