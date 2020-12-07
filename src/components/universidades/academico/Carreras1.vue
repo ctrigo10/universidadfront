@@ -61,6 +61,36 @@
               {{ denominacion.nivel_tipo }}
               <span v-for="(pensum, index2) in denominacion.pensums" :key="index2">
                 <v-chip x-small color="info" outlined class="ml-2">{{ pensum.resolucion_administrativa }}</v-chip>
+                <v-menu
+                    :v-model="menu[i]"
+                    :close-on-content-click="false"
+                    :nudge-width="200"
+                    offset-x
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-chip x-small color="info" v-bind="attrs" v-on="on" outlined class="ml-2">{{ pensum.resolucion_administrativa }}</v-chip>
+                    </template>
+                    <v-card>
+                      <v-card-title primary-title>
+                        <h5>Contenido curricular</h5>
+                      </v-card-title>
+                      <v-card-text v-if="pensum.materias.length > 0">
+                        <table class="tabla-materias">
+                          <tr>
+                            <th>Código</th>
+                            <th>Materia</th>
+                          </tr>
+                          <tr v-for="(materia, index3) in pensum.materias" :key="index3">
+                            <td>{{materia.codigo}}</td>
+                            <td>{{materia.materia}}</td>
+                          </tr>
+                        </table>
+                      </v-card-text>
+                      <v-card-text v-if="pensum.materias.length == 0">
+                        Sin materias
+                      </v-card-text>
+                    </v-card>
+                  </v-menu>
               </span>
             </div>
             <!-- <table v-for="(denominacion, index) in item.grados_academicos" :key="index">
@@ -91,6 +121,7 @@ export default {
       { text: 'Grado académico', value: 'grados_academicos'},
     ],
     search: '',
+    menu: []
   }),
   computed: {
     formatData() {
@@ -119,4 +150,14 @@ export default {
   .chip-rm:hover {
     background-color: #f5fdf5;
   }
+  .tabla-materias {
+    width: 100%;
+  }
+  .tabla-materias th {
+    border-bottom: 1px solid gray;
+  }
+  /* .tabla-materias td {
+    margin: 0;
+    border: 1px solid gray;
+  } */
 </style>
