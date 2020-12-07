@@ -27,14 +27,14 @@
         {
           "href": "becas-convocatorias",
           "title": "Convocatorias",
-          "icon": "mdi-calendar-multiple-check",
+          "icon": "mdi-application-cog",
           "permission": "show-ajustes",
           "params": {}
         },
         {
           "href": "becas-usuarios",
           "title": "Usuarios",
-          "icon": "mdi-account-multiple",
+          "icon": "mdi-account-cog",
           "permission": "show-ajustes",
           "params": {}
         }

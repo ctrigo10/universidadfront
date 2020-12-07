@@ -2,18 +2,16 @@
 <v-container fluid cols="12">
     <v-card>
         <Header titulo="USUARIOS" :subTituloUno="gestion" />
-        <ListOpen class="ma-2" v-if="!loading" v-on:editItem="editItem($event)" :headers="headers" :items="getUsuarios" :acciones="acciones" :sortby="sortby" />
+        <UsuariosPermiso v-if="!loading" :usuarios_todos="getUsuarios" :universidades="items"/>
         <Loading v-else />
     </v-card>
-    <NuevoEditar :dialogF="dialogF" :items="items" :edited_item_enviar="edited_item_enviar" :edited_index_enviar="edited_index_enviar"/>
 </v-container>
 </template>
 
 <script>
-import ListOpen from "@/components/becas/usuario/ListOpen";
+import UsuariosPermiso from "@/components/becas/usuario/UsuariosPermiso";
 import Header from "@/components/becas/shared/Header";
 import Loading from "@/components/becas/shared/Loading";
-import NuevoEditar from "@/components/becas/usuario/NuevoEditar";
 import becasService from "@/services/becasService"
 import {
     mapGetters,
@@ -23,9 +21,8 @@ export default {
     name: "Beca-Usuarios",
     components: {
         Header,
-        ListOpen,
         Loading,
-        NuevoEditar,
+        UsuariosPermiso
     },
 
     async mounted() {
@@ -33,7 +30,8 @@ export default {
         try {
             await this.cargarUsuarios();
             let datos = await becasService.getUniversidadesList();
-            this.items = datos.data.data
+            this.items = datos.data.data,
+            console.log(this.items)
         } catch (error) {
             let text = error;
             if (error.response) text = error.response.data;

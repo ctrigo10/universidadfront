@@ -10,6 +10,7 @@ export default {
     },
     mutations: {
         cargarUsuarios(state, data) {
+            console.log(data.data)
             state.usuarios = [];
             for (let dato of data.data[0].usuario_rols) {
                 let usuario = {};
@@ -17,6 +18,7 @@ export default {
                 usuario.usuario_rol_id = dato.id;
                 usuario.username = dato.usuario.username;
                 usuario.carnet = dato.usuario.persona.carnet;
+                usuario.rol = data.data[0].rol;
                 if (dato.usuario.persona.complemento != "")
                     usuario.carnet = `${usuario.carnet} - ${dato.usuario.persona.complemento}`;
                 usuario.nombre = `${dato.usuario.persona.nombre} ${dato.usuario.persona.paterno} ${dato.usuario.persona.materno}`;
@@ -25,7 +27,8 @@ export default {
                     for (let universidad of dato.roles) {
                         uni.push({
                             "id": universidad.institucioneducativa.id,
-                            "institucioneducativa": `${universidad.institucioneducativa.institucioneducativa} - ${universidad.institucioneducativa.nro_resolucion}`,
+                            "institucioneducativa": universidad.institucioneducativa.institucioneducativa,
+                            "sede": universidad.institucioneducativa.nro_resolucion,
                         });
                     }
                     usuario.universidades = uni;
@@ -36,11 +39,11 @@ export default {
         agregarUniversidadesUsuario(state, resp) {
             let dato = resp[0];
             let usuario = {};
-            console.log(dato)
             usuario.usuario_id = dato.usuario.id;
             usuario.usuario_rol_id = dato.id;
             usuario.username = dato.usuario.username;
             usuario.carnet = dato.usuario.persona.carnet;
+            usuario.rol = dato.rol;
             if (dato.usuario.persona.complemento != "")
                 usuario.carnet = `${usuario.carnet} - ${dato.usuario.persona.complemento}`;
             usuario.nombre = `${dato.usuario.persona.nombre} ${dato.usuario.persona.paterno} ${dato.usuario.persona.materno}`;
@@ -50,12 +53,14 @@ export default {
                     if(universidad.institucioneducativa.institucioneducativa_dato)
                         uni.push({
                             "id": universidad.institucioneducativa.id,
-                            "institucioneducativa": `${universidad.institucioneducativa.institucioneducativa} - ${universidad.institucioneducativa.institucioneducativa_dato.nombre_sed}`,
+                            "institucioneducativa": universidad.institucioneducativa.institucioneducativa,
+                            "sede": universidad.institucioneducativa.institucioneducativa_dato.nombre_sed,
                         });
                     else
                         uni.push({
                             "id": universidad.institucioneducativa.id,
-                            "institucioneducativa": `${universidad.institucioneducativa.institucioneducativa}`,
+                            "institucioneducativa": universidad.institucioneducativa.institucioneducativa,
+                            "sede": '',
                         });
                 }
                 usuario.universidades = uni;
